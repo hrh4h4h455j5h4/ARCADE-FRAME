@@ -48,7 +48,7 @@
   .ui{margin-top:10px;width:300px;display:flex;flex-direction:column;gap:6px;}
   
   /* Buttons */
-  .btn{background:#111;border:2px solid #ffffff;color:white;padding:10px;text-align:center;border-radius:8px;font-weight:bold;display:block;font-size:12px;}
+  .btn{background:#111;border:2px solid #ffffff;color:white;padding:10px;text-align:center;border-radius:8px;font-weight:bold;display:block;font-size:12px;cursor:pointer;}
   .btn-r{border-color:#ff0000;}
   
   .lbl{font-size:9px;color:#888;text-transform:uppercase;margin-top:2px;display:flex;justify-content:space-between;}
@@ -61,18 +61,15 @@
     margin: 10px 0;
   }
 
-  /* The Track Design */
   input[type=range]::-webkit-slider-runnable-track {
     width: 100%;
     height: 8px;
     cursor: pointer;
-    /* This gradient handles the Red Fill on Cyan Empty look */
     background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%));
     border-radius: 4px;
     box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
   }
 
-  /* The Red Knob */
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
     height: 20px;
@@ -80,13 +77,30 @@
     border-radius: 50%;
     background: #ff0000;
     cursor: pointer;
-    margin-top: -6px; /* Align with track */
+    margin-top: -6px; 
     box-shadow: 0 0 10px #ff0000;
     border: 2px solid #ffffff;
   }
   
-  /* Download Button */
-  #save{background:#ff0000;border:none;font-size:14px;color:white;padding:12px;border-radius:8px;font-weight:bold;margin-top:4px;cursor:pointer;}
+  /* Download Button: Initially Disabled */
+  #save {
+    background: #ff0000;
+    border: none;
+    font-size: 14px;
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    margin-top: 4px;
+    cursor: not-allowed;
+    opacity: 0.4;
+    transition: 0.3s;
+  }
+
+  #save.active {
+    cursor: pointer;
+    opacity: 1;
+  }
   
   input[type=file]{display:none;}
   
@@ -131,13 +145,24 @@
 </div>
 
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m');
+const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,d:false,lx:0,ly:0};
 
-// Helper function to update slider fill colors
+// Track the original filename
+let originalFileName = "Arcade_PFP";
+
 function updateSliderColor(el) {
   const percent = ((el.value - el.min) / (el.max - el.min)) * 100;
   el.style.setProperty('--v', percent + '%');
+}
+
+// Check if at least one file is uploaded to enable the button
+function checkFiles() {
+  if (i.src || f.src) {
+    sBtn.classList.add('active');
+  } else {
+    sBtn.classList.remove('active');
+  }
 }
 
 function d(){
@@ -146,23 +171,41 @@ function d(){
   if(i.src){let w=i.width*cfg.s,h=i.height*cfg.s;x.drawImage(i,cfg.x-w/2,cfg.y-h/2,w,h);}
   x.restore();
   if(f.src)x.drawImage(f,0,0,800,800);
+  checkFiles();
 }
 
 document.querySelectorAll('input[type=range]').forEach(el => {
   el.addEventListener('input', () => updateSliderColor(el));
-  updateSliderColor(el); // Initial call
+  updateSliderColor(el);
 });
 
 document.getElementById('u1').onchange=e=>{
-  let r=new FileReader();r.onload=v=>{i.src=v.target.result;i.onload=()=>{
-    cfg.s=Math.max(800/i.width,800/i.height);z.value=cfg.s;cfg.x=400;cfg.y=400;
-    updateSliderColor(z);
-    d();
-  }};r.readAsDataURL(e.target.files[0]);
+  const file = e.target.files[0];
+  if(!file) return;
+  
+  // Capture the filename without the extension
+  originalFileName = file.name.split('.').slice(0, -1).join('.') || "Arcade_PFP";
+  
+  let r=new FileReader();
+  r.onload=v=>{
+    i.src=v.target.result;
+    i.onload=()=>{
+      cfg.s=Math.max(800/i.width,800/i.height);
+      z.value=cfg.s;
+      cfg.x=400;cfg.y=400;
+      updateSliderColor(z);
+      d();
+    }
+  };
+  r.readAsDataURL(file);
 };
 
 document.getElementById('u2').onchange=e=>{
-  let r=new FileReader();r.onload=v=>{f.src=v.target.result;f.onload=d;};r.readAsDataURL(e.target.files[0]);
+  const file = e.target.files[0];
+  if(!file) return;
+  let r=new FileReader();
+  r.onload=v=>{f.src=v.target.result;f.onload=d;};
+  r.readAsDataURL(file);
 };
 
 z.oninput=e=>{cfg.s=parseFloat(e.target.value);updateSliderColor(z);d();};
@@ -176,7 +219,15 @@ function en(){cfg.d=false;}
 c.ontouchstart=st;window.ontouchmove=mv;window.ontouchend=en;
 c.onmousedown=st;window.onmousemove=mv;window.onmouseup=en;
 
-document.getElementById('save').onclick=()=>{let a=document.createElement('a');a.download='Arcade_PFP.png';a.href=c.toDataURL();a.click();};
+sBtn.onclick=()=>{
+  // Only execute if files are uploaded
+  if(!i.src && !f.src) return;
+  
+  let a=document.createElement('a');
+  a.download = originalFileName + '.png';
+  a.href=c.toDataURL();
+  a.click();
+};
 </script>
 </body>
 </html>
