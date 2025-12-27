@@ -12,38 +12,41 @@
     min-height: 100vh; margin: 0; padding-bottom: 120px;
     -webkit-overflow-scrolling: touch; transition: 0.5s ease;
     overflow-x: hidden; position: relative;
+    /* DEFAULT THEME 8: SCANLINE */
+    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100% 4px;
   }
   
-  /* STABLE BACKGROUND ENGINE */
-  .bg-layer { position: fixed; top:0; left:0; width:100%; height:100%; z-index: -5; pointer-events: none; }
-  
-  /* ANIMATION KEYFRAMES */
+  /* ANIMATED THEME KEYFRAMES */
   @keyframes flow { from { background-position: 0 0; } to { background-position: 40px 40px; } }
   @keyframes scan { from { background-position: 0 0; } to { background-position: 0 100%; } }
+  @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.1; } 100% { opacity: 0.3; } }
+  @keyframes moveStars { from { background-position: 0 0; } to { background-position: 1000px 500px; } }
 
-  /* 11 ORDERED THEME CLASSES */
-  .t1 .bg-layer { background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100% 4px; } /* Official Scanline */
-  .t2 .bg-layer { background: #fff; background-image: radial-gradient(white 1px, transparent 1px); background-size: 50px 50px; } /* Cyber Warp placeholder */
-  .t3 .bg-layer { background: #000; background-image: linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px); background-size: 100% 20px; animation: scan 3s linear infinite; } /* Laser Grid */
-  .t4 .bg-layer { background: #000; background-image: linear-gradient(180deg, transparent, #0f0 2px, transparent); background-size: 100% 50px; animation: scan 2s linear infinite; } /* Digital Rain */
-  .t5 .bg-layer { background: #111; background-image: radial-gradient(circle, #ff00ff 1px, transparent 1px); background-size: 30px 30px; animation: flow 4s linear infinite; } /* Neon Flow */
-  .t6 .bg-layer { background: radial-gradient(circle at bottom, #ff4500, #8b0000, #000); background-size: 200% 200%; animation: flow 8s infinite linear; } /* Inferno */
-  .t7 .bg-layer { background: #0a001a; background-image: linear-gradient(45deg, #4b0082 25%, transparent 25%); background-size: 10px 10px; animation: flow 2s linear infinite; } /* Plasma */
-  .t8 .bg-layer { background: #000; border-top: 5px solid #00ffff; } /* Ghost City */
-  .t9 .bg-layer { background: #1a1a1a; background-image: repeating-linear-gradient(0deg, #333, #333 1px, transparent 1px, transparent 20px); animation: scan 10s linear infinite; } /* Static VHS */
-  .t10 .bg-layer { background: #000; background-image: radial-gradient(rgba(255,255,255,0.1) 2px, transparent 0); background-size: 40px 40px; } /* Space Drift */
-  .t11 .bg-layer { background: #050505; background-image: linear-gradient(90deg, #ff0000 1px, transparent 1px); background-size: 50px 100%; animation: flow 5s linear infinite; } /* Alert Mode */
-  .t12 .bg-layer { background: #0a0a0c; background-image: none; } /* Original Black */
+  /* 10 NEW ANIMATED THEMES (t22 - t31) */
+  body.t22 { background: #050508; background-image: radial-gradient(white 1px, transparent 1px); background-size: 50px 50px; animation: moveStars 60s linear infinite; } /* Hyperspace */
+  body.t23 { background: #000; background-image: linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px); background-size: 100% 20px; animation: scan 3s linear infinite; } /* Laser Grid */
+  body.t24 { background: #000; background-image: linear-gradient(180deg, transparent, #0f0 2px, transparent); background-size: 100% 50px; animation: scan 2s linear infinite; } /* Digital Rain */
+  body.t25 { background: #111; background-image: radial-gradient(circle, #ff00ff 1px, transparent 1px); background-size: 30px 30px; animation: flow 4s linear infinite; } /* Neon Flow */
+  body.t26 { background: #000; background-image: radial-gradient(circle, #ff4500, transparent); background-size: 200% 200%; animation: flow 10s ease infinite; } /* Inferno Glow */
+  body.t27 { background: #0a001a; background-image: linear-gradient(45deg, #4b0082 25%, transparent 25%); background-size: 10px 10px; animation: flow 2s linear infinite; } /* Plasma */
+  body.t28 { background: #000; border-top: 5px solid #00ffff; animation: pulse 2s infinite; } /* Ghost City */
+  body.t29 { background: #1a1a1a; background-image: repeating-linear-gradient(0deg, #333, #333 1px, transparent 1px, transparent 20px); animation: scan 10s linear infinite; } /* Static VHS */
+  body.t30 { background: #000; background-image: radial-gradient(rgba(255,255,255,0.1) 2px, transparent 0); background-size: 40px 40px; animation: moveStars 100s linear infinite; } /* Deep Space */
+  body.t31 { background: #050505; background-image: linear-gradient(90deg, #ff0000 1px, transparent 1px); background-size: 50px 100%; animation: flow 5s linear infinite; } /* Alert Mode */
+
+  /* PREVIOUS STATIC THEMES (t1-t21) */
+  body.t1 { background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; } 
+  body.t8 { background: #000; background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100% 4px; }
+  body.t21 { background: #0a0a0c; background-image: none; }
 
   .menu-toggle { position: absolute; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
 
-  #menu-panel, #theme-selector { position: fixed; top: 0; left: -255px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; display: flex; flex-direction: column; gap: 8px; padding-left: 15px; padding-right: 15px; overflow-y: auto; }
-  #menu-panel.open, #theme-selector.open { transform: translateX(255px); }
+  #menu-panel, #theme-selector { position: fixed; top: 0; left: -250px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; display: flex; flex-direction: column; gap: 8px; padding-left: 15px; padding-right: 15px; overflow-y: auto; }
+  #menu-panel.open, #theme-selector.open { left: 0; }
   
-  .lnk, .theme-opt { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 12px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
+  .lnk, .music-btn, .theme-opt { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 12px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
   .theme-opt .t-prev { width: 20px; height: 20px; border-radius: 3px; border: 1px solid #fff; flex-shrink: 0; }
 
-  /* HEADER BOUNCE */
   h1 { 
     color: #ffffff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; 
     text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); 
@@ -52,58 +55,53 @@
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #ffffff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
 
-  /* WORKSPACE CIRCLE */
-  #box { 
-    position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background: #111; margin: 0 auto; 
-    -webkit-mask-image: -webkit-radial-gradient(white,black); box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-    background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%); background-size: 20px 20px; z-index: 10;
-  }
-  canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; z-index: 15; }
-  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-25deg); pointer-events: none; z-index: 20; }
-  .shine-active #shine-flare { animation: shineRun 1.2s ease-in-out; }
+  #box { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%); background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid transparent; margin: 0 auto; -webkit-mask-image: -webkit-radial-gradient(white,black); }
+  canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; }
+  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-25deg); pointer-events: none; }
+  .shine-active #shine-flare { animation: shineRun 1.5s ease-in-out; }
   @keyframes shineRun { 0% { left: -100%; } 100% { left: 200%; } }
 
-  .ui { margin-top: 20px; width: 260px; display: flex; flex-direction: column; gap: 6px; margin-left: auto; margin-right: auto; z-index: 100; position: relative; }
-  .btn { background: #111; border: 1px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; display: block; }
+  .ui { margin-top: 20px; width: 260px; display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-left: auto; margin-right: auto; }
+  .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 11px; cursor: pointer; }
   .btn-center { border-color: #00ffff; color: #00ffff; }
-  .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
   #save { background: #ff0000; border: none; font-size: 13px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; }
 
-  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 25px; cursor: pointer; }
-  input[type=range]::-webkit-slider-runnable-track { height: 6px; background: #333; border-radius: 3px; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid white; }
+  .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
+  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
+  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; }
   
-  #about-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; overflow-y: auto; padding: 80px 20px; text-align: left; }
+  #about-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; overflow-y: auto; padding: 80px 20px; text-align: left; }
   .red-step { color: #ff0000; font-weight: bold; }
+  input[type=file] { display: none; }
   #yt-player { display: none; }
 </style>
 </head>
-<body class="t1" onclick="startAudio()">
+<body onclick="startAudio()">
 
-<div class="bg-layer"></div>
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
 <div id="menu-panel">
-  <div class="lnk" onclick="toggleMusic()">MUSIC: <span id="m-status">ON</span></div>
-  <div class="lnk" style="border-color:#0af;" onclick="openThemeSelector()">Switch Theme</div>
+  <div class="lnk" onclick="toggleMusic()">MUSIC CONTROL <span id="m-status" style="color:#ff0000;">ON</span></div>
+  <div class="lnk" style="border-color:#00ffff;" onclick="openThemeSelector()">Switch Theme</div>
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;">Discord Server</a>
-  <div class="lnk" onclick="toggleAboutPage()">About Us</div>
+  <div class="lnk" style="border-color:#ffffff;" onclick="toggleAboutPage()">About Us</div>
 </div>
 
 <div id="theme-selector">
-  <div class="lnk" onclick="closeThemeSelector()" style="border-color:#555;">← BACK</div>
-  <div class="theme-opt" onclick="setT(1)"><div class="t-prev" style="background:#222;"></div> 1. Scanline (Offcl)</div>
-  <div class="theme-opt" onclick="setT(2)"><div class="t-prev" style="background:#fff;"></div> 2. Cyber Warp (Live)</div>
-  <div class="theme-opt" onclick="setT(3)"><div class="t-prev" style="background:#0ff;"></div> 3. Laser Grid (Live)</div>
-  <div class="theme-opt" onclick="setT(4)"><div class="t-prev" style="background:#0f0;"></div> 4. Digital Rain (Live)</div>
-  <div class="theme-opt" onclick="setT(5)"><div class="t-prev" style="background:#f0f;"></div> 5. Neon Flow (Live)</div>
-  <div class="theme-opt" onclick="setT(6)"><div class="t-prev" style="background:#f40;"></div> 6. Inferno (Live)</div>
-  <div class="theme-opt" onclick="setT(7)"><div class="t-prev" style="background:#4b0082;"></div> 7. Plasma (Live)</div>
-  <div class="theme-opt" onclick="setT(8)"><div class="t-prev" style="background:#0af;"></div> 8. Ghost City (Live)</div>
-  <div class="theme-opt" onclick="setT(9)"><div class="t-prev" style="background:#333;"></div> 9. Static VHS (Live)</div>
-  <div class="theme-opt" onclick="setT(10)"><div class="t-prev" style="background:#555;"></div> 10. Space Drift (Live)</div>
-  <div class="theme-opt" onclick="setT(11)"><div class="t-prev" style="background:#f00;"></div> 11. Alert (Live)</div>
-  <div class="theme-opt" onclick="setT(12)"><div class="t-prev" style="background:#0a0a0c;"></div> Original Black</div>
+  <div class="music-btn" onclick="closeThemeSelector()" style="border-color:#555;">← BACK</div>
+  <div class="theme-opt" onclick="setT(8)"><div class="t-prev" style="background:#222;"></div> 8. Scanline (Offcl)</div>
+  <div class="theme-opt" onclick="setT(22)"><div class="t-prev" style="background:#fff;"></div> 22. Cyber Warp (Live)</div>
+  <div class="theme-opt" onclick="setT(23)"><div class="t-prev" style="background:#0ff;"></div> 23. Laser Grid (Live)</div>
+  <div class="theme-opt" onclick="setT(24)"><div class="t-prev" style="background:#0f0;"></div> 24. Digital Rain (Live)</div>
+  <div class="theme-opt" onclick="setT(25)"><div class="t-prev" style="background:#f0f;"></div> 25. Neon Flow (Live)</div>
+  <div class="theme-opt" onclick="setT(26)"><div class="t-prev" style="background:#f40;"></div> 26. Inferno (Live)</div>
+  <div class="theme-opt" onclick="setT(27)"><div class="t-prev" style="background:#4b0082;"></div> 27. Plasma (Live)</div>
+  <div class="theme-opt" onclick="setT(28)"><div class="t-prev" style="background:#0af;"></div> 28. Ghost City (Live)</div>
+  <div class="theme-opt" onclick="setT(29)"><div class="t-prev" style="background:#333;"></div> 29. Static VHS (Live)</div>
+  <div class="theme-opt" onclick="setT(30)"><div class="t-prev" style="background:#555;"></div> 30. Space Drift (Live)</div>
+  <div class="theme-opt" onclick="setT(31)"><div class="t-prev" style="background:#f00;"></div> 31. Alert (Live)</div>
+  <div class="theme-opt" onclick="setT(21)"><div class="t-prev" style="background:#0a0a0c;"></div> 21. Original Black</div>
 </div>
 
 <div id="yt-player"></div>
@@ -114,15 +112,15 @@
 <div id="studio-view" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
   <div id="box"><canvas id="c" width="800" height="800"></canvas><div id="shine-flare"></div></div>
   <div class="ui">
-    <label class="btn">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*" style="display:none;" onchange="handleFile(event)"></label>
-    <label class="btn" style="border-color:#ff0000;">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*" style="display:none;" onchange="handleFrame(event)"></label>
+    <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
+    <label class="btn" style="border-color:#ff0000;" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
     <button class="btn btn-center" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
-    <button class="btn" style="border-color:#ffd700; color:#ffd700;" onclick="runShine()">PREVIEW SHINE ✨</button>
+    <button class="btn" style="border-color:#ffd700; color:#ffd700;" onclick="runShine()">PREVIEW FRAME SHINE ✨</button>
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
-    <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
+    <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
     <div class="lbl">CIRCLE <span id="m-val" class="val-tag">375px</span></div>
-    <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
-    <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
+    <input type="range" id="m" min="300" max="400" step="1" value="375">
+    <button id="save">DOWNLOAD PICTURE</button>
   </div>
 </div>
 
@@ -130,50 +128,54 @@
   <div class="about-wrap" style="max-width:600px; margin:auto; line-height:1.6; padding-bottom:50px;">
     <button class="btn" onclick="toggleAboutPage()" style="margin-bottom:20px;">← BACK TO STUDIO</button>
     <div style="color:#00ffff; font-size:14px; letter-spacing:2px; font-weight:bold; text-transform:uppercase; border-bottom:1px solid #222; padding-bottom:8px;">ABOUT ARCADE STUDIO</div>
-    <p style="color:#aaa; font-size:14px;">Arcade Studio is the elite high-performance platform for Plato creators. Features 11 ordered themes and mathematical alignment tools.</p>
+    <p style="color:#aaa; font-size:14px;">Arcade Studio is the elite high-performance platform for digital creators. Features animated headers, 31 custom themes (including 10 Live modes), and precision alignment tools.</p>
     <div style="color:#00ffff; font-size:14px; letter-spacing:2px; font-weight:bold; text-transform:uppercase; margin-top:30px;">OPERATIONAL GUIDELINES</div>
     <p style="color:#888; font-size:14px;">
       <span class="red-step">1. Upload:</span> Choose photo and frame using Steps 1 & 2. <br><br>
-      <span class="red-step">2. Visual Style:</span> Pick an aesthetic from the ordered 1-11 menu. <br><br>
+      <span class="red-step">2. Visual Style:</span> Open the theme menu and pick one of the 10 new Live animations. <br><br>
       <span class="red-step">3. Symmetry:</span> Use Center Subject for perfect alignment. <br><br>
       <span class="red-step">4. Lock Frame:</span> Align Circle Size and Zoom until gaps are hidden. <br><br>
-      <span class="red-step">5. Export:</span> Click Download to save your high-res PNG.
+      <span class="red-step">5. Export:</span> Click Download to play the success tune and save.
     </p>
   </div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),aboutPage=document.getElementById('about-page'),studioView=document.getElementById('studio-view'),box=document.getElementById('box'),mStat=document.getElementById('m-status');
-let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},player,musicOn=true,audioStarted=false,curT=1;
+const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),aboutPage=document.getElementById('about-page'),studioView=document.getElementById('studio-view'),box=document.getElementById('box');
+const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val'),mStat=document.getElementById('m-status');
+let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},originalFileName="Arcade_PFP",player,musicOn=true,audioStarted=false,curT=8;
+
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1 }, events: { 'onReady': e => { if(musicOn) e.target.playVideo(); } } }); }
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' }, events: { 'onReady': e => { if(musicOn) e.target.playVideo(); } } }); }
 function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted = true; } }
-function toggleAboutPage() { const isOpen = aboutPage.style.display === 'block'; aboutPage.style.display = isOpen ? 'none' : 'block'; studioView.style.display = isOpen ? 'flex' : 'none'; if(!isOpen) panel.classList.remove('open'); }
-function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); }
-function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); }
-function setT(n) { document.body.className = 't'+n; curT=n; tMenu.classList.remove('open'); }
-function centerSubject() { if(!i.src) return; cfg.x = 400; cfg.y = 400; d(); }
-function runShine() { if(!f.src) return; box.classList.add('shine-active'); setTimeout(()=>box.classList.remove('shine-active'), 1200); }
-function toggleMusic() { musicOn = !musicOn; musicOn ? player.playVideo() : player.pauseVideo(); mStat.innerText = musicOn ? "ON" : "OFF"; }
-function toggleMenu(e) { e.stopPropagation(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
-window.onclick = e => { if (!panel.contains(e.target) && !tMenu.contains(e.target)) { panel.classList.remove('open'); tMenu.classList.remove('open'); } };
-
+function toggleAboutPage() { playShutter(); const isOpen = aboutPage.style.display === 'block'; aboutPage.style.display = isOpen ? 'none' : 'block'; studioView.style.display = isOpen ? 'flex' : 'none'; if(!isOpen) { panel.classList.remove('open'); window.scrollTo(0,0); } }
+function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); playClick(); }
+function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); playClick(); }
+function setT(n) { startAudio(); playClick(); document.body.classList.remove('t'+curT); curT=n; document.body.classList.add('t'+curT); tMenu.classList.remove('open'); }
+function centerSubject() { if(!i.src) return; playShutter(); cfg.x = 400; cfg.y = 400; d(); }
+function runShine() { if(!f.src) return; playShutter(); box.classList.add('shine-active'); setTimeout(()=>box.classList.remove('shine-active'), 1500); }
+function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; musicOn ? player.playVideo() : player.pauseVideo(); mStat.innerText = musicOn ? "ON" : "OFF"; mStat.style.color = musicOn ? "#ff0000" : "#888"; }
+function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
+window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target)) { panel.classList.remove('open'); playClick(); } };
+function playWin() { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, idx) => { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.1)); gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (idx * 0.1)); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.1) + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(audioCtx.currentTime + (idx * 0.1)); osc.stop(audioCtx.currentTime + (idx * 0.1) + 0.1); }); }
+function playClick() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(800, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
+function playShutter() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.05); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
+function updateSliderColor(el) { const percent = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty('--v', percent + '%'); }
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r); x.drawImage(i, -w/2, -h/2,w,h); x.restore(); } x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800); if (i.src || f.src) sBtn.style.opacity = "1"; }
-function handleFile(e) { let r=new FileReader(); r.onload=v=>{ const nI=new Image(); nI.onload=()=>{ i=nI; cfg.s=Math.max(800/i.width,800/i.height); zSl.value=cfg.s; document.getElementById('z-val').innerText = Math.round(cfg.s*100)+'%'; d(); }; nI.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ const nF=new Image(); nF.onload=d; nF.src=v.target.result; f=nF; }; r.readAsDataURL(e.target.files[0]); }
-function updateZ(v) { cfg.s=parseFloat(v); document.getElementById('z-val').innerText = Math.round(v*100)+'%'; d(); }
-function updateM(v) { cfg.m=parseInt(v); document.getElementById('m-val').innerText = v+'px'; d(); }
+function handleFile(file) { originalFileName = file.name.split('.').slice(0, -1).join('.') || "Arcade_PFP"; let r=new FileReader(); r.onload=v=>{ const nextI = new Image(); nextI.onload=()=>{ i=nextI; cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%"; updateSliderColor(z); d(); playClick(); }; nextI.src=v.target.result; }; r.readAsDataURL(file); }
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); }); updateSliderColor(el); });
+document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
+document.getElementById('u2').onchange=e=>{ const file = e.target.files[0]; if(!file) return; let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file); };
+z.oninput=e=>{ cfg.s=parseFloat(e.target.value); zVal.innerText=Math.round(cfg.s*100)+"%"; d(); };
+m.oninput=e=>{ cfg.m=parseInt(e.target.value); mVal.innerText=e.target.value+"px"; d(); };
 function gp(e, idx=0){ let r=c.getBoundingClientRect(), t=e.touches?e.touches[idx]:e; return {x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)}; }
-function st(e){ if(e.target==c){ cfg.d=true; if(e.touches && e.touches.length === 2) { cfg.ia = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.ir = cfg.r; } else { let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } } }
-function mv(e){ if(cfg.d){ if(e.touches && e.touches.length === 2) { let a = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.r = cfg.ir + (a - cfg.ia); } else { let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; } d(); } }
-c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=()=>cfg.d=false; c.onmousedown=st; window.onmousemove=mv; window.onmouseup=()=>cfg.d=false;
-
-function downloadPic() { 
-  const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, idx) => { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.1)); gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (idx * 0.1)); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.1) + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(audioCtx.currentTime + (idx * 0.1)); osc.stop(audioCtx.currentTime + (idx * 0.1) + 0.1); });
-  let a=document.createElement('a'); a.download='Arcade_Edit.png'; a.href=c.toDataURL(); a.click(); 
-}
+function st(e){ if(e.target==c){ e.preventDefault(); cfg.d=true; if(e.touches && e.touches.length === 2) { cfg.ia = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.ir = cfg.r; } else { let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } } }
+function mv(e){ if(cfg.d){ e.preventDefault(); if(e.touches && e.touches.length === 2) { let a = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.r = cfg.ir + (a - cfg.ia); } else { let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; } d(); } }
+function en(){ cfg.d=false; }
+c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en; c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
+sBtn.onclick=()=>{ if(!i.src && !f.src) return; playWin(); let a=document.createElement('a'); a.download = originalFileName + '.png'; a.href=c.toDataURL(); a.click(); };
 </script>
 </body>
 </html>
+ 
