@@ -24,14 +24,13 @@
     margin: 50px 0 0 0;
     font-family: "Arial Black", sans-serif;
     font-style: italic;
-    font-size: 36px; /* Larger, more aggressive size */
+    font-size: 36px;
     text-transform: uppercase;
-    letter-spacing: -1px; /* Tighter spacing for power */
-    /* Dual-tone glow effect for depth */
+    letter-spacing: -1px;
     text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8);
   }
 
-  /* FRAME STUDIO: Clean White */
+  /* FRAME STUDIO: White */
   p {
     color: #ffffff;
     font-weight: bold;
@@ -54,8 +53,32 @@
   
   .lbl{font-size:9px;color:#888;text-transform:uppercase;margin-top:2px;display:flex;justify-content:space-between;}
   
-  /* Sliders */
-  input[type=range]{width:100%;accent-color:#ff0000;margin:2px 0;cursor:pointer;}
+  /* SLIDERS: Red handle on Cyan track */
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+    margin: 10px 0;
+  }
+  /* The Track (Cyan) */
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    background: #00ffff;
+    border-radius: 3px;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  }
+  /* The Handle (Red) */
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #ff0000;
+    cursor: pointer;
+    margin-top: -6px; /* Centers handle on track */
+    box-shadow: 0 0 8px #ff0000;
+  }
   
   /* Download Button */
   #save{background:#ff0000;border:none;font-size:14px;color:white;padding:12px;border-radius:8px;font-weight:bold;margin-top:4px;cursor:pointer;}
