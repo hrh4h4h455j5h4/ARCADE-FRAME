@@ -10,21 +10,17 @@
     background: #0a0a0c; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px;
-    -webkit-overflow-scrolling: touch; transition: 0.3s;
+    -webkit-overflow-scrolling: touch; transition: background 0.2s ease;
   }
   
-  /* NAVIGATION CONTROLS */
-  .top-btns { position: absolute; top: 15px; left: 15px; width: calc(100% - 30px); display: flex; justify-content: space-between; z-index: 1000; }
-  .btn-ui {
-    background: #1a1a1c; color: #ffffff; border: 1px solid rgba(255,255,255,0.1);
-    padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px;
-  }
+  /* NAV CONTROLS */
+  .menu-toggle { position: absolute; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
+  .mode-toggle { position: absolute; top: 15px; right: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
 
-  /* SIDE MENU */
+  /* SIDE MENU - Solid Black */
   #menu-panel {
     position: fixed; top: 0; left: -250px; width: 230px; height: 100%;
-    background: #000000; padding-top: 60px; 
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999;
+    background: #000; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999;
     display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
   }
   #menu-panel.open { left: 0; }
@@ -35,45 +31,37 @@
     border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer;
   }
   .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); justify-content: space-between; }
+  .lnk svg { width: 18px; height: 18px; fill: white; }
 
-  /* INTERNAL ABOUT PAGE */
-  #about-page {
-    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: #000000; z-index: 2000; overflow-y: auto; padding: 80px 20px 40px 20px;
-    box-sizing: border-box; text-align: left;
-  }
-  .about-wrap { max-width: 700px; margin: auto; }
-  .back-btn { background: #ff0000; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 30px; }
-  .sec-h { color: #00ffff; font-size: 14px; letter-spacing: 2px; border-bottom: 1px solid #222; margin-top: 30px; padding-bottom: 8px; font-weight: bold; }
-  .feat-grid { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 15px; }
-  .feat-card { background: #0a0a0c; padding: 15px; border: 1px solid #1a1a1c; border-radius: 8px; }
-
-  /* STUDIO STYLES */
-  h1 { color: #ffffff; margin: 30px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); }
+  /* MOBILE HEADER */
+  h1 { color: #ffffff; margin: 30px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255,0,0,0.8); }
   p.sub { color: #ffffff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }
 
-  .main-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; transition: 0.3s; }
+  /* STUDIO CORE */
+  .main-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; will-change: transform; }
   #box {
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden;
     background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%);
     background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid transparent; transition: 0.3s; -webkit-mask-image: -webkit-radial-gradient(white,black);
   }
+  #box.drag-over { border-color: #00ffff; box-shadow: 0 0 30px #00ffff; transform: scale(1.02); }
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; touch-action: none; }
   
   .ui { margin-top: 10px; width: 300px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; }
   .btn-r { border-color: #ff0000; }
   .btn-reset { border-color: #555; color: #888; }
+  .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; }
   
-  /* SLIDERS */
+  /* RED-ON-CYAN SLIDERS */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff; }
   
-  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 4px; cursor: not-allowed; opacity: 0.4; }
+  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 4px; cursor: not-allowed; opacity: 0.4; transition: 0.2s; }
   #save.active { cursor: pointer; opacity: 1; }
 
-  /* PC MODE */
+  /* ------------------- PC MODE ------------------- */
   body.pc-mode { padding: 0; overflow: hidden; display: block; }
   body.pc-mode h1, body.pc-mode p.sub { display: none; }
   body.pc-mode .main-wrapper { flex-direction: row; height: 100vh; align-items: stretch; }
@@ -88,67 +76,46 @@
 </head>
 <body onclick="startAudio()">
 
-<div class="top-btns">
-  <button class="btn-ui" onclick="toggleMenu(event)">MENU ☰</button>
-  <button id="mode-toggle" class="btn-ui" onclick="toggleMode()">PC VERSION</button>
-</div>
+<button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
+<button id="mode-toggle" class="mode-toggle" onclick="toggleMode()">PC VERSION</button>
 
 <div id="menu-panel">
   <div class="music-btn" onclick="toggleMusic()">MUSIC CONTROL <span id="m-status" style="color:#ff0000;">ON</span></div>
-  <div class="lnk" style="border-color:#ffffff;" onclick="toggleAboutPage()">ABOUT STUDIO ℹ️</div>
-  <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;" onclick="playShutter()">Discord Server</a>
-  <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;" onclick="playShutter()">Arcade Website</a>
-</div>
+  
+  <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;" onclick="playShutter()">
+    <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+    <span>Discord Server</span>
+  </a>
 
-<div id="about-page">
-  <div class="about-wrap">
-    <button class="back-btn" onclick="toggleAboutPage()">← BACK TO STUDIO</button>
-    <h1 style="font-size: 42px;">STUDIO INTEL</h1>
-    <p style="margin-top:-10px; color:#555;">Version 4.0 // Dual-Engine Architecture</p>
-
-    <div class="sec-h">THE ECOSYSTEM</div>
-    <div class="feat-grid">
-      <div class="feat-card">
-        <b style="color:#ff0000;">MOBILE VERSION:</b>
-        <p style="font-size: 13px; color:#aaa;">Designed for speed. Features touch-priority dragging, butter-smooth momentum scrolling, and safety-padded UI for modern browser navigation bars.</p>
-      </div>
-      <div class="feat-card">
-        <b style="color:#00ffff;">PC VERSION:</b>
-        <p style="font-size: 13px; color:#aaa;">The pro-editing bay. Features a fixed sidebar "Workbench," high-precision mouse scaling, and full-screen workspace with desktop file Drag & Drop support.</p>
-      </div>
-    </div>
-
-    <div class="sec-h">OPERATIONAL GUIDE</div>
-    <p style="font-size: 13px; color:#888;">1. Choose a high-quality base photo.<br>2. Upload your official Arcade Frame.<br>3. Use <b>Zoom</b> to fit the subject and <b>Circle Size</b> to lock the alignment.<br>4. Reposition the subject by dragging inside the frame.<br>5. Hit <b>Download</b> to save your PNG.</p>
-
-    <div class="sec-h">AUDIO ENGINE</div>
-    <p style="font-size: 13px; color:#888;">The studio features a retro arcade sound suite including mechanical shutter sounds, pitch-shifted slider blips, and an auto-playing YouTube engine toggleable via the side menu.</p>
-  </div>
+  <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;" onclick="playShutter()">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+    <span>Arcade Website</span>
+  </a>
 </div>
 
 <div id="yt-player"></div>
 
-<div id="studio-view" style="display: flex; flex-direction: column; align-items: center;">
-  <h1>ARCADE</h1>
-  <p class="sub">FRAME STUDIO</p>
-  <div class="main-wrapper">
-    <div class="ui">
-      <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
-      <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
-      <button class="btn btn-reset" onclick="resetProject()">RESET PROJECT</button>
-      <div class="lbl">ZOOM PHOTO</div>
-      <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
-      <div class="lbl">CIRCLE SIZE</div>
-      <input type="range" id="m" min="300" max="400" step="1" value="375">
-      <button id="save">DOWNLOAD PICTURE</button>
-    </div>
-    <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
+<h1>ARCADE</h1>
+<p class="sub">FRAME STUDIO</p>
+
+<div class="main-wrapper">
+  <div class="ui">
+    <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
+    <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
+    <button class="btn btn-reset" onclick="resetProject()">RESET PROJECT</button>
+    <div class="lbl">ZOOM PHOTO</div>
+    <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
+    <div class="lbl">CIRCLE SIZE</div>
+    <input type="range" id="m" min="300" max="400" step="1" value="375">
+    <button id="save">DOWNLOAD PICTURE</button>
   </div>
+  
+  <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),aboutPage=document.getElementById('about-page'),studioView=document.getElementById('studio-view'),modeBtn=document.getElementById('mode-toggle');
+const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),modeBtn=document.getElementById('mode-toggle');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,d:false,lx:0,ly:0},originalFileName="Arcade_PFP",player,musicOn=true,audioStarted=false;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -162,20 +129,26 @@ function onYouTubeIframeAPIReady() {
 }
 
 function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted = true; } }
-function toggleMode() { startAudio(); playClick(); const isPC = document.body.classList.toggle('pc-mode'); modeBtn.innerText = isPC ? "MOBILE VERSION" : "PC VERSION"; d(); }
 
-function toggleAboutPage() {
-  playShutter();
-  const isOpen = aboutPage.style.display === 'block';
-  aboutPage.style.display = isOpen ? 'none' : 'block';
-  studioView.style.display = isOpen ? 'flex' : 'none';
-  if(!isOpen) { panel.classList.remove('open'); window.scrollTo(0,0); }
+function toggleMode() {
+  startAudio(); playClick();
+  const isPC = document.body.classList.toggle('pc-mode');
+  modeBtn.innerText = isPC ? "MOBILE VERSION" : "PC VERSION";
+  d();
 }
 
-function resetProject() { playDown(); i = new Image(); f = new Image(); cfg = {s:1,m:375,x:400,y:400,d:false,lx:0,ly:0}; z.value = 1; m.value = 375; document.querySelectorAll('input[type=range]').forEach(updateSliderColor); sBtn.classList.remove('active'); d(); }
-function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
-function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); }
+function resetProject() {
+  playDown(); i = new Image(); f = new Image(); cfg = {s:1,m:375,x:400,y:400,d:false,lx:0,ly:0}; z.value = 1; m.value = 375;
+  document.querySelectorAll('input[type=range]').forEach(updateSliderColor); sBtn.classList.remove('active'); d();
+}
 
+function toggleMusic() {
+  startAudio(); playClick(); musicOn = !musicOn;
+  if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; }
+  else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; }
+}
+
+function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); }
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target)) { panel.classList.remove('open'); playClick(); } };
 
 function playClick() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
@@ -192,7 +165,9 @@ function d(){
   if (i.src || f.src) sBtn.classList.add('active');
 }
 
+const box = document.getElementById('box');
 box.ondragover = e => { e.preventDefault(); box.classList.add('drag-over'); };
+box.ondragleave = () => box.classList.remove('drag-over');
 box.ondrop = e => { e.preventDefault(); box.classList.remove('drag-over'); const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('image/')) handleFile(file); };
 
 function handleFile(file) {
@@ -200,7 +175,10 @@ function handleFile(file) {
   let r=new FileReader(); r.onload=v=>{ i.src=v.target.result; i.onload=()=>{ cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; updateSliderColor(z); d(); playClick(); } }; r.readAsDataURL(file);
 }
 
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); playSlider(el.value); }); updateSliderColor(el); });
+document.querySelectorAll('input[type=range]').forEach(el => {
+  el.addEventListener('input', () => { updateSliderColor(el); playSlider(el.value); });
+  updateSliderColor(el);
+});
 
 document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
 document.getElementById('u2').onchange=e=>{ const file = e.target.files[0]; if(!file) return; let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file); };
