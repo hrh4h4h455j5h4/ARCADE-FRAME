@@ -10,56 +10,54 @@
     background: #000; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px;
-    -webkit-overflow-scrolling: touch; transition: 0.5s;
-    overflow-x: hidden; position: relative;
-    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size: 100% 4px;
+    -webkit-overflow-scrolling: touch; transition: background 0.3s ease;
+    overflow-x: hidden; position: relative; will-change: background;
   }
   
-  /* ANIMATED THEMES */
+  /* OPTIMIZED ANIMATED THEMES */
   @keyframes fireMove { 0% { background-position: 0% 100%; } 50% { background-position: 100% 0%; } 100% { background-position: 0% 100%; } }
-  body.t_fire { background: radial-gradient(circle at bottom, #ff4500, #8b0000, #000); background-size: 200% 200%; animation: fireMove 5s infinite; }
+  body.t_fire { background: radial-gradient(circle at bottom, #ff4500, #8b0000, #000); background-size: 200% 200%; animation: fireMove 8s infinite linear; }
   
   @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 40px; } }
-  body.t_grid { background: #050508; background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; animation: gridMove 2s linear infinite; }
+  body.t_grid { background: #050508; background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; animation: gridMove 3s linear infinite; }
 
   /* STATIC THEMES */
   body.t1 { background: #1a0033; background-image: radial-gradient(#ff00ff 0.5px, transparent 0.5px); background-size: 20px 20px; }
   body.t2 { background: #001a00; color: #00ff00; }
-  body.t3 { background: #2b1d0e; border-top: 5px solid #ffd700; }
-  body.t4 { background: #0a0a0c; background-image: none; } /* ORIGINAL */
+  body.t4 { background: #0a0a0c; }
 
   .menu-toggle { position: absolute; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
-  #menu-panel, #theme-selector { position: fixed; top: 0; left: -250px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: 0.3s; z-index: 999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; overflow-y: auto; }
-  #menu-panel.open, #theme-selector.open { left: 0; }
+
+  #menu-panel, #theme-selector { position: fixed; top: 0; left: -255px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; overflow-y: auto; will-change: transform; }
+  #menu-panel.open, #theme-selector.open { transform: translateX(255px); }
   
   .lnk, .music-btn, .theme-opt { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
-  .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); justify-content: space-between; }
-  .theme-opt .t-prev { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #fff; flex-shrink: 0; }
-  .lnk svg { width: 18px; height: 18px; fill: white; flex-shrink: 0; }
+  .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); }
+  .theme-opt .t-prev { width: 20px; height: 20px; border-radius: 3px; border: 1px solid #fff; }
 
   h1 { 
-    color: #ffffff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; 
-    text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); 
-    text-align: center; animation: arcadeBounce 1.8s infinite ease-in-out;
+    color: #ffffff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 32px; 
+    text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000; 
+    text-align: center; animation: arcadeBounce 2s infinite ease-in-out;
   }
-  @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-  #box { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background: #111; border: 2px solid transparent; margin: 0 auto; -webkit-mask-image: -webkit-radial-gradient(white,black); }
-  canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; }
-  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-25deg); pointer-events: none; }
-  .shine-active #shine-flare { animation: shineRun 1.5s ease-in-out; }
+  #box { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background: #111; margin: 0 auto; -webkit-mask-image: -webkit-radial-gradient(white,black); }
+  canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; will-change: contents; }
+  
+  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-25deg); pointer-events: none; }
+  .shine-active #shine-flare { animation: shineRun 1.2s ease-in-out; }
   @keyframes shineRun { 0% { left: -100%; } 100% { left: 200%; } }
 
-  .ui { margin-top: 20px; width: 260px; display: flex; flex-direction: column; gap: 6px; margin-left: auto; margin-right: auto; }
-  .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; }
+  .ui { margin-top: 15px; width: 260px; display: flex; flex-direction: column; gap: 6px; margin-left: auto; margin-right: auto; }
+  .btn { background: #111; border: 1px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; }
   .btn-center { border-color: #00ffff; color: #00ffff; }
-  #save { background: #ff0000; border: none; font-size: 13px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: not-allowed; opacity: 0.4; }
-  #save.active { cursor: pointer; opacity: 1; }
+  #save { background: #ff0000; border: none; font-size: 13px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 5px; opacity: 0.4; pointer-events: none; }
+  #save.active { opacity: 1; pointer-events: auto; }
 
-  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
-  input[type=range]::-webkit-slider-runnable-track { height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; }
+  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 25px; cursor: pointer; }
+  input[type=range]::-webkit-slider-runnable-track { height: 6px; background: #333; border-radius: 3px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid white; box-shadow: 0 0 5px #ff0000; }
   
   #yt-player { display: none; }
 </style>
@@ -69,96 +67,77 @@
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
 <div id="menu-panel">
-  <div class="music-btn" onclick="toggleMusic()">MUSIC CONTROL <span id="m-status" style="color:#ff0000;">ON</span></div>
-  <div class="lnk" style="border-color:#00ffff;" onclick="openThemeSelector()"><span>Switch Theme</span></div>
-  <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;"><span>Discord Server</span></a>
-  <div class="lnk" style="border-color:#ffffff;" onclick="toggleAboutPage()"><span>About Us</span></div>
+  <div class="music-btn" onclick="toggleMusic()">MUSIC: <span id="m-status">ON</span></div>
+  <div class="lnk" style="border-color:#0af;" onclick="openThemeSelector()">Switch Theme</div>
+  <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;">Discord Server</a>
+  <div class="lnk" onclick="toggleAboutPage()">About Us</div>
 </div>
 
 <div id="theme-selector">
-  <div class="music-btn" onclick="closeThemeSelector()" style="border-color:#555;">← BACK</div>
-  <div class="theme-opt" onclick="setT('t_fire', 'L_v_N95bX_Y')"><div class="t-prev" style="background:#ff4500;"></div> Inferno (Live)</div>
+  <div class="lnk" onclick="closeThemeSelector()" style="border-color:#555;">← BACK</div>
+  <div class="theme-opt" onclick="setT('t_fire', 'L_v_N95bX_Y')"><div class="t-prev" style="background:#f40;"></div> Inferno (Live)</div>
   <div class="theme-opt" onclick="setT('t_grid', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#0af;"></div> Retro Grid (Live)</div>
-  <div class="theme-opt" onclick="setT('t1', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#1a0033;"></div> Vaporwave</div>
-  <div class="theme-opt" onclick="setT('t2', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#001a00;"></div> Matrix</div>
-  <div class="theme-opt" onclick="setT('t4', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#0a0a0c;"></div> Original Black</div>
+  <div class="theme-opt" onclick="setT('t1', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#408;"></div> Vaporwave</div>
+  <div class="theme-opt" onclick="setT('t4', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#0a0a0c;"></div> Original Noir</div>
 </div>
 
 <div id="yt-player"></div>
 
 <h1>ARCADE</h1>
-<p style="text-align:center; font-weight:bold; font-size:11px; letter-spacing:2px;">FRAME STUDIO</p>
 
 <div id="studio-view" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
   <div id="box"><canvas id="c" width="800" height="800"></canvas><div id="shine-flare"></div></div>
   <div class="ui">
-    <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*" style="display:none;"></label>
-    <label class="btn" style="border-color:#ff0000;" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*" style="display:none;"></label>
+    <label class="btn">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*" style="display:none;" onchange="handleFile(event)"></label>
+    <label class="btn" style="border-color:#ff0000;">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*" style="display:none;" onchange="handleFrame(event)"></label>
     <button class="btn btn-center" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
     <button class="btn" style="border-color:#ffd700; color:#ffd700;" onclick="runShine()">PREVIEW SHINE ✨</button>
-    <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
-    <input type="range" id="m" min="300" max="400" step="1" value="375">
-    <button id="save">DOWNLOAD PICTURE</button>
+    <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
+    <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
+    <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
   </div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),box=document.getElementById('box'),mStat=document.getElementById('m-status');
-let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},player,musicOn=true,audioStarted=false,curClass='';
-
+const c=document.getElementById('c'),x=c.getContext('2d',{alpha:false}),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),box=document.getElementById('box'),mStat=document.getElementById('m-status');
+let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function onYouTubeIframeAPIReady() {
-  player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1 },
+  player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' },
     events: { 'onReady': e => { if(musicOn) e.target.playVideo(); } }
   });
 }
 
 function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted = true; } }
-function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); playClick(); }
-function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); playClick(); }
-
-function setT(cls, vid) {
-  startAudio(); playClick();
-  document.body.className = cls;
-  if(player && vid) { player.loadVideoById(vid); }
-  tMenu.classList.remove('open');
-}
-
-function centerSubject() { if(!i.src) return; playShutter(); cfg.x = 400; cfg.y = 400; d(); }
-function runShine() { if(!f.src) return; playShutter(); box.classList.add('shine-active'); setTimeout(()=>box.classList.remove('shine-active'), 1500); }
-function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; musicOn ? player.playVideo() : player.pauseVideo(); mStat.innerText = musicOn ? "ON" : "OFF"; mStat.style.color = musicOn ? "#ff0000" : "#888"; }
-function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
-
-function playWin() { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((n, idx) => { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.frequency.setValueAtTime(n, audioCtx.currentTime + (idx * 0.1)); g.gain.setValueAtTime(0.1, audioCtx.currentTime + (idx * 0.1)); o.connect(g); g.connect(audioCtx.destination); o.start(audioCtx.currentTime + (idx * 0.1)); o.stop(audioCtx.currentTime + (idx * 0.1) + 0.1); }); }
-function playClick() { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
-function playShutter() { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.type = 'square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.1, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.15); }
-
-function updateSliderColor(el) { const p = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty('--v', p + '%'); }
+function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); }
+function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); }
+function setT(cls, vid) { document.body.className = cls; if(player && vid) player.loadVideoById(vid); tMenu.classList.remove('open'); }
+function centerSubject() { cfg.x = 400; cfg.y = 400; d(); }
+function runShine() { if(!f.src) return; box.classList.add('shine-active'); setTimeout(()=>box.classList.remove('shine-active'), 1200); }
+function toggleMusic() { musicOn = !musicOn; musicOn ? player.playVideo() : player.pauseVideo(); mStat.innerText = musicOn ? "ON" : "OFF"; }
+function toggleMenu(e) { e.stopPropagation(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
+window.onclick = e => { if (!panel.contains(e.target)) panel.classList.remove('open'); };
 
 function d(){
-  x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip();
+  x.fillStyle = "#000"; x.fillRect(0,0,800,800);
+  x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip();
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r); x.drawImage(i, -w/2, -h/2,w,h); x.restore(); }
   x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800);
   if (i.src || f.src) sBtn.classList.add('active');
 }
 
-function handleFile(file) {
-  let r=new FileReader(); r.onload=v=>{ const nI = new Image(); nI.onload=()=>{ i=nI; cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; d(); playClick(); }; nI.src=v.target.result; }; r.readAsDataURL(file);
-}
-
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); }); updateSliderColor(el); });
-document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
-document.getElementById('u2').onchange=e=>{ let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(e.target.files[0]); };
-z.oninput=e=>{ cfg.s=parseFloat(e.target.value); d(); };
-m.oninput=e=>{ cfg.m=parseInt(e.target.value); d(); };
+function handleFile(e) { let r=new FileReader(); r.onload=v=>{ const nI=new Image(); nI.onload=()=>{ i=nI; cfg.s=Math.max(800/i.width,800/i.height); zSl.value=cfg.s; d(); }; nI.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ const nF=new Image(); nF.onload=d; nF.src=v.target.result; f=nF; }; r.readAsDataURL(e.target.files[0]); }
+function updateZ(v) { cfg.s=parseFloat(v); d(); }
+function updateM(v) { cfg.m=parseInt(v); d(); }
 
 function gp(e, idx=0){ let r=c.getBoundingClientRect(), t=e.touches?e.touches[idx]:e; return {x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)}; }
-function st(e){ if(e.target==c){ e.preventDefault(); cfg.d=true; if(e.touches && e.touches.length === 2) { cfg.ia = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.ir = cfg.r; } else { let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } } }
-function mv(e){ if(cfg.d){ e.preventDefault(); if(e.touches && e.touches.length === 2) { let a = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.r = cfg.ir + (a - cfg.ia); } else { let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; } d(); } }
+function st(e){ if(e.target==c){ cfg.d=true; if(e.touches && e.touches.length === 2) { cfg.ia = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.ir = cfg.r; } else { let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } } }
+function mv(e){ if(cfg.d){ if(e.touches && e.touches.length === 2) { let a = Math.atan2(e.touches[1].pageY - e.touches[0].pageY, e.touches[1].pageX - e.touches[0].pageX); cfg.r = cfg.ir + (a - cfg.ia); } else { let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; } d(); } }
 c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=()=>cfg.d=false; c.onmousedown=st; window.onmousemove=mv; window.onmouseup=()=>cfg.d=false;
-sBtn.onclick=()=>{ if(!i.src && !f.src) return; playWin(); let a=document.createElement('a'); a.download = 'Arcade_Studio_Edit.png'; a.href=c.toDataURL(); a.click(); };
+function downloadPic() { let a=document.createElement('a'); a.download='Arcade_Edit.png'; a.href=c.toDataURL(); a.click(); }
 </script>
 </body>
 </html>
