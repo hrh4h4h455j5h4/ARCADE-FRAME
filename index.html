@@ -19,11 +19,12 @@
     font-size: 12px;
   }
 
-  /* SIDE MENU PANEL */
+  /* SIDE MENU PANEL - Red Line Removed */
   #menu-panel {
     position: fixed; top: 0; left: -250px; width: 230px; height: 100%;
     background: rgba(10, 10, 12, 0.95); backdrop-filter: blur(10px);
-    border-right: 2px solid #ff0000; padding-top: 60px; transition: 0.3s; z-index: 999;
+    border-right: none; /* Red line bug fixed here */
+    padding-top: 60px; transition: 0.3s; z-index: 999;
     display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
   }
   #menu-panel.open { left: 0; }
@@ -37,7 +38,7 @@
   .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); justify-content: space-between; }
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
-  /* HEADER: Aggressive Style */
+  /* HEADER */
   h1 {
     color: #ffffff; margin: 30px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic;
     font-size: 36px; text-transform: uppercase; letter-spacing: -1px;
@@ -64,7 +65,7 @@
 
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; }
   
-  /* SLIDERS: Red Progress on Cyan Track */
+  /* SLIDERS: Fixed Red Progress on Cyan Track */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
   input[type=range]::-webkit-slider-runnable-track {
     width: 100%; height: 8px; cursor: pointer;
@@ -158,6 +159,11 @@ function playClick() { const osc = audioCtx.createOscillator(); const gain = aud
 function playShutter() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.05); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
 function playSlider(val) { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(200 + (val > 5 ? (val-300)*5 : val * 100), audioCtx.currentTime); gain.gain.setValueAtTime(0.02, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
 
+function updateSliderColor(el) { 
+  const percent = ((el.value - el.min) / (el.max - el.min)) * 100;
+  el.style.setProperty('--v', percent + '%');
+}
+
 function d(){
   x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip();
   if(i.src){ x.filter = `brightness(${cfg.br}%)`; let w=i.width*cfg.s, h=i.height*cfg.s; x.drawImage(i,cfg.x-w/2,cfg.y-h/2,w,h); x.filter = "none"; }
@@ -171,19 +177,20 @@ box.ondrop = e => { e.preventDefault(); box.classList.remove('drag-over'); const
 
 function handleFile(file) {
   originalFileName = file.name.split('.').slice(0, -1).join('.') || "Arcade_PFP";
-  let r=new FileReader(); r.onload=v=>{ i.src=v.target.result; i.onload=()=>{ cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; d(); playClick(); } }; r.readAsDataURL(file);
+  let r=new FileReader(); r.onload=v=>{ i.src=v.target.result; i.onload=()=>{ cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; updateSliderColor(z); d(); playClick(); } }; r.readAsDataURL(file);
 }
 
 document.querySelectorAll('input[type=range]').forEach(el => {
   el.addEventListener('input', () => { 
-    const percent = ((el.value - el.min) / (el.max - el.min)) * 100;
-    el.style.setProperty('--v', percent + '%');
+    updateSliderColor(el);
     playSlider(el.value); 
   });
+  updateSliderColor(el); // Initial call for correct color on load
 });
 
 document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
 document.getElementById('u2').onchange=e=>{ const file = e.target.files[0]; if(!file) return; let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file); };
+
 z.oninput=e=>{ cfg.s=parseFloat(e.target.value); d(); };
 m.oninput=e=>{ cfg.m=parseInt(e.target.value); d(); };
 b.oninput=e=>{ cfg.br=parseInt(e.target.value); d(); };
