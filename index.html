@@ -18,42 +18,10 @@
     overscroll-behavior: none;
   }
 
-  /* HEADER CONTAINER */
-  .header-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 60px;
-    margin-bottom: 10px;
-  }
-
-  /* THE STICKER - Now Transparent! */
-  .sticker {
-    position: absolute;
-    top: -55px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90px;
-    z-index: 1;
-    /* This trick makes the black background of the image disappear */
-    mix-blend-mode: screen; 
-  }
-
   /* HEADER: White Text with Red Glow */
-  h1{
-    color:#ffffff;
-    margin: 0;
-    text-shadow:0 0 15px #ff0000, 0 0 30px #ff0000;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    font-size:24px;
-    position: relative;
-    z-index: 0;
-  }
-  
-  /* FRAME STUDIO: White */
-  p{color:#ffffff;font-weight:bold;margin:2px 0 0 0;text-transform:uppercase;font-size:11px;letter-spacing:1px;}
+  h1{color:#ffffff;margin:50px 0 0 0;text-shadow:0 0 15px #ff0000, 0 0 30px #ff0000;letter-spacing:2px;text-transform:uppercase;font-size:24px;}
+  /* FRAME STUDIO: Changed to White */
+  p{color:#ffffff;font-weight:bold;margin:2px 0 10px 0;text-transform:uppercase;font-size:11px;letter-spacing:1px;}
   
   /* Studio Box */
   #box{position:relative;width:310px;height:310px;border-radius:50%;overflow:hidden;background-image:linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%);background-size:20px 20px;box-shadow:0 0 20px rgba(0,0,0,0.5);-webkit-mask-image:-webkit-radial-gradient(white,black);}
@@ -98,11 +66,8 @@
   </a>
 </div>
 
-<div class="header-container">
-  <img src="https://i.imgur.com/Yq9151r.png" alt="Arcade Sticker" class="sticker">
-  <h1>ARCADE</h1>
-  <p>FRAME STUDIO</p>
-</div>
+<h1>ARCADE</h1>
+<p>FRAME STUDIO</p>
 
 <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
 
