@@ -4,75 +4,49 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Arcade Studio</title>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation"></script>
 <style>
   html { scroll-behavior: smooth; }
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px;
-    -webkit-overflow-scrolling: touch; transition: background 0.2s ease;
+    -webkit-overflow-scrolling: touch; transition: 0.2s;
   }
-  
-  /* NAV CONTROLS */
   .menu-toggle { position: absolute; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
   .mode-toggle { position: absolute; top: 15px; right: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
-
-  /* SIDE MENU - Solid Black */
-  #menu-panel {
-    position: fixed; top: 0; left: -250px; width: 230px; height: 100%;
-    background: #000; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999;
-    display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
-  }
+  #menu-panel { position: fixed; top: 0; left: -250px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; }
   #menu-panel.open { left: 0; }
-
-  .lnk, .music-btn {
-    display: flex; align-items: center; gap: 10px; padding: 12px;
-    text-decoration: none; color: white; font-size: 13px; font-weight: bold;
-    border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer;
-  }
+  .lnk, .music-btn { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
   .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); justify-content: space-between; }
   .lnk svg { width: 18px; height: 18px; fill: white; }
-
-  /* MOBILE HEADER */
   h1 { color: #ffffff; margin: 30px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255,0,0,0.8); }
   p.sub { color: #ffffff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }
-
-  /* STUDIO CORE */
-  .main-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; will-change: transform; }
-  #box {
-    position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden;
-    background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%);
-    background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid transparent; transition: 0.3s; -webkit-mask-image: -webkit-radial-gradient(white,black);
-  }
-  #box.drag-over { border-color: #00ffff; box-shadow: 0 0 30px #00ffff; transform: scale(1.02); }
+  .main-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%); background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid transparent; transition: 0.3s; -webkit-mask-image: -webkit-radial-gradient(white,black); }
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; touch-action: none; }
-  
   .ui { margin-top: 10px; width: 300px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; }
+  .btn-cyan { border-color: #00ffff; color: #00ffff; }
   .btn-r { border-color: #ff0000; }
   .btn-reset { border-color: #555; color: #888; }
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; }
-  
-  /* RED-ON-CYAN SLIDERS */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff; }
-  
-  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 4px; cursor: not-allowed; opacity: 0.4; transition: 0.2s; }
+  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 4px; cursor: not-allowed; opacity: 0.4; }
   #save.active { cursor: pointer; opacity: 1; }
-
-  /* PC MODE STYLING */
+  
+  /* PC MODE */
   body.pc-mode { padding: 0; overflow: hidden; display: block; }
   body.pc-mode h1, body.pc-mode p.sub { display: none; }
   body.pc-mode .main-wrapper { flex-direction: row-reverse; height: 100vh; align-items: stretch; }
   body.pc-mode .ui { background: #000; width: 350px; height: 100vh; margin: 0; padding: 80px 25px 30px 25px; box-sizing: border-box; overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.1); }
-  body.pc-mode .ui::before { content: "ARCADE STUDIO"; display: block; font-family: "Arial Black", sans-serif; font-size: 24px; color: #ff0000; margin-bottom: 30px; letter-spacing: -1px; font-style: italic; }
+  body.pc-mode .ui::before { content: "ARCADE STUDIO"; display: block; font-family: "Arial Black", sans-serif; font-size: 24px; color: #ff0000; margin-bottom: 20px; letter-spacing: -1px; font-style: italic; }
   body.pc-mode #box { margin: auto; width: 450px; height: 450px; }
   body.pc-mode canvas { width: 450px; height: 450px; }
-
   .pc-only { display: none; }
   body.pc-mode .pc-only { display: block; }
-
   input[type=file] { display: none; }
   #yt-player { display: none; }
 </style>
@@ -105,12 +79,11 @@
   <div class="ui">
     <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
     <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
-    
+    <button class="btn btn-cyan" id="ai-btn" onclick="autoErase()">STEP 3: UNLIMITED AI ERASE ✨</button>
     <div class="pc-only">
       <div class="lbl" style="color:#00ffff;">FRAME TINT & SHINE</div>
       <input type="range" id="ft" min="0" max="360" step="1" value="0">
     </div>
-
     <button class="btn btn-reset" onclick="resetProject()">RESET PROJECT</button>
     <div class="lbl">ZOOM PHOTO</div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
@@ -122,39 +95,54 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),ft=document.getElementById('ft'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),modeBtn=document.getElementById('mode-toggle');
+const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),ft=document.getElementById('ft'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),modeBtn=document.getElementById('mode-toggle'),aiBtn=document.getElementById('ai-btn');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,ft:0,d:false,lx:0,ly:0},originalFileName="Arcade_PFP",player,musicOn=true,audioStarted=false;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+// AI INITIALIZATION
+const selfieSegmentation = new SelfieSegmentation({locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation/${file}`});
+selfieSegmentation.setOptions({modelSelection: 1});
+selfieSegmentation.onResults(onAIResults);
+
 function onYouTubeIframeAPIReady() {
-  player = new YT.Player('yt-player', {
-    height: '0', width: '0', videoId: 'nv_2rz5BFDA',
-    playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' },
+  player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' },
     events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } }
   });
 }
 
 function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted = true; } }
 
-function toggleMode() {
-  startAudio(); playClick();
-  const isPC = document.body.classList.toggle('pc-mode');
-  modeBtn.innerText = isPC ? "MOBILE VERSION" : "PC VERSION";
-  d();
+async function autoErase() {
+  if (!i.src) return;
+  aiBtn.innerText = "THINKING... ⏳";
+  aiBtn.disabled = true;
+  await selfieSegmentation.send({image: i});
 }
 
+function onAIResults(results) {
+  const tCanvas = document.createElement('canvas'); tCanvas.width = i.width; tCanvas.height = i.height;
+  const tCtx = tCanvas.getContext('2d');
+  
+  // High-Quality Smoothing Pass
+  tCtx.filter = 'blur(1px)'; 
+  tCtx.drawImage(results.segmentationMask, 0, 0, tCanvas.width, tCanvas.height);
+  tCtx.globalCompositeOperation = 'source-in';
+  tCtx.filter = 'none';
+  tCtx.drawImage(i, 0, 0);
+  
+  i.src = tCanvas.toDataURL();
+  i.onload = () => { d(); aiBtn.innerText = "STEP 3: UNLIMITED AI ERASE ✨"; aiBtn.disabled = false; };
+}
+
+function toggleMode() { startAudio(); playClick(); const isPC = document.body.classList.toggle('pc-mode'); modeBtn.innerText = isPC ? "MOBILE VERSION" : "PC VERSION"; d(); }
+
 function resetProject() {
-  playDown(); i = new Image(); f = new Image(); cfg = {s:1,m:375,x:400,y:400,ft:0,d:false,lx:0,ly:0}; z.value = 1; m.value = 375; ft.value = 0;
+  playDown(); i = new Image(); f = new Image(); cfg = {s:1,m:375,x:400,y:400,ft:0,d:false,lx:0,ly:0}; z.value = 1; m.value = 375; if(ft) ft.value = 0;
   document.querySelectorAll('input[type=range]').forEach(updateSliderColor); sBtn.classList.remove('active'); d();
 }
 
-function toggleMusic() {
-  startAudio(); playClick(); musicOn = !musicOn;
-  if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; }
-  else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; }
-}
-
+function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
 function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); }
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target)) { panel.classList.remove('open'); playClick(); } };
 
@@ -176,8 +164,7 @@ function d(){
         else if(h > 350 || h < 10) { x.filter = `grayscale(1) brightness(1.5) contrast(1.5)`; }
         else { x.filter = `sepia(1) saturate(8) hue-rotate(${h}deg) brightness(1) contrast(1.1)`; }
     }
-    x.drawImage(f, 0, 0, 800, 800);
-    x.filter = "none";
+    x.drawImage(f, 0, 0, 800, 800); x.filter = "none";
   }
   if (i.src || f.src) sBtn.classList.add('active');
 }
@@ -192,19 +179,17 @@ function handleFile(file) {
 }
 
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); playSlider(el.value); }); updateSliderColor(el); });
-
 document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
 document.getElementById('u2').onchange=e=>{ const file = e.target.files[0]; if(!file) return; let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file); };
 z.oninput=e=>{ cfg.s=parseFloat(e.target.value); d(); };
 m.oninput=e=>{ cfg.m=parseInt(e.target.value); d(); };
-ft.oninput=e=>{ cfg.ft=parseInt(e.target.value); d(); };
+if(ft) ft.oninput=e=>{ cfg.ft=parseInt(e.target.value); d(); };
 
 function gp(e){ let r=c.getBoundingClientRect(), t=e.touches?e.touches[0]:e; return {x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)}; }
 function st(e){ if(e.target==c){ e.preventDefault(); cfg.d=true; let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } }
 function mv(e){ if(cfg.d){ e.preventDefault(); let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; d(); } }
 function en(){ cfg.d=false; }
-c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en;
-c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
+c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en; c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
 sBtn.onclick=()=>{ if(!i.src && !f.src) return; playClick(); let a=document.createElement('a'); a.download = originalFileName + '.png'; a.href=c.toDataURL(); a.click(); };
 </script>
 </body>
