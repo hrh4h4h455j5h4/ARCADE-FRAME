@@ -10,29 +10,29 @@
     background: #000; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px;
-    -webkit-overflow-scrolling: touch; transition: background 0.3s ease;
-    overflow-x: hidden; position: relative; will-change: background;
+    -webkit-overflow-scrolling: touch; transition: 0.3s ease;
+    overflow-x: hidden; position: relative;
   }
   
-  /* OPTIMIZED ANIMATED THEMES */
-  @keyframes fireMove { 0% { background-position: 0% 100%; } 50% { background-position: 100% 0%; } 100% { background-position: 0% 100%; } }
-  body.t_fire { background: radial-gradient(circle at bottom, #ff4500, #8b0000, #000); background-size: 200% 200%; animation: fireMove 8s infinite linear; }
+  /* FIXED BACKGROUND ENGINE */
+  .bg-layer { position: fixed; top:0; left:0; width:100%; height:100%; z-index: -1; pointer-events: none; }
   
+  /* THEME DEFINITIONS */
+  .t8 .bg-layer { background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100% 4px; } /* Official Scanline */
+  @keyframes fireMove { 0% { background-position: 0% 100%; } 50% { background-position: 100% 0%; } 100% { background-position: 0% 100%; } }
+  .t_fire .bg-layer { background: radial-gradient(circle at bottom, #ff4500, #8b0000, #000); background-size: 200% 200%; animation: fireMove 8s infinite linear; }
   @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 40px; } }
-  body.t_grid { background: #050508; background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; animation: gridMove 3s linear infinite; }
-
-  /* STATIC THEMES */
-  body.t1 { background: #1a0033; background-image: radial-gradient(#ff00ff 0.5px, transparent 0.5px); background-size: 20px 20px; }
-  body.t2 { background: #001a00; color: #00ff00; }
-  body.t4 { background: #0a0a0c; }
+  .t_grid .bg-layer { background: #050508; background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px); background-size: 40px 40px; animation: gridMove 3s linear infinite; }
+  .t1 .bg-layer { background: #1a0033; background-image: radial-gradient(#ff00ff 0.5px, transparent 0.5px); background-size: 20px 20px; }
+  .t2 .bg-layer { background: #001a00; color: #00ff00; }
+  .t4 .bg-layer { background: #0a0a0c; }
 
   .menu-toggle { position: absolute; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
 
-  #menu-panel, #theme-selector { position: fixed; top: 0; left: -255px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; overflow-y: auto; will-change: transform; }
+  #menu-panel, #theme-selector { position: fixed; top: 0; left: -255px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 2000; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; overflow-y: auto; }
   #menu-panel.open, #theme-selector.open { transform: translateX(255px); }
   
-  .lnk, .music-btn, .theme-opt { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
-  .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); }
+  .lnk, .theme-opt { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
   .theme-opt .t-prev { width: 20px; height: 20px; border-radius: 3px; border: 1px solid #fff; }
 
   h1 { 
@@ -42,17 +42,18 @@
   }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
-  #box { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background: #111; margin: 0 auto; -webkit-mask-image: -webkit-radial-gradient(white,black); }
-  canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; will-change: contents; }
+  /* FIXED CIRCLE VISIBILITY */
+  #box { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background: #111; margin: 0 auto; -webkit-mask-image: -webkit-radial-gradient(white,black); box-shadow: 0 0 15px rgba(0,0,0,0.5); background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%); background-size: 20px 20px; }
+  canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; z-index: 5; }
   
-  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-25deg); pointer-events: none; }
+  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform: skewX(-25deg); pointer-events: none; z-index: 10; }
   .shine-active #shine-flare { animation: shineRun 1.2s ease-in-out; }
   @keyframes shineRun { 0% { left: -100%; } 100% { left: 200%; } }
 
-  .ui { margin-top: 15px; width: 260px; display: flex; flex-direction: column; gap: 6px; margin-left: auto; margin-right: auto; }
-  .btn { background: #111; border: 1px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; }
+  .ui { margin-top: 20px; width: 260px; display: flex; flex-direction: column; gap: 6px; margin-left: auto; margin-right: auto; z-index: 100; position: relative; }
+  .btn { background: #111; border: 1px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; display: block; }
   .btn-center { border-color: #00ffff; color: #00ffff; }
-  #save { background: #ff0000; border: none; font-size: 13px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 5px; opacity: 0.4; pointer-events: none; }
+  #save { background: #ff0000; border: none; font-size: 13px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; opacity: 0.4; pointer-events: none; cursor: pointer; }
   #save.active { opacity: 1; pointer-events: auto; }
 
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; height: 25px; cursor: pointer; }
@@ -62,12 +63,13 @@
   #yt-player { display: none; }
 </style>
 </head>
-<body onclick="startAudio()">
+<body class="t8" onclick="startAudio()">
 
+<div class="bg-layer"></div>
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
 <div id="menu-panel">
-  <div class="music-btn" onclick="toggleMusic()">MUSIC: <span id="m-status">ON</span></div>
+  <div class="lnk" onclick="toggleMusic()">MUSIC: <span id="m-status">ON</span></div>
   <div class="lnk" style="border-color:#0af;" onclick="openThemeSelector()">Switch Theme</div>
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;">Discord Server</a>
   <div class="lnk" onclick="toggleAboutPage()">About Us</div>
@@ -75,6 +77,7 @@
 
 <div id="theme-selector">
   <div class="lnk" onclick="closeThemeSelector()" style="border-color:#555;">← BACK</div>
+  <div class="theme-opt" onclick="setT('t8', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#222; border-top: 2px solid #555;"></div> Scanline (Default)</div>
   <div class="theme-opt" onclick="setT('t_fire', 'L_v_N95bX_Y')"><div class="t-prev" style="background:#f40;"></div> Inferno (Live)</div>
   <div class="theme-opt" onclick="setT('t_grid', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#0af;"></div> Retro Grid (Live)</div>
   <div class="theme-opt" onclick="setT('t1', 'nv_2rz5BFDA')"><div class="t-prev" style="background:#408;"></div> Vaporwave</div>
@@ -100,12 +103,12 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d',{alpha:false}),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),box=document.getElementById('box'),mStat=document.getElementById('m-status');
+const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),box=document.getElementById('box'),mStat=document.getElementById('m-status');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function onYouTubeIframeAPIReady() {
-  player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' },
+  player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1 },
     events: { 'onReady': e => { if(musicOn) e.target.playVideo(); } }
   });
 }
@@ -114,14 +117,14 @@ function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && mus
 function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); }
 function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); }
 function setT(cls, vid) { document.body.className = cls; if(player && vid) player.loadVideoById(vid); tMenu.classList.remove('open'); }
-function centerSubject() { cfg.x = 400; cfg.y = 400; d(); }
+function centerSubject() { if(!i.src) return; cfg.x = 400; cfg.y = 400; d(); }
 function runShine() { if(!f.src) return; box.classList.add('shine-active'); setTimeout(()=>box.classList.remove('shine-active'), 1200); }
 function toggleMusic() { musicOn = !musicOn; musicOn ? player.playVideo() : player.pauseVideo(); mStat.innerText = musicOn ? "ON" : "OFF"; }
 function toggleMenu(e) { e.stopPropagation(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
-window.onclick = e => { if (!panel.contains(e.target)) panel.classList.remove('open'); };
+window.onclick = e => { if (!panel.contains(e.target) && !tMenu.contains(e.target)) { panel.classList.remove('open'); tMenu.classList.remove('open'); } };
 
 function d(){
-  x.fillStyle = "#000"; x.fillRect(0,0,800,800);
+  x.clearRect(0,0,800,800);
   x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip();
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r); x.drawImage(i, -w/2, -h/2,w,h); x.restore(); }
   x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800);
