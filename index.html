@@ -43,7 +43,7 @@
   #menu-panel {
     position: fixed;
     top: 0;
-    left: -250px; /* Hidden by default */
+    left: -250px;
     width: 220px;
     height: 100%;
     background: rgba(10, 10, 12, 0.95);
@@ -77,7 +77,7 @@
   .web { border-color: #00ffff; background: rgba(0,255,255,0.1); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
-  /* HEADER */
+  /* HEADER: Aggressive Style */
   h1 {
     color: #ffffff;
     margin: 30px 0 0 0;
@@ -121,7 +121,7 @@
   
   .lbl{font-size:9px;color:#888;text-transform:uppercase;margin-top:2px;display:flex;justify-content:space-between;}
   
-  /* SLIDERS */
+  /* SLIDERS: Red Progress on Cyan Track */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
   input[type=range]::-webkit-slider-runnable-track {
     width: 100%; height: 8px; cursor: pointer;
@@ -174,10 +174,13 @@
 <div class="ui">
   <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
   <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
+  
   <div class="lbl">ZOOM PHOTO</div>
   <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
-  <div class="lbl"><span style="color:#ff0000;">CIRCLE SIZE (FIX GAPS)</span></div>
+  
+  <div class="lbl">CIRCLE SIZE</div>
   <input type="range" id="m" min="300" max="400" step="1" value="375">
+
   <button id="save">DOWNLOAD PICTURE</button>
 </div>
 
@@ -218,7 +221,9 @@ function playShutter() {
 function playSlider(val) {
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
-  osc.frequency.setValueAtTime(200 + (val * 100), audioCtx.currentTime);
+  // Adjusted pitch scaling for the Circle Size range (300-400)
+  const freq = val > 5 ? val : 200 + (val * 100);
+  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
   gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
   osc.connect(gain); gain.connect(audioCtx.destination);
