@@ -10,8 +10,8 @@
     background: #0a0a0c; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; 
-    padding-bottom: 120px; /* Space for mobile browser UI */
-    -webkit-overflow-scrolling: touch; /* Smooth mobile scroll */
+    padding-bottom: 120px; /* Extra space for mobile browser bars */
+    -webkit-overflow-scrolling: touch; /* Momentum scroll */
   }
   
   .menu-toggle {
@@ -22,8 +22,8 @@
 
   #menu-panel {
     position: fixed; top: 0; left: -250px; width: 230px; height: 100%;
-    background: #000000; /* Solid Black Background */
-    border-right: none; padding-top: 60px; transition: 0.3s; z-index: 999;
+    background: #000000; /* Solid Black */
+    border-right: none; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999;
     display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
   }
   #menu-panel.open { left: 0; }
@@ -57,11 +57,10 @@
     border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer;
   }
   .btn-r { border-color: #ff0000; }
-  .btn-reset { border-color: #555; color: #888; margin-bottom: 5px; } /* Reset Styling */
+  .btn-reset { border-color: #555; color: #888; margin-bottom: 5px; }
 
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; }
   
-  /* SLIDERS: Red Progress on Cyan Track */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
   input[type=range]::-webkit-slider-runnable-track {
     width: 100%; height: 8px; cursor: pointer;
@@ -83,7 +82,7 @@
 </head>
 <body onclick="startAudio()">
 
-<button class="menu-toggle" onclick="toggleMenu()">MENU ☰</button>
+<button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
 <div id="menu-panel">
   <div class="music-btn" onclick="toggleMusic()">MUSIC CONTROL <span id="m-status" style="color:#ff0000;">ON</span></div>
@@ -158,7 +157,19 @@ function toggleMusic() {
   else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; }
 }
 
-function toggleMenu() { startAudio(); playClick(); panel.classList.toggle('open'); }
+function toggleMenu(e) { 
+  e.stopPropagation(); // Prevents the click from immediately closing the menu
+  startAudio(); playClick(); panel.classList.toggle('open'); 
+}
+
+// CLOSE MENU BY CLICKING ANYWHERE
+window.onclick = function(event) {
+  if (panel.classList.contains('open') && !panel.contains(event.target)) {
+    panel.classList.remove('open');
+    playClick(); // Feedback sound
+  }
+}
+
 function playClick() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
 function playDown() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 0.3); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.3); }
 function playShutter() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.05); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
@@ -197,10 +208,23 @@ z.oninput=e=>{ cfg.s=parseFloat(e.target.value); d(); };
 m.oninput=e=>{ cfg.m=parseInt(e.target.value); d(); };
 
 function gp(e){ let r=c.getBoundingClientRect(), t=e.touches?e.touches[0]:e; return {x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)}; }
-function st(e){ if(e.target==c){ e.preventDefault(); cfg.d=true; let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } }
-function mv(e){ if(cfg.d){ e.preventDefault(); let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; d(); } }
+function st(e){ 
+  if(e.target==c){ 
+    e.preventDefault(); // Only block scroll if touching the canvas
+    cfg.d=true; let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; 
+  } 
+}
+function mv(e){ 
+  if(cfg.d){ 
+    e.preventDefault(); // Block scroll while dragging photo
+    let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; d(); 
+  } 
+}
 function en(){ cfg.d=false; }
-c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en; c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
+
+c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en;
+c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
+
 sBtn.onclick=()=>{ if(!i.src && !f.src) return; playClick(); let a=document.createElement('a'); a.download = originalFileName + '.png'; a.href=c.toDataURL(); a.click(); };
 </script>
 </body>
