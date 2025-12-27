@@ -6,169 +6,74 @@
 <title>Arcade Studio</title>
 <style>
   html { scroll-behavior: smooth; }
-  
   body {
-    background: #0a0a0c;
-    color: white;
-    font-family: sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding-bottom: 80px;
-    -webkit-overflow-scrolling: touch;
+    background: #0a0a0c; color: white; font-family: sans-serif;
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh; margin: 0; padding-bottom: 80px; -webkit-overflow-scrolling: touch;
   }
-
-  /* MENU TOGGLE */
   .menu-toggle {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    background: #ffffff;
-    color: #000000;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1000;
-    font-size: 12px;
+    position: absolute; top: 15px; left: 15px; background: #ffffff; color: #000000;
+    border: none; padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000;
   }
-
   #menu-panel {
-    position: fixed;
-    top: 0;
-    left: -250px;
-    width: 220px;
-    height: 100%;
-    background: rgba(10, 10, 12, 0.95);
-    backdrop-filter: blur(10px);
-    border-right: 2px solid #ff0000;
-    padding-top: 60px;
-    transition: 0.3s ease-in-out;
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-left: 15px;
+    position: fixed; top: 0; left: -250px; width: 220px; height: 100%;
+    background: rgba(10, 10, 12, 0.95); backdrop-filter: blur(10px);
+    border-right: 2px solid #ff0000; padding-top: 60px; transition: 0.3s; z-index: 999;
+    display: flex; flex-direction: column; gap: 10px; padding-left: 15px;
   }
   #menu-panel.open { left: 0; }
-
   .lnk, .music-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px;
-    text-decoration: none;
-    color: white;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.05);
-    cursor: pointer;
+    display: flex; align-items: center; gap: 10px; padding: 12px;
+    text-decoration: none; color: white; font-size: 13px; font-weight: bold;
+    border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer;
   }
   .dsc { border-color: #5865F2; background: rgba(88,101,242,0.1); }
   .web { border-color: #00ffff; background: rgba(0,255,255,0.1); }
   .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
-
-  /* HEADER */
   h1 {
-    color: #ffffff;
-    margin: 30px 0 0 0;
-    font-family: "Arial Black", sans-serif;
-    font-style: italic;
-    font-size: 36px;
-    text-transform: uppercase;
-    letter-spacing: -1px;
+    color: #ffffff; margin: 30px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic;
+    font-size: 36px; text-transform: uppercase; letter-spacing: -1px;
     text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8);
   }
-
-  p {
-    color: #ffffff;
-    font-weight: bold;
-    margin: 2px 0 15px 0;
-    text-transform: uppercase;
-    font-size: 11px;
-    letter-spacing: 2px;
-  }
-  
-  /* STUDIO BOX */
+  p { color: #ffffff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }
   #box {
-    position: relative;
-    width: 310px;
-    height: 310px;
-    border-radius: 50%;
-    overflow: hidden;
+    position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden;
     background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%);
-    background-size: 20px 20px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    border: 2px solid transparent;
-    transition: 0.3s;
-    -webkit-mask-image: -webkit-radial-gradient(white,black);
+    background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid transparent; transition: 0.3s; -webkit-mask-image: -webkit-radial-gradient(white,black);
   }
-  
   #box.drag-over { border-color: #00ffff; box-shadow: 0 0 30px #00ffff; transform: scale(1.02); }
-
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; touch-action: none; }
-  
   .ui { margin-top: 10px; width: 300px; display: flex; flex-direction: column; gap: 6px; }
-  
   .btn {
-    background: #111;
-    border: 2px solid #ffffff;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    border-radius: 8px;
-    font-weight: bold;
-    display: block;
-    font-size: 12px;
-    cursor: pointer;
+    background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center;
+    border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer;
   }
   .btn-r { border-color: #ff0000; }
-  
+  .btn-magic { border-color: #00ffff; color: #00ffff; background: rgba(0,255,255,0.05); }
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; }
-  
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; }
   input[type=range]::-webkit-slider-runnable-track {
-    width: 100%; height: 8px; cursor: pointer;
-    background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%));
-    border-radius: 4px;
+    width: 100%; height: 8px; cursor: pointer; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px;
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%;
-    background: #ff0000; cursor: pointer; margin-top: -6px; 
-    box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff;
+    background: #ff0000; cursor: pointer; margin-top: -6px; box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff;
   }
-  
   #save {
-    background: #ff0000;
-    border: none;
-    font-size: 14px;
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    margin-top: 4px;
-    cursor: not-allowed;
-    opacity: 0.4;
+    background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px;
+    border-radius: 8px; font-weight: bold; margin-top: 4px; cursor: not-allowed; opacity: 0.4;
   }
   #save.active { cursor: pointer; opacity: 1; }
   input[type=file] { display: none; }
-  
-  /* Hidden YT Player */
   #yt-player { display: none; }
 </style>
 </head>
 <body>
 
 <button class="menu-toggle" onclick="toggleMenu()">MENU ☰</button>
-
 <div id="menu-panel">
-  <div class="music-btn" onclick="toggleMusic()">MUSIC: <span id="m-status">OFF</span> 🔊</div>
+  <div class="music-btn" onclick="toggleMusic()">MUSIC: <span id="m-status">ON</span> 🔊</div>
   <a href="https://discord.gg/ardc" target="_blank" class="lnk dsc" onclick="playShutter()">
     <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
     <span>Discord Server</span>
@@ -189,6 +94,8 @@
 <div class="ui">
   <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
   <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
+  <button class="btn btn-magic" onclick="eraseBackground()">STEP 3: ERASE BACKGROUND ✨</button>
+  
   <div class="lbl">ZOOM PHOTO</div>
   <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
   <div class="lbl">CIRCLE SIZE</div>
@@ -203,19 +110,16 @@ let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,d:false,lx:0,ly:0},or
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-/* YOUTUBE ENGINE */
 function onYouTubeIframeAPIReady() {
   player = new YT.Player('yt-player', {
-    height: '0', width: '0',
-    videoId: 'nv_2rz5BFDA', // Your specific link
+    height: '0', width: '0', videoId: 'nv_2rz5BFDA',
     playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': 'nv_2rz5BFDA' },
-    events: { 'onReady': e => { e.target.setVolume(25); } } // Low volume set to 25%
+    events: { 'onReady': e => { e.target.setVolume(25); } }
   });
 }
 
 function toggleMusic() {
-  playClick();
-  musicOn = !musicOn;
+  playClick(); musicOn = !musicOn;
   if(musicOn) { player.playVideo(); mStat.innerText = "ON"; }
   else { player.pauseVideo(); mStat.innerText = "OFF"; }
 }
@@ -224,31 +128,50 @@ function toggleMenu() { playClick(); panel.classList.toggle('open'); }
 
 function playClick() {
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-  osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-  osc.connect(gain); gain.connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+  osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+  osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1);
 }
 
 function playShutter() {
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-  osc.type = 'square'; osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-  osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.05);
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-  osc.connect(gain); gain.connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+  osc.type = 'square'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.05);
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+  osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+}
+
+function playMagic() {
+  const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+  osc.type = 'triangle'; osc.frequency.setValueAtTime(400, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+  osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.3);
 }
 
 function playSlider(val) {
   const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
   osc.frequency.setValueAtTime(200 + (val > 5 ? (val-300)*5 : val * 100), audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
-  osc.connect(gain); gain.connect(audioCtx.destination);
-  osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+  gain.gain.setValueAtTime(0.02, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+  osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+}
+
+function eraseBackground() {
+  if (!i.src) return;
+  playMagic();
+  const tempCanvas = document.createElement('canvas');
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCanvas.width = i.width; tempCanvas.height = i.height;
+  tempCtx.drawImage(i, 0, 0);
+  const imgData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+  const data = imgData.data;
+  const targetR = data[0], targetG = data[1], targetB = data[2];
+  for (let j = 0; j < data.length; j += 4) {
+    if (Math.abs(data[j] - targetR) < 30 && Math.abs(data[j+1] - targetG) < 30 && Math.abs(data[j+2] - targetB) < 30) {
+      data[j+3] = 0;
+    }
+  }
+  tempCtx.putImageData(imgData, 0, 0);
+  i.src = tempCanvas.toDataURL();
+  i.onload = d;
 }
 
 function updateSliderColor(el) {
@@ -257,27 +180,22 @@ function updateSliderColor(el) {
 }
 
 function d(){
-  x.clearRect(0,0,800,800);
-  x.save();x.beginPath();x.arc(400,400,cfg.m,0,6.28);x.clip();
-  if(i.src){let w=i.width*cfg.s,h=i.height*cfg.s;x.drawImage(i,cfg.x-w/2,cfg.y-h/2,w,h);}
-  x.restore();
-  if(f.src)x.drawImage(f,0,0,800,800);
+  x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip();
+  if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.drawImage(i,cfg.x-w/2,cfg.y-h/2,w,h); }
+  x.restore(); if(f.src) x.drawImage(f,0,0,800,800);
   if (i.src || f.src) sBtn.classList.add('active');
 }
 
-/* PC DRAG & DROP */
 box.ondragover = e => { e.preventDefault(); box.classList.add('drag-over'); };
 box.ondragleave = () => box.classList.remove('drag-over');
 box.ondrop = e => {
   e.preventDefault(); box.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) handleFile(file);
+  const file = e.dataTransfer.files[0]; if (file && file.type.startsWith('image/')) handleFile(file);
 };
 
 function handleFile(file) {
   originalFileName = file.name.split('.').slice(0, -1).join('.') || "Arcade_PFP";
-  let r=new FileReader();
-  r.onload=v=>{
+  let r=new FileReader(); r.onload=v=>{
     i.src=v.target.result;
     i.onload=()=>{ cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; updateSliderColor(z); d(); playClick(); }
   }; r.readAsDataURL(file);
@@ -291,20 +209,19 @@ document.querySelectorAll('input[type=range]').forEach(el => {
 document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
 document.getElementById('u2').onchange=e=>{
   const file = e.target.files[0]; if(!file) return;
-  let r=new FileReader(); r.onload=v=>{f.src=v.target.result;f.onload=d;};
-  r.readAsDataURL(file);
+  let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file);
 };
 
-z.oninput=e=>{cfg.s=parseFloat(e.target.value);d();};
-m.oninput=e=>{cfg.m=parseInt(e.target.value);d();};
+z.oninput=e=>{ cfg.s=parseFloat(e.target.value); d(); };
+m.oninput=e=>{ cfg.m=parseInt(e.target.value); d(); };
 
-function gp(e){let r=c.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return{x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)};}
-function st(e){if(e.target==c){e.preventDefault();cfg.d=true;let p=gp(e);cfg.lx=p.x-cfg.x;cfg.ly=p.y-cfg.y;}}
-function mv(e){if(cfg.d){e.preventDefault();let p=gp(e);cfg.x=p.x-cfg.lx;cfg.y=p.y-cfg.ly;d();}}
-function en(){cfg.d=false;}
+function gp(e){ let r=c.getBoundingClientRect(), t=e.touches?e.touches[0]:e; return {x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)}; }
+function st(e){ if(e.target==c){ e.preventDefault(); cfg.d=true; let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } }
+function mv(e){ if(cfg.d){ e.preventDefault(); let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; d(); } }
+function en(){ cfg.d=false; }
 
-c.ontouchstart=st;window.ontouchmove=mv;window.ontouchend=en;
-c.onmousedown=st;window.onmousemove=mv;window.onmouseup=en;
+c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en;
+c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
 
 sBtn.onclick=()=>{
   if(!i.src && !f.src) return;
