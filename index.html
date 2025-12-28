@@ -7,7 +7,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 
 <style>
-  /* --- GLOBAL SETUP --- */
   html { scroll-behavior: smooth; overflow-y: auto; }
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
@@ -15,8 +14,7 @@
     min-height: 100vh; margin: 0; padding-bottom: 150px; 
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px;
-    touch-action: pan-y; /* Fixes page scrolling */
-    overflow-x: hidden;
+    touch-action: pan-y; /* Critical: Allows page to scroll normally */
   }
   
   /* --- NAVIGATION --- */
@@ -27,44 +25,53 @@
   #switch-menu button { background: transparent; color: #aaa; border: none; padding: 14px; text-align: left; font-weight: bold; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; }
   #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
 
-  /* --- SIDE PANEL --- */
+  /* SIDE PANEL */
   #menu-panel { position: fixed; top: 0; left: -260px; width: 240px; height: 100%; background: #1a1a1c; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 99999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; box-shadow: 2px 0 15px rgba(0,0,0,0.5); box-sizing: border-box; padding-bottom: 80px; }
   #menu-panel.open { left: 0; }
   .designed-by { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; text-transform: uppercase; letter-spacing: 2px; background: #1a1a1c; }
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
+
   .music-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .lnk { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
-  /* --- HEADERS --- */
+  /* HEADERS */
   h1 { color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); animation: arcadeBounce 1.8s infinite ease-in-out; }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
+  
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- 🖼️ FRAME STUDIO UI --- */
+  /* 🖼️ FRAME STUDIO UI */
   #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; background-image: linear-gradient(45deg, #1a1a1c 25%, transparent 25%), linear-gradient(-45deg, #1a1a1c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1c 75%), linear-gradient(-45deg, transparent 75%, #1a1a1c 75%); background-color: transparent; background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); -webkit-mask-image: -webkit-radial-gradient(white,black); z-index: 10; }
-  canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; /* Prevents scroll ONLY on canvas */ }
+  canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; /* Prevents scroll ONLY on the image */ }
 
-  /* --- 🎬 GIF STUDIO UI --- */
-  .gif-stage { position: relative; width: 310px; height: 310px; margin-bottom: 20px; touch-action: none; }
+  /* 🎬 GIF STUDIO UI (Matches your Picture) */
+  .gif-stage { position: relative; width: 310px; height: 310px; margin-bottom: 25px; touch-action: none; }
   .led-ring { position: absolute; inset: -15px; border-radius: 50%; background: conic-gradient(from 180deg, #00f3ff, #bc13fe, #00f3ff); animation: rotate 3s linear infinite; filter: blur(25px); z-index: 1; pointer-events: none; }
-  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; background-image: linear-gradient(45deg, #111 25%, transparent 25%), linear-gradient(-45deg, #111 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #111 75%), linear-gradient(-45deg, transparent 75%, #111 75%); background-size: 20px 20px; box-shadow: inset 0 0 30px #000; touch-action: none; }
+  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; background-image: linear-gradient(45deg, #111 25%, transparent 25%), linear-gradient(-45deg, #111 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #111 75%), linear-gradient(-45deg, transparent 75%, #111 75%); background-size: 20px 20px; box-shadow: inset 0 0 30px #000; }
   #v { position: absolute; top: 0; left: 0; pointer-events: none; }
   #o { width: 100%; height: 100%; object-fit: cover; display: none; }
   @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-  .ui-panel { background: #151517; padding: 25px; border-radius: 35px; width: 310px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); box-sizing: border-box; }
+  .ui-panel { background: #151517; padding: 25px; border-radius: 35px; width: 100%; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
   .btn-upload { background: #2a2a2e; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 12px 25px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; margin-bottom: 25px; font-size: 12px; text-transform: uppercase; }
-  .btn-go { background: linear-gradient(180deg, #ffcc33, #d4af37); color: #000; border: none; padding: 15px; width: 100%; border-radius: 18px; cursor: pointer; font-weight: 900; font-size: 14px; text-transform: uppercase; }
+  .btn-go { background: linear-gradient(180deg, #ffcc33, #d4af37); color: #000; border: none; padding: 16px; width: 100%; border-radius: 18px; cursor: pointer; font-weight: 900; font-size: 14px; text-transform: uppercase; }
   #msg { margin-top: 15px; font-size: 12px; color: #00f3ff; font-weight: 600; visibility: hidden; }
   .neon-wrap { position: relative; display: none; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
   .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #00f3ff, #bc13fe, transparent); animation: rotate 2s linear infinite; }
   .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #ff0055, #ff5500, transparent); animation: rotate 2s linear infinite; }
-  .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 14px; border-radius: 48px; font-weight: 900; font-size: 12px; z-index: 1; cursor: pointer; border: none; }
+  .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 14px; border-radius: 48px; font-weight: 900; font-size: 13px; z-index: 1; cursor: pointer; border: none; }
 
-  /* --- SHARED UI --- */
+  /* ✍️ FONT UI (Optimized) */
+  .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
+  .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 0; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
+  .font-item { background: #1a1a1c; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; white-space: pre-wrap; overflow-wrap: break-word; box-sizing: border-box; font-size: 16px; }
+  .font-item:last-child { border-bottom: none; }
+  .font-item:active { background: #00ffff; color: #000; }
+
+  /* UI GLOBAL */
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; text-transform: uppercase; }
   .btn-r { border-color: #ff0000; }
@@ -76,12 +83,6 @@
   #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; opacity: 0.4; pointer-events: none; }
   #save.active { opacity: 1; pointer-events: auto; }
   input[type=file], #yt-player { display: none; }
-
-  /* ✍️ FONT GENERATOR UI */
-  .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
-  .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 0; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
-  .font-item { background: #1a1a1c; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; white-space: pre-wrap; overflow-wrap: break-word; box-sizing: border-box; font-size: 16px; }
-  .font-item:active { background: #00ffff; color: #000; }
 </style>
 </head>
 <body onclick="startAudio()">
@@ -134,7 +135,7 @@
 </div>
 
 <div id="font-studio" class="studio-sec">
-  <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="debounceFonts()">
+  <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
   <div class="lbl">TAP TO COPY <span class="val-tag" id="font-count">0 STYLES</span></div>
   <div id="font-results" class="font-scroll"></div>
 </div>
@@ -206,82 +207,16 @@ function updateM(v){ cfg.m=parseInt(v); document.getElementById('m-val').innerTe
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; d(); playShutter(); }
 function downloadPic(){ let a=document.createElement('a'); a.download='arcade.png'; a.href=c.toDataURL(); a.click(); }
 
-// --- TOUCH LOGIC (FRAME) ---
-let lastDist=0, lastAng=0;
-function getDist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
-function getAng(t){ return Math.atan2(t[1].clientY-t[0].clientY, t[1].clientX-t[0].clientX) * 180/Math.PI; }
-c.addEventListener('touchstart', e => {
-    initAudio(); 
-    if(e.touches.length===1) { cfg.lx = e.touches[0].clientX - cfg.x; cfg.ly = e.touches[0].clientY - cfg.y; }
-    else if(e.touches.length===2) { lastDist = getDist(e.touches); lastAng = getAng(e.touches); }
-}, {passive:false});
+// --- TOUCH LOGIC (FIXED) ---
 c.addEventListener('touchmove', e => {
-    e.preventDefault(); // LOCKS SCROLL ONLY WHEN TOUCHING CANVAS
+    e.preventDefault(); // Prevents scroll ONLY when touching the canvas
     if(e.touches.length===1) { cfg.x = e.touches[0].clientX - cfg.lx; cfg.y = e.touches[0].clientY - cfg.ly; }
-    else if(e.touches.length===2) {
-        let d = getDist(e.touches); cfg.s *= (d / lastDist); lastDist = d;
-        let a = getAng(e.touches); cfg.r += (a - lastAng); lastAng = a;
-        document.getElementById('z').value = cfg.s; 
-        d();
-    }
     d();
+}, {passive:false});
+c.addEventListener('touchstart', e => {
+    if(e.touches.length===1) { cfg.lx = e.touches[0].clientX - cfg.x; cfg.ly = e.touches[0].clientY - cfg.y; }
 }, {passive:false});
 
 // --- FONT GENERATOR (OPTIMIZED) ---
-let fontTimeout;
-function debounceFonts() { clearTimeout(fontTimeout); fontTimeout = setTimeout(genFonts, 50); }
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-const bases = [{m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},{m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"},{m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"}];
-function genFonts() {
-  const val = document.getElementById('font-input').value, resBox = document.getElementById('font-results');
-  resBox.innerHTML = ""; if(!val) return;
-  const frag = document.createDocumentFragment();
-  bases.forEach(b => {
-    let r="", mArr=Array.from(b.m);
-    for(let c of val) { let idx=chars.indexOf(c); r += (idx!==-1) ? mArr[idx] : c; }
-    let d=document.createElement('div'); d.className="font-item"; d.innerText=r; d.onclick=()=>{navigator.clipboard.writeText(r); playShutter();};
-    frag.appendChild(d);
-  });
-  resBox.appendChild(frag);
-  document.getElementById('font-count').innerText = bases.length + " STYLES";
-}
-
-// --- GIF STUDIO LOGIC ---
-const v=document.getElementById('v'), o=document.getElementById('o'), vp=document.getElementById('vp'), gf=document.getElementById('gf');
-const gzoom=document.getElementById('gzoom'), gspeed=document.getElementById('gspeed'), go=document.getElementById('go'), msg=document.getElementById('msg');
-let isDrg=false, sX, sY, sL, sT, nW, nH;
-
-gf.onchange=e=>{ const f=e.target.files[0]; if(!f)return; v.src=URL.createObjectURL(f); v.onloadedmetadata=()=>{nW=v.videoWidth; nH=v.videoHeight; alignVideo(); v.play();}; };
-function alignVideo(){ const asp=nW/nH; v.style.left='0px'; v.style.top='0px'; if(asp>1){v.style.height='310px'; v.style.width=(310*asp)+'px';}else{v.style.width='310px';v.style.height=(310/asp)+'px';} }
-gzoom.oninput=()=>{ document.getElementById('gzv').innerText=gzoom.value+'%'; const z=parseInt(gzoom.value)/100; const asp=nW/nH; let bW=asp>1?310*asp:310, bH=asp>1?310:310/asp; v.style.width=(bW*z)+'px'; v.style.height=(bH*z)+'px'; };
-const drgS=(x,y)=>{isDrg=true; sX=x; sY=y; sL=parseFloat(v.style.left||0); sT=parseFloat(v.style.top||0);};
-vp.ontouchstart=e=>drgS(e.touches[0].pageX, e.touches[0].pageY);
-window.ontouchmove=e=>{if(!isDrg)return; v.style.left=(sL+(e.touches[0].pageX-sX))+'px'; v.style.top=(sT+(e.touches[0].pageY-sY))+'px';};
-window.ontouchend=()=>isDrg=false;
-
-go.onclick=()=>{
-  if(!v.src)return; go.disabled=true; msg.style.visibility="visible";
-  const workerBlob=new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`],{type:'application/javascript'});
-  const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:URL.createObjectURL(workerBlob)});
-  const cvs=document.createElement('canvas'); cvs.width=480; cvs.height=480; const ctx=cvs.getContext('2d');
-  const dur=v.duration, capV=document.createElement('video');
-  capV.src=v.src; capV.onloadeddata=()=>{
-    const rW=nW/parseFloat(v.style.width), rH=nH/parseFloat(v.style.height);
-    let cT=0; const cap=()=>{ if(cT>=dur){gif.render();return;} capV.currentTime=cT; };
-    capV.onseeked=()=>{
-      ctx.drawImage(capV, Math.abs(parseFloat(v.style.left||0))*rW, Math.abs(parseFloat(v.style.top||0))*rH, 310*rW, 310*rH, 0,0,480,480);
-      gif.addFrame(ctx,{copy:true, delay:(1000/24)/parseFloat(gspeed.value)}); cT+=(1/24); cap();
-    }; cap();
-  };
-  gif.on('finished', blob=>{
-    o.src=URL.createObjectURL(blob); v.style.display='none'; o.style.display='block';
-    document.getElementById('dl').href=o.src; document.getElementById('dl').download=`neon_focus_${Math.floor(Math.random()*9999)}.gif`;
-    document.getElementById('dlBox').style.display='block'; document.getElementById('resetBox').style.display='block';
-    msg.style.visibility="hidden"; go.disabled=false;
-  });
-};
-function updS(el){ el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
-</script>
-</body>
-</html>
+const bases = [{m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},{m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},{m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗
