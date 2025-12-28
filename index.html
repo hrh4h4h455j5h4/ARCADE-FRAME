@@ -13,19 +13,16 @@
     -webkit-overflow-scrolling: touch; 
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px;
-    overflow-x: hidden;
+    overflow-x: hidden; touch-action: none; /* Critical for gestures */
   }
   
   /* --- NAVIGATION --- */
   .menu-toggle {
     position: fixed; top: 15px; left: 15px; 
-    background: #1a1a1c; color: #fff; 
-    border: 1px solid rgba(255,255,255,0.1); 
-    padding: 8px 12px; border-radius: 4px; 
-    font-weight: bold; cursor: pointer; z-index: 100000;
+    background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); 
+    padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 100000;
     font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
   }
-
   .switch-container { position: fixed; top: 15px; right: 15px; z-index: 100000; }
   #switch-btn {
     background: #ff0000; color: white; border: 2px solid #ffffff; 
@@ -42,10 +39,8 @@
   #switch-menu button {
     background: transparent; color: #aaa; border: none; padding: 14px;
     text-align: left; font-weight: bold; font-size: 11px; cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase;
-    transition: 0.2s;
+    border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; transition: 0.2s;
   }
-  #switch-menu button:hover { background: rgba(255,255,255,0.05); color: white; }
   #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; padding-left: 11px; }
 
   /* SIDE PANEL */
@@ -56,7 +51,6 @@
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
   }
   #menu-panel.open { left: 0; }
-  
   .music-section {
     border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
     border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;
@@ -71,7 +65,6 @@
     border-radius: 4px; font-size: 11px; font-weight: bold; outline: none;
     text-transform: uppercase; cursor: pointer;
   }
-
   .lnk {
     display: flex; align-items: center; gap: 10px; padding: 12px;
     text-decoration: none; color: white; font-size: 13px; font-weight: bold;
@@ -87,7 +80,7 @@
     animation: arcadeBounce 1.8s infinite ease-in-out;
   }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-  .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
+  .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }
   
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
@@ -101,7 +94,7 @@
   }
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; touch-action: none; z-index: 15; }
   
-  /* ✍️ FONT GENERATOR (MAXIMIZED) */
+  /* ✍️ FONT GENERATOR */
   .font-input {
     width: 100%; background: #111; border: 2px solid #00ffff; color: #fff;
     padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 10px;
@@ -171,10 +164,10 @@
     <label class="btn" onclick="playClick()">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)"></label>
     <label class="btn btn-r" onclick="playClick()">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)"></label>
     <button class="btn btn-center" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
-    <div class="lbl">SCALE ADJUSTMENT <span id="z-val" class="val-tag">100%</span></div>
+    <div class="lbl">SCALE <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
-    <div class="lbl">CANVAS RADIUS <span id="m-val" class="val-tag">375px</span></div>
-    <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
+    <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
+    <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
     <button id="save" onclick="downloadPic()">EXPORT PICTURE</button>
   </div>
 </div>
@@ -187,8 +180,8 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
-const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val');
+const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('r'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
+const zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -204,7 +197,7 @@ function changeStudio(mode) {
 }
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 
-// --- 🚀 INFINITE FONT GENERATOR ---
+// --- FONT ENGINE (FIXED UNDEFINED) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const bases = [
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
@@ -223,103 +216,109 @@ const bases = [
   {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"},
   {m:"ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ0123456789"}
 ];
-// 50+ Professional Decorators
-const decorators = [
-  " ", "★|★", "『|』", "【|】", "꧁|꧂", "˗ˏ|ˎ˗", "⦗|⦘", "⁅|⁆", "☾|☽", "×|×", "☆|☆", "●|●", "■|■", 
-  "→|←", "⚡|⚡", "☠|☠", "☮|☮", "✈|✈", "❤|❤", "♛|♛", "∞|∞", "§|§", "₪|₪", "↺|↻", "❄|❄", 
-  "☁|☁", "☂|☂", "✂|✂", "✎|✎", "⚔|⚔", "⚓|⚓", "⚙|⚙", "⚛|⚛", "⚜|⚜", "⚠|⚠", "⚡️|⚡️", 
-  "✧|✧", "✩|✩", "✪|✪", "✫|✫", "✬|✬", "✭|✭", "✮|✮", "✯|✯", "✰|✰", "✱|✱", "✲|✲", "✳|✳"
-];
+const decorators = [" ","★|★","『|』","【|】","꧁|꧂","˗ˏ|ˎ˗","⦗|⦘","⁅|⁆","☾|☽","×|×","☆|☆","●|●","■|■","→|←","⚡|⚡","☠|☠","✈|✈","❤|❤","♛|♛","∞|∞"];
 
 function genFonts() {
-  const val = document.getElementById('font-input').value;
-  const c = document.getElementById('font-results');
+  const val = document.getElementById('font-input').value, c = document.getElementById('font-results');
   c.innerHTML = ""; if(!val) return;
-  
   let count = 0;
-  // 1. BASE FONTS
-  bases.forEach(b => { 
-    let txt = mapText(val, b.m);
-    addF(txt, c); count++;
-  });
-  // 2. MIXER (Combinations)
-  bases.forEach((b, idx) => {
-    if([0, 1, 4, 6, 8, 9].includes(idx)) { 
-      let baseTxt = mapText(val, b.m);
-      decorators.forEach(dec => {
-        let [pre, post] = dec.split("|");
-        addF(pre + " " + baseTxt + " " + post, c);
-        count++;
-      });
-    }
-  });
-  // 3. TRANSFORMATIONS
-  addF(val.split('').map(c=>c+'\u0336').join(''), c);
-  addF(val.split('').map(c=>c+'\u0332').join(''), c);
-  addF(val.split('').map(c=>c+'\u0338').join(''), c);
-  addF(val.split('').map(c=>c+'\u20DE').join(''), c);
-  addF("░▒▓ "+val.toUpperCase()+" ▓▒░", c);
-  count += 5;
+  bases.forEach(b => { addF(mapText(val, b.m), c); count++; });
+  bases.forEach((b, i) => { if([0,1,4,6,8,9].includes(i)) decorators.forEach(d => { let [p,s]=d.split("|"); addF(p+mapText(val, b.m)+s, c); count++; }); });
+  addF(val.split('').map(c=>c+'\u0336').join(''), c); count++;
   document.getElementById('font-count').innerText = count + " STYLES";
 }
-function mapText(t, m) { let r=""; for(let c of t) { let i=chars.indexOf(c); r+=i!==-1?Array.from(m)[i]:c; } return r; }
+function mapText(t, m) { 
+    let r="", mArr=Array.from(m); 
+    for(let c of t) { 
+        let i=chars.indexOf(c); 
+        // FIX: Check if mapped char exists, else return original
+        r += (i!==-1 && mArr[i]) ? mArr[i] : c; 
+    } 
+    return r; 
+}
 function addF(t, c) { let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t); playShutter();}; c.appendChild(d); }
 
-// --- AUDIO UTILS (TRIGGER ON ANY INTERACTION) ---
-window.addEventListener('click', startAudio);
-window.addEventListener('touchstart', startAudio);
-window.addEventListener('scroll', startAudio);
+// --- AUDIO TRIGGER (ANYWHERE) ---
+function initAudio() { if(!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted=true; } }
+window.addEventListener('click', initAudio); window.addEventListener('touchstart', initAudio); window.addEventListener('scroll', initAudio);
 
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } swMenu.style.display = 'none'; }
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute':0 }, events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } } }); }
-function changeMusic(id) { if(player) { player.loadVideoById(id); } playShutter(); }
-function startAudio() { if (audioStarted) return; audioCtx.resume(); if(player && musicOn) { player.unMute(); player.playVideo(); } audioStarted = true; }
-function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
-function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); }
-function playClick() { const o = audioCtx.createOscillator(); const g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
-function playShutter() { const o = audioCtx.createOscillator(); o.type = 'square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); const g = audioCtx.createGain(); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute':0 }, events: { 'onReady': e => { e.target.setVolume(25); } } }); }
+function changeMusic(id) { if(player) player.loadVideoById(id); playShutter(); }
+function toggleMusic() { initAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
+function toggleMenu(e) { e.stopPropagation(); initAudio(); playClick(); panel.classList.toggle('open'); }
+function playClick() { const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
+function playShutter() { const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
 function updateSliderColor(el) { el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
-function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.drawImage(i, -w/2, -h/2, w, h); x.restore(); } x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800); if (i.src || f.src) sBtn.classList.add('active'); }
 
-// FIX: RESET POSITION ON NEW FILE
+// --- DRAW & TOUCH LOGIC (FIXED ROTATION) ---
+function d(){ 
+    x.clearRect(0,0,800,800); 
+    x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
+    if(i.src){ 
+        let w=i.width*cfg.s, h=i.height*cfg.s; 
+        x.save(); 
+        x.translate(cfg.x, cfg.y); 
+        x.rotate(cfg.r * Math.PI/180); // Rotation applied here
+        x.drawImage(i, -w/2, -h/2, w, h); 
+        x.restore(); 
+    } 
+    x.restore(); 
+    if(f.src) x.drawImage(f, 0, 0, 800, 800); 
+    if (i.src || f.src) sBtn.classList.add('active'); 
+}
+
 function handleFile(e) { 
-    if(!e.target.files || !e.target.files[0]) return;
-    let r=new FileReader(); 
-    r.onload=v=>{ 
-        let n=new Image(); 
-        n.onload=()=>{ 
-            i=n; 
-            cfg.s=Math.max(800/i.width,800/i.height); 
-            cfg.x=400; cfg.y=400; // Reset Center
-            zSl.value=cfg.s; 
-            updateSliderColor(zSl); 
-            d(); 
-            playClick(); 
-        }; 
-        n.src=v.target.result; 
-    }; 
-    r.readAsDataURL(e.target.files[0]); 
+    if(!e.target.files[0]) return;
+    let r=new FileReader(); r.onload=v=>{ 
+        let n=new Image(); n.onload=()=>{ 
+            i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; // Reset
+            zSl.value=cfg.s; document.getElementById('r').value=0; rVal.innerText="0°"; 
+            updateSliderColor(zSl); d(); playClick(); 
+        }; n.src=v.target.result; 
+    }; r.readAsDataURL(e.target.files[0]); 
 }
+function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ f=n; d(); playClick(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function updateZ(v) { cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
+function updateR(v) { cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+function centerSubject() { if(!i.src) return; playShutter(); cfg.x=400; cfg.y=400; cfg.r=0; document.getElementById('r').value=0; rVal.innerText="0°"; d(); }
 
-function handleFrame(e) { 
-    if(!e.target.files || !e.target.files[0]) return;
-    let r=new FileReader(); 
-    r.onload=v=>{ 
-        let n=new Image(); 
-        n.onload=()=>{ f=n; d(); playClick(); }; 
-        n.src=v.target.result; 
-    }; 
-    r.readAsDataURL(e.target.files[0]); 
-}
+// MULTI-TOUCH LOGIC
+let lastDist=0, lastAng=0;
+function getDist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+function getAng(t){ return Math.atan2(t[1].clientY-t[0].clientY, t[1].clientX-t[0].clientX) * 180/Math.PI; }
 
-function updateZ(v) { cfg.s=parseFloat(v); d(); }
-function updateM(v) { cfg.m=parseInt(v); d(); }
-function centerSubject() { if(!i.src) return; playShutter(); cfg.x = 400; cfg.y = 400; d(); }
-function gp(e, idx=0){ let r=c.getBoundingClientRect(), t=e.touches?e.touches[idx]:e; return {x:(t.clientX-r.left)*(800/r.width),y:(t.clientY-r.top)*(800/r.height)}; }
-function st(e){ if(e.target==c){ e.preventDefault(); cfg.d=true; let p=gp(e); cfg.lx=p.x-cfg.x; cfg.ly=p.y-cfg.y; } }
-function mv(e){ if(cfg.d){ e.preventDefault(); let p=gp(e); cfg.x=p.x-cfg.lx; cfg.y=p.y-cfg.ly; d(); } }
-function en(){ cfg.d=false; }
-c.ontouchstart=st; window.ontouchmove=mv; window.ontouchend=en; c.onmousedown=st; window.onmousemove=mv; window.onmouseup=en;
+c.addEventListener('touchstart', e => {
+    if(e.touches.length===1) {
+        cfg.lx = e.touches[0].clientX - cfg.x;
+        cfg.ly = e.touches[0].clientY - cfg.y;
+    } else if(e.touches.length===2) {
+        lastDist = getDist(e.touches);
+        lastAng = getAng(e.touches);
+    }
+}, {passive:false});
+
+c.addEventListener('touchmove', e => {
+    e.preventDefault(); // Prevent scroll while editing
+    if(e.touches.length===1) {
+        cfg.x = e.touches[0].clientX - cfg.lx;
+        cfg.y = e.touches[0].clientY - cfg.ly;
+    } else if(e.touches.length===2) {
+        // Zoom
+        let d = getDist(e.touches);
+        cfg.s *= (d / lastDist);
+        lastDist = d;
+        // Rotate
+        let a = getAng(e.touches);
+        cfg.r += (a - lastAng);
+        lastAng = a;
+        // Sync sliders
+        zSl.value = cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%";
+        document.getElementById('r').value = (cfg.r%360); rVal.innerText=Math.round(cfg.r%360)+"°";
+    }
+    d();
+}, {passive:false});
+
 function downloadPic() { if(!i.src && !f.src) return; let a=document.createElement('a'); a.download = 'Arcade_Export.png'; a.href=c.toDataURL(); a.click(); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); }); updateSliderColor(el); });
 </script>
