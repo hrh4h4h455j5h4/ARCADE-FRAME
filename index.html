@@ -161,9 +161,17 @@
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'),toggleBtn=document.getElementById('studio-toggle'),vEl=document.getElementById('hidden-video');
 const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val');
-let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0},player,musicOn=true,audioStarted=false,isGifMode=false,selectedVideo=null,vActive=false;
+let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0},player,musicOn=true,audioStarted=false,isGifMode=false,vActive=false;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+// MENU CLOSE LOGIC: FIX
+window.onclick = function(event) {
+  if (panel.classList.contains('open') && !panel.contains(event.target) && !event.target.classList.contains('menu-toggle')) {
+    panel.classList.remove('open');
+    playClick();
+  }
+}
 
 function toggleStudioMode() {
     isGifMode = !isGifMode;
@@ -189,8 +197,7 @@ function toggleStudioMode() {
 function handleVideo(e) {
     const file = e.target.files[0];
     if (file) {
-        selectedVideo = URL.createObjectURL(file);
-        vEl.src = selectedVideo;
+        vEl.src = URL.createObjectURL(file);
         vEl.onloadedmetadata = () => {
             vActive = true;
             cfg.s = Math.max(800/vEl.videoWidth, 800/vEl.videoHeight);
@@ -211,10 +218,11 @@ function drawLoop() {
     }
 }
 
+// GIF SPEED OPTIMIZATION
 function createGif() {
     if (!vActive) return;
     const btn = document.getElementById('convert-gif');
-    btn.innerText = "PROCESSING...";
+    btn.innerText = "RENDERING...";
     btn.disabled = true;
 
     gifshot.createGIF({
@@ -222,8 +230,8 @@ function createGif() {
         gifWidth: 400,
         gifHeight: 400,
         interval: 0.1,
-        numFrames: 12,
-        sampleInterval: 10,
+        numFrames: 10, // Reduced for speed
+        sampleInterval: 20, // Optimized sampling
     }, function(obj) {
         if(!obj.error) {
             document.getElementById('gif-result-container').style.display = 'flex';
@@ -259,7 +267,6 @@ function d(){
   if (i.src || f.src || vActive) sBtn.classList.add('active');
 }
 
-// REST OF YOUR ORIGINAL FUNCTIONS
 function handleFile(e) {
   let r=new FileReader(); r.onload=v=>{ const nextI = new Image(); nextI.onload=()=>{ i=nextI; cfg.s=Math.max(800/i.width,800/i.height); zSl.value=cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%"; updateSliderColor(zSl); d(); playClick(); }; nextI.src=v.target.result; }; r.readAsDataURL(e.target.files[0]);
 }
