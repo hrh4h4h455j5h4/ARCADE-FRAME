@@ -94,18 +94,44 @@
   }
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
   
-  /* ✍️ FONT GENERATOR (FIXED) */
+  /* ✍️ FONT GENERATOR (NO GAP & CENTERED) */
   .font-input {
     width: 100%; background: #111; border: 2px solid #00ffff; color: #fff;
-    padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 10px;
-    font-size: 16px; outline: none;
+    padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px;
+    font-size: 16px; outline: none; box-sizing: border-box;
   }
+  
+  .font-scroll {
+    width: 100%; 
+    max-height: 500px; 
+    overflow-y: auto; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0; /* NO GAP REQUEST */
+    border-radius: 8px;
+    overflow: hidden; /* Smooth corners for the whole list */
+    border: 1px solid rgba(255,255,255,0.1);
+    box-sizing: border-box;
+  }
+  
   .font-item {
-    background: #1a1a1c; border: 1px solid rgba(255,255,255,0.1); padding: 14px; width: 100%;
-    border-radius: 6px; font-size: 16px; text-align: center; cursor: pointer; margin-bottom: 8px; color: #eee;
-    white-space: pre-wrap; overflow-wrap: break-word;
+    background: #1a1a1c; 
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1); /* Divider Line */
+    padding: 16px; 
+    width: 100%;
+    text-align: center; 
+    cursor: pointer; 
+    color: #eee;
+    white-space: pre-wrap; 
+    overflow-wrap: break-word;
+    box-sizing: border-box; /* Ensures width includes padding */
+    font-size: 16px;
   }
+  .font-item:last-child { border-bottom: none; }
+  .font-item:active { background: #00ffff; color: #000; }
 
+  /* UI GLOBAL */
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; text-transform: uppercase; }
   .btn-r { border-color: #ff0000; }
@@ -170,7 +196,7 @@
 <div id="font-studio" class="studio-sec">
   <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
   <div class="lbl">TAP TO COPY <span class="val-tag" id="font-count">0 STYLES</span></div>
-  <div id="font-results" style="width:100%"></div>
+  <div id="font-results" class="font-scroll"></div>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -192,16 +218,14 @@ function changeStudio(mode) {
 }
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 
-// --- 🚀 INFINITE FONT GENERATOR (MATRIX RESTORED) ---
+// --- FONT ENGINE ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const bases = [
-  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
-  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"},
+  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔batch𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
-  {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
-  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"},
+  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},
-  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
+  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝐩𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
   {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
   {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
@@ -209,41 +233,23 @@ const bases = [
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
   {m:"🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩0123456789"},
   {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"},
-  {m:"ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ0123456789"}
+  {m:"ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ0123456789"},
+  {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
+  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"}
 ];
-// 50+ DECORATORS (MULTIPLIER)
-const decorators = [
-  " ", "★|★", "『|』", "【|】", "꧁|꧂", "˗ˏ|ˎ˗", "⦗|⦘", "⁅|⁆", "☾|☽", "×|×", "☆|☆", "●|●", "■|■", 
-  "→|←", "⚡|⚡", "☠|☠", "☮|☮", "✈|✈", "❤|❤", "♛|♛", "∞|∞", "§|§", "₪|₪", "↺|↻", "❄|❄", 
-  "☁|☁", "☂|☂", "✂|✂", "✎|✎", "⚔|⚔", "⚓|⚓", "⚙|⚙", "⚛|⚛", "⚜|⚜", "⚠|⚠", "⚡️|⚡️", 
-  "✧|✧", "✩|✩", "✪|✪", "✫|✫", "✬|✬", "✭|✭", "✮|✮", "✯|✯", "✰|✰", "✱|✱", "✲|✲", "✳|✳"
-];
+const decorators = ["★|★","꧁|꧂","『|』","【|】","˗|˗","⁅|⁆","☾|☽","●|●","⚡|⚡","♛|♛","❤|❤","☠|☠","✈|✈"];
 
 function genFonts() {
   const val = document.getElementById('font-input').value, resBox = document.getElementById('font-results');
   resBox.innerHTML = ""; if(!val) return;
   let count = 0;
-  
-  // 1. RAW BASES
   bases.forEach(b => { addF(mapText(val, b.m), resBox); count++; });
+  bases.forEach(b => { decorators.forEach(d => { let [p,s]=d.split("|"); addF(p+mapText(val, b.m)+s, resBox); count++; }); });
   
-  // 2. MIXER: BASE X DECORATOR (This generates 100s)
-  bases.forEach((b, idx) => {
-    // Only mix readable fonts to prevent clutter
-    if([0, 1, 4, 6, 8, 9].includes(idx)) { 
-      let baseTxt = mapText(val, b.m);
-      decorators.forEach(dec => {
-        let [p,s] = dec.split("|");
-        addF(p + baseTxt + s, resBox);
-        count++;
-      });
-    }
-  });
-
-  // 3. TRANSFORMS
-  addF(val.split('').map(c=>c+'\u0336').join(''), resBox); // Strike
+  // ALGORITHMIC EXTRAS
+  addF(val.split('').map(c=>c+'\u0336').join(''), resBox); // Strikethrough
   addF(val.split('').map(c=>c+'\u0332').join(''), resBox); // Underline
-  addF("░▒▓ "+val.toUpperCase()+" ▓▒░", resBox); // Vapor
+  addF(val.split('').join(' '), resBox); // Spaced
   
   document.getElementById('font-count').innerText = count + " STYLES";
 }
@@ -265,7 +271,7 @@ function updateSliderColor(el) { el.style.setProperty('--v', ((el.value-el.min)/
 
 // --- CANVAS ---
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI/180); x.drawImage(i, -w/2, -h/2, w, h); x.restore(); } x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800); if (i.src || f.src) sBtn.classList.add('active'); }
-function handleFile(e) { if(!e.target.files[0]) return; let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; zSl.value=cfg.s; document.getElementById('r').value=0; rVal.innerText="0°"; updateSliderColor(zSl); d(); playClick(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function handleFile(e) { if(!e.target.files[0]) return; let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; zSl.value=cfg.s; updateSliderColor(zSl); d(); playClick(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ f=n; d(); playClick(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function updateZ(v) { cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
 function updateR(v) { cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
