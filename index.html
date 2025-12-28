@@ -12,30 +12,32 @@
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px; 
     -webkit-overflow-scrolling: touch; 
+    /* RETRO SCANLINE BACKGROUND */
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px;
-    overflow-x: hidden; /* Prevent side scrolling */
+    overflow-x: hidden;
   }
   
-  /* --- FIXED MENU LAYOUT --- */
+  /* --- FIXED MENU TOGGLE (ALWAYS ON TOP) --- */
   .menu-toggle {
-    position: fixed; /* Fixed to screen */
+    position: fixed; 
     top: 15px; left: 15px; 
     background: #1a1a1c; color: #fff; 
     border: 1px solid rgba(255,255,255,0.1); 
     padding: 8px 12px; border-radius: 4px; 
     font-weight: bold; cursor: pointer; 
-    z-index: 2000; /* Above everything */
+    z-index: 9999; /* Highest priority */
     font-size: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
   }
 
   #menu-panel {
     position: fixed; top: 0; left: -260px; width: 240px; height: 100%;
     background: #1a1a1c; padding-top: 60px; 
     transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-    z-index: 1999; /* Just below toggle button but above content */
+    z-index: 9998; /* Just below toggle */
     display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    box-shadow: 2px 0 15px rgba(0,0,0,0.8);
   }
   #menu-panel.open { left: 0; }
 
@@ -103,14 +105,13 @@
   }
   #save.active { opacity: 1; pointer-events: auto; }
   
-  /* DOWNLOAD GIF BUTTON */
+  /* DOWNLOAD GIF BUTTON (Visible immediately after video select) */
   #dl-gif-btn {
     background: #00ffff; color: #000; border: none; font-size: 14px; padding: 12px;
     border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase;
-    display: none;
+    display: none; box-shadow: 0 0 15px rgba(0,255,255,0.4);
   }
 
-  /* HIDDEN ELEMENTS */
   input[type=file] { display: none; }
   #yt-player, #hidden-video { display: none; }
 </style>
@@ -168,7 +169,7 @@ let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// MENU CLOSE LOGIC
+// 1. MENU CLOSE LOGIC (FIXED)
 window.addEventListener('click', (e) => {
   if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) {
     panel.classList.remove('open');
@@ -183,7 +184,7 @@ function toggleStudioMode() {
     document.getElementById('gif-controls').style.display = isGifMode ? 'block' : 'none';
     
     sBtn.style.display = isGifMode ? 'none' : 'block';
-    // Show download button ONLY if video is active in gif mode
+    // Show download button ONLY if video is already selected
     gBtn.style.display = (isGifMode && vActive) ? 'block' : 'none';
     
     document.getElementById('main-title').innerText = isGifMode ? 'GIF' : 'ARCADE';
@@ -201,19 +202,21 @@ function toggleStudioMode() {
     d();
 }
 
+// 2. VIDEO HANDLER - INSTANT PREVIEW
 function handleVideo(e) {
     const file = e.target.files[0];
     if (file) {
         vEl.src = URL.createObjectURL(file);
         vEl.onloadedmetadata = () => {
             vActive = true;
+            // Auto fit
             cfg.s = Math.max(800/vEl.videoWidth, 800/vEl.videoHeight);
             zSl.value = cfg.s;
             zVal.innerText = Math.round(cfg.s*100)+"%";
             vEl.playbackRate = playbackSpeed;
             vEl.play();
             
-            // INSTANTLY SHOW DOWNLOAD BUTTON - NO WAITING
+            // INSTANTLY Show Download Button (No waiting for render)
             gBtn.style.display = 'block';
             playShutter();
             requestAnimationFrame(drawLoop);
@@ -228,25 +231,24 @@ function updateSpeed(v) {
     updateSliderColor(document.getElementById('speed'));
 }
 
-// THE VISUAL LOOP - This acts as your "GIF" preview
+// 3. DRAW LOOP (The "Virtual GIF")
 function drawLoop() {
     if(isGifMode && vActive) { d(); requestAnimationFrame(drawLoop); }
 }
 
-// ACTUAL DOWNLOAD LOGIC - Only happens when button pressed
+// 4. DOWNLOAD LOGIC (Processing only happens here)
 function downloadGif() {
     if (!vActive) return;
-    gBtn.innerText = "RENDERING... (PLEASE WAIT)";
+    gBtn.innerText = "RENDERING GIF... (PLEASE WAIT)";
     gBtn.disabled = true;
 
-    // Use current video settings to create the GIF
     gifshot.createGIF({
         video: [vEl.src],
         gifWidth: 400,
         gifHeight: 400,
         interval: 0.1 / playbackSpeed,
         numFrames: 15,
-        sampleInterval: 15, 
+        sampleInterval: 12, // Quality setting
     }, function(obj) {
         if(!obj.error) {
             let a = document.createElement('a');
@@ -272,7 +274,7 @@ function d(){
   if ((i.src && !isGifMode) || (f.src && !isGifMode)) sBtn.classList.add('active');
 }
 
-// UTILITIES
+// SHARED UTILITIES
 function handleFile(e) {
   let r=new FileReader(); r.onload=v=>{ const nextI = new Image(); nextI.onload=()=>{ i=nextI; cfg.s=Math.max(800/i.width,800/i.height); zSl.value=cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%"; updateSliderColor(zSl); d(); playClick(); }; nextI.src=v.target.result; }; r.readAsDataURL(e.target.files[0]);
 }
