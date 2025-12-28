@@ -17,39 +17,13 @@
     background-size: 100% 4px;
   }
   
-  /* THEME DEFINITIONS */
-  body.t1 { background-image: linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; } 
-  body.t2 { background: #1a0033; background-image: radial-gradient(#ff00ff 0.5px, transparent 0.5px); background-size: 20px 20px; }
-  body.t3 { background: #001a00; color: #00ff00; }
-  body.t4 { background: linear-gradient(45deg, #1a1a1c, #2a2a2e); }
-  body.t5 { background: #2b1d0e; background-image: repeating-linear-gradient(45deg, rgba(255,215,0,0.02) 0px, rgba(255,215,0,0.02) 2px, transparent 2px, transparent 10px); }
-  body.t6 { background: #000d1a; border-top: 5px solid #00ffff; }
-  body.t7 { background: #1a0505; background-image: radial-gradient(#ff4d4d 1px, transparent 0); background-size: 40px 40px; }
-  body.t8 { background: #000; background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px); background-size: 100% 4px; }
-  body.t9 { background: #0d0d0d; border-left: 10px solid #00ffff; }
-  body.t10 { background: #111; background-image: linear-gradient(30deg, #222 12%, transparent 12.5%, transparent 87%, #222 87.5%, #222), linear-gradient(150deg, #222 12%, transparent 12.5%, transparent 87%, #222 87.5%, #222); background-size: 40px 70px; }
-  body.t11 { background: #1e1e2e; }
-  body.t12 { background: #000; box-shadow: inset 0 0 100px #ff0000; }
-  body.t13 { background: #002b36; }
-  body.t14 { background: #111; background-image: linear-gradient(white 0.5px, transparent 0.5px), linear-gradient(90deg, white 0.5px, transparent 0.5px); background-size: 50px 50px; }
-  body.t15 { background: #0a0a0a; border-bottom: 8px solid #ff00ff; }
-  body.t16 { background: radial-gradient(circle, #222, #000); }
-  body.t17 { background: #121212; background-image: linear-gradient(45deg, #1a1a1a 25%, transparent 25%); background-size: 4px 4px; }
-  body.t18 { background: #000; border: 2px solid #00ffff; }
-  body.t19 { background: #050505; color: #ff0000; }
-  body.t20 { background: #1a1a1c; border-right: 5px solid #ff0000; }
-  body.t21 { background: #0a0a0c; background-image: none; }
-
   .menu-toggle { position: absolute; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 1000; font-size: 11px; }
 
-  #menu-panel, #theme-selector { position: fixed; top: 0; left: -250px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; overflow-y: auto; }
-  #menu-panel.open, #theme-selector.open { left: 0; }
+  #menu-panel { position: fixed; top: 0; left: -250px; width: 230px; height: 100%; background: #000; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; overflow-y: auto; }
+  #menu-panel.open { left: 0; }
   
-  .lnk, .music-btn, .theme-opt { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
+  .lnk, .music-btn { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); cursor: pointer; }
   .music-btn { border-color: #ff0000; background: rgba(255,0,0,0.1); justify-content: space-between; }
-  .theme-opt { justify-content: flex-start; margin-bottom: 2px; }
-  .theme-opt:hover { background: rgba(255,255,255,0.1); }
-  .theme-opt .t-prev { width: 24px; height: 24px; border-radius: 3px; border: 1px solid #fff; flex-shrink: 0; }
   .lnk svg { width: 18px; height: 18px; fill: white; flex-shrink: 0; }
 
   /* ARCADE BOUNCE ANIMATION */
@@ -94,37 +68,8 @@
 
 <div id="menu-panel">
   <div class="music-btn" onclick="toggleMusic()">MUSIC CONTROL <span id="m-status" style="color:#ff0000;">ON</span></div>
-  <div class="lnk" style="border-color:#00ffff;" onclick="openThemeSelector()">
-    <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10 5 5 0 000-10z"/></svg>
-    <span>Switch Theme</span>
-  </div>
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;" onclick="playShutter()"><svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg><span>Discord Server</span></a>
   <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;" onclick="playShutter()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Arcade Website</span></a>
-</div>
-
-<div id="theme-selector">
-  <div class="music-btn" onclick="closeThemeSelector()" style="border-color:#555;">← BACK TO MENU</div>
-  <div class="theme-opt" onclick="setT(8)"><div class="t-prev" style="background:#000; border-top: 4px solid #333;"></div> Official Scanline</div>
-  <div class="theme-opt" onclick="setT(1)"><div class="t-prev" style="background: repeating-linear-gradient(90deg, #0af 0 1px, transparent 0 5px)"></div> Neon Grid</div>
-  <div class="theme-opt" onclick="setT(2)"><div class="t-prev" style="background:#1a0033;"></div> Vaporwave</div>
-  <div class="theme-opt" onclick="setT(3)"><div class="t-prev" style="background:#001a00;"></div> Matrix Noir</div>
-  <div class="theme-opt" onclick="setT(4)"><div class="t-prev" style="background:#2a2a2e;"></div> Carbon Fiber</div>
-  <div class="theme-opt" onclick="setT(5)"><div class="t-prev" style="background:#2b1d0e;"></div> Gold Rush</div>
-  <div class="theme-opt" onclick="setT(6)"><div class="t-prev" style="background:#000d1a;"></div> Deep Ocean</div>
-  <div class="theme-opt" onclick="setT(7)"><div class="t-prev" style="background:#1a0505;"></div> Blood Moon</div>
-  <div class="theme-opt" onclick="setT(9)"><div class="t-prev" style="background:#00ffff;"></div> Cyber Side</div>
-  <div class="theme-opt" onclick="setT(10)"><div class="t-prev" style="background:#222;"></div> Hexagon</div>
-  <div class="theme-opt" onclick="setT(11)"><div class="t-prev" style="background:#1e1e2e;"></div> Midnight</div>
-  <div class="theme-opt" onclick="setT(12)"><div class="t-prev" style="background:#300;"></div> Red Glow</div>
-  <div class="theme-opt" onclick="setT(13)"><div class="t-prev" style="background:#002b36;"></div> Solar Dark</div>
-  <div class="theme-opt" onclick="setT(14)"><div class="t-prev" style="background:#333;"></div> Blueprint</div>
-  <div class="theme-opt" onclick="setT(15)"><div class="t-prev" style="background:#000; border-bottom: 3px solid #f0f;"></div> Synth Line</div>
-  <div class="theme-opt" onclick="setT(16)"><div class="t-prev" style="background:radial-gradient(#333,#000);"></div> Vignette</div>
-  <div class="theme-opt" onclick="setT(17)"><div class="t-prev" style="background:#111;"></div> Micro Dot</div>
-  <div class="theme-opt" onclick="setT(18)"><div class="t-prev" style="border: 1px solid #0ff;"></div> Inset Frame</div>
-  <div class="theme-opt" onclick="setT(19)"><div class="t-prev" style="background:#050; color:#0f0"></div> Aggressive</div>
-  <div class="theme-opt" onclick="setT(20)"><div class="t-prev" style="border-right: 3px solid #f00;"></div> Final Border</div>
-  <div class="theme-opt" onclick="setT(21)"><div class="t-prev" style="background:#0a0a0c;"></div> Original Black</div>
 </div>
 
 <div id="yt-player"></div>
@@ -148,21 +93,17 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),studioView=document.getElementById('studio-view');
+const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),studioView=document.getElementById('studio-view');
 const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val'),mStat=document.getElementById('m-status');
-let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},originalFileName="Arcade_PFP",player,musicOn=true,audioStarted=false,curT=8;
+let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},originalFileName="Arcade_PFP",player,musicOn=true,audioStarted=false;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' }, events: { 'onReady': e => { if(musicOn) e.target.playVideo(); } } }); }
 function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted = true; } }
 
-function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); playClick(); }
-function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); playClick(); }
-function setT(n) { startAudio(); playClick(); document.body.classList.remove('t'+curT); curT=n; document.body.classList.add('t'+curT); tMenu.classList.remove('open'); }
-
 function centerSubject() { if(!i.src) return; playShutter(); cfg.x = 400; cfg.y = 400; d(); }
 function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
-function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
+function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); }
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target)) { panel.classList.remove('open'); playClick(); } };
 
 function playWin() { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, idx) => { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.1)); gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (idx * 0.1)); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.1) + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(audioCtx.currentTime + (idx * 0.1)); osc.stop(audioCtx.currentTime + (idx * 0.1) + 0.1); }); }
@@ -171,7 +112,7 @@ function playShutter() { const osc = audioCtx.createOscillator(); const gain = a
 function updateSliderColor(el) { const percent = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty('--v', percent + '%'); }
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r); x.drawImage(i, -w/2, -h/2,w,h); x.restore(); } x.restore(); if(f.src) { x.drawImage(f, 0, 0, 800, 800); } if (i.src || f.src) sBtn.classList.add('active'); }
 function handleFile(file) { originalFileName = file.name.split('.').slice(0, -1).join('.') || "Arcade_PFP"; let r=new FileReader(); r.onload=v=>{ const nextI = new Image(); nextI.onload=()=>{ i=nextI; cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%"; updateSliderColor(z); d(); playClick(); }; nextI.src=v.target.result; }; r.readAsDataURL(file); }
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); }); updateSliderColor(el); });
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); playSlider(el.value); }); updateSliderColor(el); });
 document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
 document.getElementById('u2').onchange=e=>{ const file = e.target.files[0]; if(!file) return; let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file); };
 z.oninput=e=>{ cfg.s=parseFloat(e.target.value); zVal.innerText=Math.round(cfg.s*100)+"%"; d(); };
