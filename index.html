@@ -16,7 +16,7 @@
     overflow-x: hidden;
   }
   
-  /* --- FIXED TOP NAV --- */
+  /* --- NAVIGATION --- */
   .menu-toggle {
     position: fixed; top: 15px; left: 15px; 
     background: #1a1a1c; color: #fff; 
@@ -89,7 +89,7 @@
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
   
-  .studio-sec { display: none; width: 310px; flex-direction: column; align-items: center; }
+  .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
   /* 🖼️ FRAME STUDIO */
@@ -271,7 +271,7 @@ window.addEventListener('touchstart', startAudio);
 window.addEventListener('scroll', startAudio);
 
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } swMenu.style.display = 'none'; }
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk' }, events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } } }); }
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute':0 }, events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } } }); }
 function changeMusic(id) { if(player) { player.loadVideoById(id); } playShutter(); }
 function startAudio() { if (audioStarted) return; audioCtx.resume(); if(player && musicOn) { player.unMute(); player.playVideo(); } audioStarted = true; }
 function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
@@ -280,8 +280,38 @@ function playClick() { const o = audioCtx.createOscillator(); const g = audioCtx
 function playShutter() { const o = audioCtx.createOscillator(); o.type = 'square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); const g = audioCtx.createGain(); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
 function updateSliderColor(el) { el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.drawImage(i, -w/2, -h/2, w, h); x.restore(); } x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800); if (i.src || f.src) sBtn.classList.add('active'); }
-function handleFile(e) { let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=Math.max(800/i.width,800/i.height); zSl.value=cfg.s; updateSliderColor(zSl); d(); playClick(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ f=n; d(); playClick(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+
+// FIX: RESET POSITION ON NEW FILE
+function handleFile(e) { 
+    if(!e.target.files || !e.target.files[0]) return;
+    let r=new FileReader(); 
+    r.onload=v=>{ 
+        let n=new Image(); 
+        n.onload=()=>{ 
+            i=n; 
+            cfg.s=Math.max(800/i.width,800/i.height); 
+            cfg.x=400; cfg.y=400; // Reset Center
+            zSl.value=cfg.s; 
+            updateSliderColor(zSl); 
+            d(); 
+            playClick(); 
+        }; 
+        n.src=v.target.result; 
+    }; 
+    r.readAsDataURL(e.target.files[0]); 
+}
+
+function handleFrame(e) { 
+    if(!e.target.files || !e.target.files[0]) return;
+    let r=new FileReader(); 
+    r.onload=v=>{ 
+        let n=new Image(); 
+        n.onload=()=>{ f=n; d(); playClick(); }; 
+        n.src=v.target.result; 
+    }; 
+    r.readAsDataURL(e.target.files[0]); 
+}
+
 function updateZ(v) { cfg.s=parseFloat(v); d(); }
 function updateM(v) { cfg.m=parseInt(v); d(); }
 function centerSubject() { if(!i.src) return; playShutter(); cfg.x = 400; cfg.y = 400; d(); }
