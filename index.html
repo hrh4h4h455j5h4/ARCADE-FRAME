@@ -89,7 +89,7 @@
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
   
-  .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
+  .studio-sec { display: none; width: 310px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
   /* 🖼️ FRAME STUDIO */
@@ -101,7 +101,7 @@
   }
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; touch-action: none; z-index: 15; }
   
-  /* ✍️ FONT GENERATOR */
+  /* ✍️ FONT GENERATOR (MAXIMIZED) */
   .font-input {
     width: 100%; background: #111; border: 2px solid #00ffff; color: #fff;
     padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 10px;
@@ -152,7 +152,6 @@
     </div>
     <select class="station-select" onchange="changeMusic(this.value)">
       <option value="nv_2rz5BFDA">🕹️ Retro Wave</option>
-      <option value="2zL8Z7J9-50">🎷 Smooth Jazz (Fixed)</option>
       <option value="jfKfPfyJRdk" selected>☕ Lofi Focus</option>
     </select>
   </div>
@@ -266,14 +265,13 @@ function genFonts() {
 function mapText(t, m) { let r=""; for(let c of t) { let i=chars.indexOf(c); r+=i!==-1?Array.from(m)[i]:c; } return r; }
 function addF(t, c) { let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t); playShutter();}; c.appendChild(d); }
 
-// --- AUDIO UTILS ---
-// Listeners for ANY touch to start audio
+// --- AUDIO UTILS (TRIGGER ON ANY INTERACTION) ---
 window.addEventListener('click', startAudio);
 window.addEventListener('touchstart', startAudio);
 window.addEventListener('scroll', startAudio);
 
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } swMenu.style.display = 'none'; }
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute':0 }, events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } } }); }
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk' }, events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } } }); }
 function changeMusic(id) { if(player) { player.loadVideoById(id); } playShutter(); }
 function startAudio() { if (audioStarted) return; audioCtx.resume(); if(player && musicOn) { player.unMute(); player.playVideo(); } audioStarted = true; }
 function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
