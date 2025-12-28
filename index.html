@@ -12,35 +12,36 @@
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px; 
     -webkit-overflow-scrolling: touch; 
+    /* RETRO SCANLINES */
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px;
     overflow-x: hidden;
   }
   
-  /* --- 1. MENU FIXED TO SCREEN --- */
+  /* --- FIXED MENU TOGGLE (HIGHEST LAYER) --- */
   .menu-toggle {
-    position: fixed; /* Stays stuck to screen */
+    position: fixed; 
     top: 15px; left: 15px; 
     background: #1a1a1c; color: #fff; 
     border: 1px solid rgba(255,255,255,0.1); 
     padding: 8px 12px; border-radius: 4px; 
     font-weight: bold; cursor: pointer; 
-    z-index: 99999; /* Highest priority: Always on top */
+    z-index: 99999; /* Always on top */
     font-size: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
   }
 
   #menu-panel {
     position: fixed; top: 0; left: -260px; width: 240px; height: 100%;
     background: #1a1a1c; padding-top: 60px; 
     transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-    z-index: 99998; /* Below toggle, above everything else */
+    z-index: 99998; /* Under button, over content */
     display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
     box-shadow: 2px 0 15px rgba(0,0,0,0.8);
   }
   #menu-panel.open { left: 0; }
 
-  /* --- 2. SWITCH BUTTON FIXED --- */
+  /* STUDIO SWITCHER */
   #studio-toggle {
     position: absolute; top: 15px; right: 15px; 
     background: #ff0000; color: white;
@@ -53,7 +54,6 @@
   }
   #studio-toggle.gif-active { background: #00ffff; color: #000; box-shadow: 0 0 10px rgba(0,255,255,0.5); }
 
-  /* LINKS & HEADERS */
   .lnk, .music-btn {
     display: flex; align-items: center; gap: 10px; padding: 12px;
     text-decoration: none; color: white; font-size: 13px; font-weight: bold;
@@ -70,7 +70,6 @@
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; }
   
-  /* CANVAS */
   #box {
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden;
     background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%);
@@ -79,7 +78,6 @@
   }
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; touch-action: none; z-index: 15; }
   
-  /* UI BUTTONS */
   .ui { margin-top: 20px; width: 300px; display: flex; flex-direction: column; gap: 6px; z-index: 100; position: relative; }
   .btn {
     background: #111; border: 2px solid #fff; color: white; padding: 10px; text-align: center;
@@ -91,7 +89,6 @@
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
 
-  /* SLIDERS */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
   input[type=range]::-webkit-slider-runnable-track {
     width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px;
@@ -108,7 +105,7 @@
   }
   #save.active { opacity: 1; pointer-events: auto; }
   
-  /* DOWNLOAD GIF BUTTON (HIDDEN INITIALLY) */
+  /* DOWNLOAD GIF BUTTON (CYAN) */
   #dl-gif-btn {
     background: #00ffff; color: #000; border: none; font-size: 14px; padding: 12px;
     border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase;
@@ -205,7 +202,7 @@ function toggleStudioMode() {
     d();
 }
 
-// 2. VIDEO HANDLER - NO LOADING TEXT, NO DELAY
+// 2. VIDEO HANDLER - INSTANT PREVIEW, NO GENERATING TEXT
 function handleVideo(e) {
     const file = e.target.files[0];
     if (file) {
@@ -219,8 +216,11 @@ function handleVideo(e) {
             vEl.playbackRate = playbackSpeed;
             vEl.play();
             
-            // SHOW BUTTON IMMEDIATELY - NO PROCESSING
+            // SHOW BUTTON IMMEDIATELY. NO "GENERATING" TEXT.
             gBtn.style.display = 'block';
+            gBtn.innerText = "DOWNLOAD GIF ⬇️"; // Reset text
+            gBtn.disabled = false;
+            
             playShutter();
             requestAnimationFrame(drawLoop);
         };
@@ -234,24 +234,25 @@ function updateSpeed(v) {
     updateSliderColor(document.getElementById('speed'));
 }
 
-// 3. DRAW LOOP (This makes it look like a GIF instantly)
+// 3. DRAW LOOP (The "Virtual GIF" - Plays instantly)
 function drawLoop() {
     if(isGifMode && vActive) { d(); requestAnimationFrame(drawLoop); }
 }
 
-// 4. DOWNLOAD LOGIC (Processing ONLY happens here)
+// 4. DOWNLOAD LOGIC (HEAVY PROCESSING HAPPENS ONLY HERE)
 function downloadGif() {
     if (!vActive) return;
     gBtn.innerText = "RENDERING GIF... (PLEASE WAIT)";
     gBtn.disabled = true;
 
+    // gifshot runs only when you ask it to
     gifshot.createGIF({
         video: [vEl.src],
         gifWidth: 400,
         gifHeight: 400,
         interval: 0.1 / playbackSpeed,
         numFrames: 15,
-        sampleInterval: 12, // Quality setting
+        sampleInterval: 12, 
     }, function(obj) {
         if(!obj.error) {
             let a = document.createElement('a');
@@ -266,14 +267,21 @@ function downloadGif() {
 
 function d(){
   x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip();
+  
   if(isGifMode && vActive){
+      // DRAW VIDEO FRAME
       let w=vEl.videoWidth*cfg.s, h=vEl.videoHeight*cfg.s;
       x.save(); x.translate(cfg.x, cfg.y); x.drawImage(vEl, -w/2, -h/2, w, h); x.restore();
   } else if(i.src){ 
+      // DRAW IMAGE
       let w=i.width*cfg.s, h=i.height*cfg.s; 
       x.save(); x.translate(cfg.x, cfg.y); x.drawImage(i, -w/2, -h/2, w, h); x.restore(); 
   }
+  
+  // DRAW FRAME ON TOP
   x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800);
+  
+  // Handle Save Button active state
   if ((i.src && !isGifMode) || (f.src && !isGifMode)) sBtn.classList.add('active');
 }
 
