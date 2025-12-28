@@ -7,7 +7,7 @@
 <style>
   html { scroll-behavior: smooth; }
   body {
-    background: #000; color: white; font-family: sans-serif;
+    background: #0a0a0c; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px;
     -webkit-overflow-scrolling: touch; transition: 0.5s ease;
@@ -56,11 +56,11 @@
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
 
-  /* SLIDER COLOR FIX: CYAN INSIDE, RED OUTSIDE */
+  /* SLIDER COLOR FIX: RED INSIDE, CYAN OUTSIDE */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
   input[type=range]::-webkit-slider-runnable-track { 
     width: 100%; height: 8px; 
-    background: linear-gradient(to right, #00ffff var(--v, 0%), #ff0000 var(--v, 0%)); 
+    background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); 
     border-radius: 4px; 
   }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff; }
@@ -99,10 +99,13 @@
     <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*" style="display:none;" onchange="handleFile(event)"></label>
     <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*" style="display:none;" onchange="handleFrame(event)"></label>
     <button class="btn btn-center" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
+    
     <div class="lbl">ZOOM PHOTO <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
+    
     <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
     <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
+    
     <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
   </div>
 </div>
@@ -124,54 +127,9 @@ window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(
 
 function updateSliderColor(el) { const percent = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty('--v', percent + '%'); }
 
-function d(){ 
-  x.clearRect(0,0,800,800); 
-  x.save(); 
-  x.beginPath(); 
-  x.arc(400,400,cfg.m,0,6.28); 
-  x.clip(); 
-  if(i.src){ 
-    let w=i.width*cfg.s, h=i.height*cfg.s; 
-    x.save(); 
-    x.translate(cfg.x, cfg.y); 
-    x.rotate(cfg.r); 
-    x.drawImage(i, -w/2, -h/2,w,h); 
-    x.restore(); 
-  } 
-  x.restore(); 
-  if(f.src) { x.drawImage(f, 0, 0, 800, 800); } 
-  if (i.src || f.src) sBtn.classList.add('active'); 
-}
-
-function handleFile(e) { 
-  originalFileName = e.target.files[0].name.split('.').slice(0, -1).join('.') || "Arcade_PFP"; 
-  let r=new FileReader(); 
-  r.onload=v=>{ 
-    const nextI = new Image(); 
-    nextI.onload=()=>{ 
-      i=nextI; 
-      cfg.s=Math.max(800/i.width,800/i.height); 
-      zSl.value=cfg.s; 
-      zVal.innerText=Math.round(cfg.s*100)+"%"; 
-      updateSliderColor(zSl); 
-      d(); 
-      playClick(); 
-    }; 
-    nextI.src=v.target.result; 
-  }; 
-  r.readAsDataURL(e.target.files[0]); 
-}
-
-function handleFrame(e) { 
-  let r=new FileReader(); 
-  r.onload=v=>{ 
-    const nF=new Image(); 
-    nF.onload=()=>{ f=nF; d(); playClick(); }; 
-    nF.src=v.target.result; 
-  }; 
-  r.readAsDataURL(e.target.files[0]); 
-}
-
+function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r); x.drawImage(i, -w/2, -h/2,w,h); x.restore(); } x.restore(); if(f.src) { x.drawImage(f, 0, 0, 800, 800); } if (i.src || f.src) { sBtn.classList.add('active'); sBtn.style.opacity = "1"; } }
+function handleFile(e) { originalFileName = e.target.files[0].name.split('.').slice(0, -1).join('.') || "Arcade_PFP"; let r=new FileReader(); r.onload=v=>{ const nextI = new Image(); nextI.onload=()=>{ i=nextI; cfg.s=Math.max(800/i.width,800/i.height); zSl.value=cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%"; updateSliderColor(zSl); d(); playClick(); }; nextI.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ const nF=new Image(); nF.onload=()=>{ f=nF; d(); playClick(); }; nF.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function updateZ(v) { cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; updateSliderColor(zSl); d(); }
 function updateM(v) { cfg.m=parseInt(v); mVal.innerText=v+"px"; updateSliderColor(mSl); d(); }
 
