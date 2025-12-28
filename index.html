@@ -93,7 +93,6 @@
     background-color: transparent; background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
     -webkit-mask-image: -webkit-radial-gradient(white,black); z-index: 10;
   }
-  /* CANVAS ONLY BLOCKS TOUCH */
   canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
   
   /* ✍️ FONT GENERATOR (PERFECT LAYOUT) */
@@ -170,6 +169,8 @@
     <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
+    <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
+    <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
     <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
     <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
     <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
@@ -184,8 +185,8 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
-const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val');
+const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),rSl=document.getElementById('r'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
+const zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val'),mVal=document.getElementById('m-val');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -274,20 +275,8 @@ function mapText(t, m) { let r="", mArr=Array.from(m); for(let c of t) { let idx
 function addF(t, b) { let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t); playShutter();}; b.appendChild(d); }
 
 // --- AUDIO TRIGGER ---
-function initAudio() {
-    if(!audioStarted) { 
-        audioCtx.resume().then(() => {
-            audioStarted = true;
-            if(player && musicOn) { player.unMute(); player.playVideo(); }
-            window.removeEventListener('click', initAudio);
-            window.removeEventListener('touchstart', initAudio);
-            window.removeEventListener('scroll', initAudio);
-        });
-    }
-}
-window.addEventListener('click', initAudio, {capture: true});
-window.addEventListener('touchstart', initAudio, {capture: true});
-window.addEventListener('scroll', initAudio, {capture: true});
+function initAudio() { if(!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted=true; } }
+window.addEventListener('mousedown', initAudio); window.addEventListener('touchstart', initAudio); window.addEventListener('scroll', initAudio);
 
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } swMenu.style.display = 'none'; }
 function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute':0 }, events: { 'onReady': e => { e.target.setVolume(25); } } }); }
