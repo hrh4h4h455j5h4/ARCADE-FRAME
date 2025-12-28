@@ -1,214 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Arcade Studio</title>
-<style>
-  html { scroll-behavior: smooth; overflow-y: auto; }
-  body {
-    background: #0a0a0c; color: white; font-family: sans-serif;
-    display: flex; flex-direction: column; align-items: center;
-    min-height: 100vh; margin: 0; padding-bottom: 150px; 
-    -webkit-overflow-scrolling: touch; 
-    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-    background-size: 100% 4px;
-    touch-action: auto; 
-  }
-  
-  /* --- NAVIGATION --- */
-  .menu-toggle {
-    position: fixed; top: 15px; left: 15px; 
-    background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); 
-    padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 100000;
-    font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-  }
-  .switch-container { position: fixed; top: 15px; right: 15px; z-index: 100000; }
-  #switch-btn {
-    background: #ff0000; color: white; border: 2px solid #ffffff; 
-    padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer;
-    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
-    box-shadow: 0 0 10px rgba(255,0,0,0.5); display: flex; gap: 5px; align-items: center;
-  }
-  #switch-menu {
-    position: absolute; top: 45px; right: 0; background: #1a1a1c; 
-    border: 1px solid #ff0000; border-radius: 8px; width: 220px;
-    display: none; flex-direction: column; overflow: hidden;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.8);
-  }
-  #switch-menu button {
-    background: transparent; color: #aaa; border: none; padding: 14px;
-    text-align: left; font-weight: bold; font-size: 11px; cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase;
-  }
-  #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arcade Gif Studio | HD</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 
-  /* SIDE PANEL */
-  #menu-panel {
-    position: fixed; top: 0; left: -260px; width: 240px; height: 100%;
-    background: #1a1a1c; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 99999;
-    display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
-    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-    box-sizing: border-box; padding-bottom: 80px;
-  }
-  #menu-panel.open { left: 0; }
-  
-  /* BRANDING */
-  .designed-by {
-    position: absolute; bottom: 0; left: 0; width: 100%;
-    padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1);
-    text-align: center; font-size: 11px; font-weight: 900; color: #888;
-    text-transform: uppercase; letter-spacing: 2px; background: #1a1a1c;
-  }
-  .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
+    <style>
+        :root { --neon: #00f3ff; --purple: #bc13fe; --gold: #d4af37; --bg: #000000; }
 
-  .music-section {
-    border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03);
-    border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px;
-  }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; box-sizing: border-box; }
 
-  /* HEADERS */
-  h1 {
-    color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic;
-    font-size: 36px; text-transform: uppercase; letter-spacing: -1px;
-    text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8);
-    animation: arcadeBounce 1.8s infinite ease-in-out;
-  }
-  @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-  .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
-  
-  .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
-  .active-sec { display: flex; }
+        body { 
+            background: var(--bg); color: white; font-family: sans-serif; 
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; margin: 0; padding-top: 40px; 
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+        }
+        
+        /* Layout: GIFS Header matching screenshot */
+        .header-area { text-align: center; margin-bottom: 40px; }
+        .main-title { 
+            font-size: 52px; font-weight: 900; font-style: italic; color: #fff; 
+            text-transform: uppercase; letter-spacing: -2px; line-height: 1;
+            text-shadow: 3px 3px 0px #ff0000; margin: 0;
+        }
+        .sub-title { font-size: 14px; letter-spacing: 3px; font-weight: bold; color: #eee; margin-top: 5px; }
 
-  /* 🖼️ FRAME STUDIO */
-  #box {
-    position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden;
-    background-image: linear-gradient(45deg, #1a1a1c 25%, transparent 25%), linear-gradient(-45deg, #1a1a1c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1c 75%), linear-gradient(-45deg, transparent 75%, #1a1a1c 75%);
-    background-color: transparent; background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-    -webkit-mask-image: -webkit-radial-gradient(white,black); z-index: 10;
-  }
-  canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
-  
-  /* ✍️ FONT GENERATOR */
-  .font-input {
-    width: 100%; background: #111; border: 2px solid #00ffff; color: #fff;
-    padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px;
-    font-size: 16px; outline: none; box-sizing: border-box;
-  }
-  .font-scroll {
-    width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column;
-    gap: 0; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box;
-  }
-  .font-item {
-    background: #1a1a1c; border: none; border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee;
-    white-space: pre-wrap; overflow-wrap: break-word; box-sizing: border-box; font-size: 16px;
-  }
-  .font-item:active { background: #00ffff; color: #000; }
+        /* Layout: Aggressive Neon LED Ring with 25px blur */
+        .stage { 
+            position: relative; width: 320px; height: 320px; margin-bottom: 40px; 
+            touch-action: none; /* Mobile Fix: Drag video without scrolling page */
+        }
+        .led-ring { 
+            position: absolute; inset: -15px; border-radius: 50%; 
+            background: conic-gradient(from 180deg, var(--neon), var(--purple), var(--neon)); 
+            animation: rotate 3s linear infinite; filter: blur(25px); z-index: 1;
+        }
+        .viewport { 
+            position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; 
+            overflow: hidden; background: #000; border: 2px solid rgba(255,255,255,0.1);
+            /* Checkerboard transparency background */
+            background-image: linear-gradient(45deg, #111 25%, transparent 25%), 
+                              linear-gradient(-45deg, #111 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #111 75%), 
+                              linear-gradient(-45deg, transparent 75%, #111 75%);
+            background-size: 20px 20px; box-shadow: inset 0 0 30px #000;
+        }
+        #v { position: absolute; top: 0; left: 0; pointer-events: none; will-change: transform; }
+        #o { width: 100%; height: 100%; object-fit: cover; display: none; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-  /* UI GLOBAL */
-  .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
-  .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; text-transform: uppercase; }
-  .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
-  .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
-  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
-  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff; }
-  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; }
-  
-  /* Gif Studio Iframe */
-  #gif-frame { width: 100%; height: 80vh; border: none; border-radius: 20px; }
-</style>
+        /* UI Panel: Dark rounded box from screenshot */
+        .ui { 
+            background: #151517; padding: 25px; border-radius: 40px; 
+            width: 350px; border: 1px solid rgba(255,255,255,0.05); 
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        
+        .label-row { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 10px; width: 100%; font-weight: bold; text-transform: uppercase; }
+        
+        input[type="range"] { 
+            width: 100%; accent-color: var(--neon); margin-bottom: 25px; height: 5px; cursor: pointer;
+        }
+
+        .btn-upload { 
+            background: #2a2a2e; color: #fff; border: none; padding: 12px 25px; 
+            border-radius: 50px; font-weight: 800; cursor: pointer; 
+            margin-bottom: 25px; font-size: 12px; letter-spacing: 1px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Gold Gradient Create Button */
+        .btn-go { 
+            background: linear-gradient(180deg, #ffcc33, #d4af37); color: #000; border: none; 
+            padding: 18px; width: 100%; border-radius: 20px; cursor: pointer; 
+            font-weight: 900; font-size: 15px; text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        /* Status: 'Processing...' strictly underneath create button */
+        #msg { margin-top: 15px; font-size: 13px; color: var(--neon); font-weight: 600; height: 20px; visibility: hidden; }
+        
+        /* Neon UI Elements: Loops and Reset */
+        .neon-wrap { position: relative; display: none; margin-top: 20px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
+        .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--neon), var(--purple), transparent); animation: rotate 2s linear infinite; }
+        .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--red), #ff5500, transparent); animation: rotate 2s linear infinite; }
+        .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 15px; border-radius: 48px; font-weight: 900; font-size: 13px; z-index: 1; cursor: pointer; border: none; }
+    </style>
 </head>
 <body>
 
-<button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
+    <div class="header-area">
+        <h1 class="main-title">GIFS</h1>
+        <div class="sub-title">ARCADE GIF STUDIO</div>
+    </div>
 
-<div class="switch-container">
-  <button id="switch-btn" onclick="toggleSwitchMenu(event)">SWITCH TO 📂</button>
-  <div id="switch-menu">
-    <button id="nav-frame" class="active-link" onclick="changeStudio('frame')">🖼️ Frame Studio</button>
-    <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
-    <button id="nav-gif" onclick="changeStudio('gif')">🎬 Arcade Gif Studio</button>
-  </div>
-</div>
+    <div class="stage">
+        <div class="led-ring"></div>
+        <div class="viewport" id="vp">
+            <video id="v" muted playsinline loop></video>
+            <img id="o">
+        </div>
+    </div>
 
-<div id="menu-panel">
-  <div class="designed-by">DESIGNED BY <b>RISK</b></div>
-</div>
+    <div class="ui">
+        <div class="label-row"><span>ZOOM / SCALE</span><span id="zv">100%</span></div>
+        <input type="range" id="zoom" min="100" max="300" value="100">
 
-<h1 id="studio-name">ARCADE</h1>
-<p class="sub" id="studio-sub">FRAME STUDIO</p>
+        <button class="btn-upload" onclick="document.getElementById('f').click()">UPLOAD YOUR VIDEO</button>
+        <input type="file" id="f" accept="video/*" style="display:none">
 
-<div id="frame-studio" class="studio-sec active-sec">
-  <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
-  <div class="ui">
-    <label class="btn">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
-    <label class="btn">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
-    <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
-    <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
-    <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
-    <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
-    <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
-  </div>
-</div>
+        <div class="label-row"><span>PLAYBACK SPEED</span><span id="sv">1.0x</span></div>
+        <input type="range" id="speed" min="0.5" max="3.0" step="0.1" value="1.0">
 
-<div id="font-studio" class="studio-sec">
-  <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
-  <div id="font-results" class="font-scroll"></div>
-</div>
+        <button id="go" class="btn-go">⚡ CREATE HD GIF</button>
+        <div id="msg">Processing...</div>
+        
+        <div id="dlBox" class="neon-wrap blue"><a id="dl" class="btn-inner">⬇️ DOWNLOAD GIF</a></div>
+        <div id="resetBox" class="neon-wrap red"><button class="btn-inner" onclick="location.reload()">↻ RESET PROJECT</button></div>
+    </div>
 
-<div id="gif-studio" class="studio-sec">
-  <iframe id="gif-frame" src="gif.html"></iframe>
-</div>
+    <script>
+        const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
+        const workerUrl = URL.createObjectURL(workerBlob);
 
-<script>
-const c=document.getElementById('c'),x=c.getContext('2d'),zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val');
-let i=new Image(),f=new Image(),cfg={s:1,x:400,y:400,r:0};
+        const f = document.getElementById('f'), v = document.getElementById('v'), o = document.getElementById('o'), vp = document.getElementById('vp');
+        const speed = document.getElementById('speed'), sv = document.getElementById('sv'), zoom = document.getElementById('zoom'), zv = document.getElementById('zv'), go = document.getElementById('go'), msg = document.getElementById('msg');
+        const dlBox = document.getElementById('dlBox'), dl = document.getElementById('dl'), resetBox = document.getElementById('resetBox');
 
-function changeStudio(mode) {
-  document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec'));
-  document.querySelectorAll('#switch-menu button').forEach(b => b.classList.remove('active-link'));
-  document.getElementById('switch-menu').style.display = 'none';
-  
-  if(mode === 'frame') {
-    document.getElementById('frame-studio').classList.add('active-sec');
-    document.getElementById('nav-frame').classList.add('active-link');
-    document.getElementById('studio-name').innerText = "ARCADE";
-    document.getElementById('studio-sub').innerText = "FRAME STUDIO";
-  } else if(mode === 'font') {
-    document.getElementById('font-studio').classList.add('active-sec');
-    document.getElementById('nav-font').classList.add('active-link');
-    document.getElementById('studio-name').innerText = "FONTS";
-    document.getElementById('studio-sub').innerText = "GENERATOR STUDIO";
-  } else {
-    document.getElementById('gif-studio').classList.add('active-sec');
-    document.getElementById('nav-gif').classList.add('active-link');
-    document.getElementById('studio-name').innerText = "GIFS";
-    document.getElementById('studio-sub').innerText = "Arcade Gif Studio";
-  }
-}
+        let isDragging = false, startX, startY, startLeft, startTop, naturalW = 0, naturalH = 0;
 
-function toggleSwitchMenu(e) { e.stopPropagation(); const m=document.getElementById('switch-menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
-function toggleMenu(e) { e.stopPropagation(); document.getElementById('menu-panel').classList.toggle('open'); }
+        f.onchange = (e) => {
+            const file = e.target.files[0]; if (!file) return;
+            v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
+            v.src = URL.createObjectURL(file); v.onloadedmetadata = () => {
+                naturalW = v.videoWidth; naturalH = v.videoHeight;
+                const aspect = naturalW / naturalH; v.style.left = '0px'; v.style.top = '0px';
+                if (aspect > 1) { v.style.height = '320px'; v.style.width = (320 * aspect) + 'px'; } 
+                else { v.style.width = '320px'; v.style.height = (320 / aspect) + 'px'; }
+                v.play();
+            };
+        };
 
-// --- CANVAS ENGINE ---
-function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,375,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(400, 400); x.rotate(cfg.r * Math.PI/180); x.drawImage(i, -w/2, -h/2, w, h); x.restore(); } x.restore(); if(f.src) x.drawImage(f, 0, 0, 800, 800); }
-function handleFile(e) { let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=800/i.width; d(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function handleFrame(e) { let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ f=n; d(); }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function updateZ(v) { cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
-function updateR(v) { cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
-function downloadPic() { let a=document.createElement('a'); a.download = 'arcade.png'; a.href=c.toDataURL(); a.click(); }
+        zoom.oninput = () => {
+            if(!v.src) return; zv.innerText = zoom.value + '%'; const z = parseInt(zoom.value) / 100;
+            const aspect = naturalW / naturalH; let baseW = aspect > 1 ? 320 * aspect : 320, baseH = aspect > 1 ? 320 : 320 / aspect;
+            v.style.width = (baseW * z) + 'px'; v.style.height = (baseH * z) + 'px';
+        };
 
-// --- FONT GENERATOR ---
-const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-const base = "𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔batch𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗";
-function genFonts() {
-  const val = document.getElementById('font-input').value, resBox = document.getElementById('font-results');
-  resBox.innerHTML = ""; if(!val) return;
-  let r="", mArr=Array.from(base); for(let c of val) { let idx=chars.indexOf(c); r += (idx!==-1) ? mArr[idx] : c; }
-  let d=document.createElement('div'); d.className="font-item"; d.innerText=r; d.onclick=()=>{navigator.clipboard.writeText(r);}; resBox.appendChild(d);
-}
-</script>
+        const startDrag = (x, y) => { if(!v.src) return; isDragging = true; startX = x; startY = y; startLeft = parseFloat(v.style.left || 0); startTop = parseFloat(v.style.top || 0); };
+        const doDrag = (x, y) => { if (!isDragging) return; const dx = x - startX, dy = y - startY; v.style.left = (startLeft + dx) + 'px'; v.style.top = (startTop + dy) + 'px'; };
+        vp.onmousedown = e => startDrag(e.pageX, e.pageY); window.onmousemove = e => doDrag(e.pageX, e.pageY); window.onmouseup = () => isDragging = false;
+        vp.ontouchstart = e => startDrag(e.touches[0].pageX, e.touches[0].pageY); window.ontouchmove = e => doDrag(e.touches[0].pageX, e.touches[0].pageY); window.ontouchend = () => isDragging = false;
+        speed.oninput = () => { sv.innerText = speed.value + 'x'; v.playbackRate = parseFloat(speed.value); };
+
+        go.onclick = () => {
+            if(!v.src) return;
+            go.disabled = true; msg.style.visibility = "visible";
+            // Hard-coded HD Quality
+            const gif = new GIF({ workers: 2, quality: 10, width: 480, height: 480, workerScript: workerUrl });
+            const canvas = document.createElement('canvas'); canvas.width = 480; canvas.height = 480; const ctx = canvas.getContext('2d');
+            const fps = 24, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
+            capVid.src = v.src; capVid.onloadeddata = () => {
+                const cW = parseFloat(v.style.width), cH = parseFloat(v.style.height), cL = Math.abs(parseFloat(v.style.left || 0)), cT = Math.abs(parseFloat(v.style.top || 0)), rW = naturalW / cW, rH = naturalH / cH, sx = cL * rW, sy = cT * rH, sw = 320 * rW, sh = 320 * rH;
+                let cTime = 0; const captureFrame = () => { if (cTime >= duration) { gif.render(); return; } capVid.currentTime = cTime; };
+                capVid.onseeked = () => { ctx.drawImage(capVid, sx, sy, sw, sh, 0, 0, 480, 480); gif.addFrame(ctx, {copy: true, delay: (1000 / fps) / playbackSpeed}); cTime += (1 / fps); captureFrame(); };
+                captureFrame();
+            };
+            gif.on('finished', (blob) => {
+                const url = URL.createObjectURL(blob), rNum = Math.floor(Math.random() * 90000) + 10000;
+                v.style.display = 'none'; o.src = url; o.style.display = 'block';
+                dl.href = url; dl.download = `neon_focus_${rNum}.gif`; // Unique naming
+                dlBox.style.display = 'inline-block'; resetBox.style.display = 'inline-block';
+                msg.style.visibility = "hidden"; go.disabled = false;
+            });
+        };
+    </script>
 </body>
 </html>
