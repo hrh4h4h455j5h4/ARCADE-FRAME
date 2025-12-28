@@ -10,7 +10,7 @@
     background: #000; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
     min-height: 100vh; margin: 0; padding-bottom: 120px;
-    -webkit-overflow-scrolling: touch; transition: 0.5s;
+    -webkit-overflow-scrolling: touch; transition: 0.5s ease;
     overflow-x: hidden; position: relative;
     /* OFFICIAL THEME 8 DEFAULT: SCANLINE RETRO */
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
@@ -68,15 +68,10 @@
 
   #box { position: relative; width: 280px; height: 280px; border-radius: 50%; overflow: hidden; background-image: linear-gradient(45deg,#111 25%,transparent 25%),linear-gradient(-45deg,#111 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#111 75%),linear-gradient(-45deg,transparent 75%,#111 75%); background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 2px solid transparent; margin: 0 auto; -webkit-mask-image: -webkit-radial-gradient(white,black); }
   canvas { position: absolute; top: 0; left: 0; width: 280px; height: 280px; touch-action: none; }
-  
-  #shine-flare { position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-25deg); pointer-events: none; }
-  .shine-active #shine-flare { animation: shineRun 1.5s ease-in-out; }
-  @keyframes shineRun { 0% { left: -100%; } 100% { left: 200%; } }
 
   .ui { margin-top: 20px; width: 260px; display: flex; flex-direction: column; align-items: stretch; gap: 6px; margin-left: auto; margin-right: auto; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 11px; cursor: pointer; }
   .btn-r { border-color: #ff0000; }
-  .btn-shine { border-color: #ffd700; color: #ffd700; }
   .btn-center { border-color: #00ffff; color: #00ffff; margin-bottom: 5px; }
 
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; }
@@ -89,11 +84,6 @@
   #save { background: #ff0000; border: none; font-size: 13px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: not-allowed; opacity: 0.4; transition: 0.2s; }
   #save.active { cursor: pointer; opacity: 1; }
 
-  #about-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; overflow-y: auto; padding: 80px 20px; text-align: left; }
-  .about-wrap { max-width: 600px; margin: auto; }
-  .back-btn { background: #ff0000; color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 30px; }
-  .sec-h { color: #00ffff; font-size: 14px; letter-spacing: 2px; border-bottom: 1px solid #222; margin-top: 30px; padding-bottom: 8px; font-weight: bold; text-transform: uppercase; }
-  .red-step { color: #ff0000; font-weight: bold; }
   input[type=file] { display: none; }
   #yt-player { display: none; }
 </style>
@@ -110,7 +100,6 @@
   </div>
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;" onclick="playShutter()"><svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg><span>Discord Server</span></a>
   <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;" onclick="playShutter()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Arcade Website</span></a>
-  <div class="lnk" style="border-color:#ffffff;" onclick="toggleAboutPage()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span>About Us</span></div>
 </div>
 
 <div id="theme-selector">
@@ -144,12 +133,11 @@
 <p class="sub">FRAME STUDIO</p>
 
 <div id="studio-view" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-  <div id="box"><canvas id="c" width="800" height="800"></canvas><div id="shine-flare"></div></div>
+  <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
     <label class="btn" onclick="playClick()">STEP 1: CHOOSE PHOTO<input type="file" id="u1" accept="image/*"></label>
     <label class="btn btn-r" onclick="playClick()">STEP 2: UPLOAD FRAME<input type="file" id="u2" accept="image/*"></label>
     <button class="btn btn-center" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
-    <button class="btn btn-shine" onclick="runShine()">PREVIEW FRAME SHINE ✨</button>
     <div class="lbl">ZOOM PHOTO <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1">
     <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
@@ -158,41 +146,21 @@
   </div>
 </div>
 
-<div id="about-page">
-  <div class="about-wrap">
-    <button class="back-btn" onclick="toggleAboutPage()">← BACK TO STUDIO</button>
-    <div class="sec-h" style="margin-top:0;">ABOUT ARCADE STUDIO</div>
-    <p style="color:#aaa; font-size:14px;">Arcade Studio is the elite high-performance platform for digital creators. Features animated titles, a 21-theme visual selection bay, and precision alignment tools.</p>
-    <div class="sec-h">ELITE CAPABILITIES</div>
-    <p style="color:#aaa; font-size:14px;"><b>Animated Titles:</b> High-energy arcade headers with elastic bounce logic. <br><br><b>Visual Theme Selection:</b> Select from 20 unique aesthetics with live previews.</p>
-    <div class="sec-h">OPERATIONAL GUIDELINES</div>
-    <p style="color:#888; font-size:14px;">
-      <span class="red-step">1. Upload:</span> Choose photo and frame using Steps 1 & 2. <br><br>
-      <span class="red-step">2. Visual Style:</span> Open theme menu and pick an aesthetic. <br><br>
-      <span class="red-step">3. Symmetry:</span> Use Center Subject for perfect alignment. <br><br>
-      <span class="red-step">4. Lock Frame:</span> Align Circle Size and Zoom until gaps are hidden. <br><br>
-      <span class="red-step">5. Export:</span> Click Download to save your high-res PNG.
-    </p>
-  </div>
-</div>
-
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),aboutPage=document.getElementById('about-page'),studioView=document.getElementById('studio-view'),box=document.getElementById('box');
+const c=document.getElementById('c'),x=c.getContext('2d'),z=document.getElementById('z'),m=document.getElementById('m'),sBtn=document.getElementById('save'),panel=document.getElementById('menu-panel'),tMenu=document.getElementById('theme-selector'),studioView=document.getElementById('studio-view');
 const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val'),mStat=document.getElementById('m-status');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0,ia:0,ir:0},originalFileName="Arcade_PFP",player,musicOn=true,audioStarted=false,curT=8;
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' }, events: { 'onReady': e => { e.target.setVolume(25); if(musicOn) e.target.playVideo(); } } }); }
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'nv_2rz5BFDA', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'nv_2rz5BFDA' }, events: { 'onReady': e => { if(musicOn) e.target.playVideo(); } } }); }
 function startAudio() { if (!audioStarted) { audioCtx.resume(); if(player && musicOn) player.playVideo(); audioStarted = true; } }
-function toggleAboutPage() { playShutter(); const isOpen = aboutPage.style.display === 'block'; aboutPage.style.display = isOpen ? 'none' : 'block'; studioView.style.display = isOpen ? 'flex' : 'none'; if(!isOpen) { panel.classList.remove('open'); window.scrollTo(0,0); } }
 
 function openThemeSelector() { panel.classList.remove('open'); tMenu.classList.add('open'); playClick(); }
 function closeThemeSelector() { tMenu.classList.remove('open'); panel.classList.add('open'); playClick(); }
 function setT(n) { startAudio(); playClick(); document.body.classList.remove('t'+curT); curT=n; document.body.classList.add('t'+curT); tMenu.classList.remove('open'); }
 
 function centerSubject() { if(!i.src) return; playShutter(); cfg.x = 400; cfg.y = 400; d(); }
-function runShine() { if(!f.src) return; playShutter(); box.classList.add('shine-active'); setTimeout(()=>box.classList.remove('shine-active'), 1500); }
 function toggleMusic() { startAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
 function toggleMenu(e) { e.stopPropagation(); startAudio(); playClick(); panel.classList.toggle('open'); tMenu.classList.remove('open'); }
 window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(e.target)) { panel.classList.remove('open'); playClick(); } };
@@ -200,11 +168,10 @@ window.onclick = e => { if (panel.classList.contains('open') && !panel.contains(
 function playWin() { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, idx) => { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(freq, audioCtx.currentTime + (idx * 0.1)); gain.gain.setValueAtTime(0.1, audioCtx.currentTime + (idx * 0.1)); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + (idx * 0.1) + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(audioCtx.currentTime + (idx * 0.1)); osc.stop(audioCtx.currentTime + (idx * 0.1) + 0.1); }); }
 function playClick() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(800, audioCtx.currentTime); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.1); }
 function playShutter() { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.type = 'square'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.setValueAtTime(400, audioCtx.currentTime + 0.05); gain.gain.setValueAtTime(0.1, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.15); }
-function playSlider(val) { const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain(); osc.frequency.setValueAtTime(200 + (val > 5 ? (val-300)*5 : val * 100), audioCtx.currentTime); gain.gain.setValueAtTime(0.02, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime + 0.05); }
 function updateSliderColor(el) { const percent = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty('--v', percent + '%'); }
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r); x.drawImage(i, -w/2, -h/2,w,h); x.restore(); } x.restore(); if(f.src) { x.drawImage(f, 0, 0, 800, 800); } if (i.src || f.src) sBtn.classList.add('active'); }
 function handleFile(file) { originalFileName = file.name.split('.').slice(0, -1).join('.') || "Arcade_PFP"; let r=new FileReader(); r.onload=v=>{ const nextI = new Image(); nextI.onload=()=>{ i=nextI; cfg.s=Math.max(800/i.width,800/i.height); z.value=cfg.s; zVal.innerText=Math.round(cfg.s*100)+"%"; updateSliderColor(z); d(); playClick(); }; nextI.src=v.target.result; }; r.readAsDataURL(file); }
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); playSlider(el.value); }); updateSliderColor(el); });
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => { updateSliderColor(el); }); updateSliderColor(el); });
 document.getElementById('u1').onchange=e=>handleFile(e.target.files[0]);
 document.getElementById('u2').onchange=e=>{ const file = e.target.files[0]; if(!file) return; let r=new FileReader(); r.onload=v=>{ f.src=v.target.result; f.onload=d; }; r.readAsDataURL(file); };
 z.oninput=e=>{ cfg.s=parseFloat(e.target.value); zVal.innerText=Math.round(cfg.s*100)+"%"; d(); };
