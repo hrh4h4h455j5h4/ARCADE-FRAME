@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Arcade Studio</title>
 <style>
+  /* Allow page scrolling, but keep body neat */
   html { scroll-behavior: smooth; overflow-y: auto; }
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
@@ -48,15 +49,17 @@
     background: #1a1a1c; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 99999;
     display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px;
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
+    box-sizing: border-box; /* Important for padding calculation */
+    padding-bottom: 80px; /* Space for signature */
   }
   #menu-panel.open { left: 0; }
   
-  /* BRANDING (VISIBLE AT BOTTOM OF MENU) */
+  /* BRANDING (FIXED POSITIONING) */
   .designed-by {
-    margin-top: auto; margin-bottom: 20px; padding: 15px 0;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1);
     text-align: center; font-size: 11px; font-weight: 900; color: #888;
-    text-transform: uppercase; letter-spacing: 2px;
+    text-transform: uppercase; letter-spacing: 2px; background: #1a1a1c;
   }
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
 
@@ -162,7 +165,7 @@
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
     <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
     <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
-    <button id="save" onclick="downloadPic()">EXPORT PICTURE</button>
+    <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
   </div>
 </div>
 
