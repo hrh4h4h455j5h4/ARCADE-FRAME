@@ -14,7 +14,7 @@
     -webkit-overflow-scrolling: touch; 
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px;
-    touch-action: pan-y; /* CRITICAL: Allows vertical scrolling on the page */
+    touch-action: pan-y; 
   }
   
   /* --- NAVIGATION --- */
@@ -90,36 +90,14 @@
   /* 🖼️ FRAME STUDIO */
   #box {
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden;
-    background-image: linear-gradient(45deg, #1a1a1c 25%, transparent 25%), linear-gradient(-45deg, #1a1a1c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1c 75%), linear-gradient(-45deg, transparent 75%, #1a1a1c 75%);
-    background-color: transparent; background-size: 20px 20px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-    -webkit-mask-image: -webkit-radial-gradient(white,black); z-index: 10;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5); -webkit-mask-image: -webkit-radial-gradient(white,black); z-index: 10;
   }
-  
-  canvas { 
-    position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; 
-    touch-action: none; 
-  }
+  canvas { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
   
   /* ✍️ FONT GENERATOR (PERFECT LAYOUT) */
-  .font-input {
-    width: 100%; background: #111; border: 2px solid #00ffff; color: #fff;
-    padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px;
-    font-size: 16px; outline: none; box-sizing: border-box;
-  }
-  .font-scroll {
-    width: 100%; max-height: 500px; 
-    overflow-y: auto; 
-    -webkit-overflow-scrolling: touch; 
-    display: flex; flex-direction: column;
-    gap: 0; border-radius: 8px; overflow-x: hidden;
-    border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box;
-    touch-action: pan-y;
-  }
-  .font-item {
-    background: #1a1a1c; border: none; border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee;
-    white-space: pre-wrap; overflow-wrap: break-word; box-sizing: border-box; font-size: 16px;
-  }
+  .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
+  .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 0; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
+  .font-item { background: #1a1a1c; border: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; white-space: pre-wrap; overflow-wrap: break-word; box-sizing: border-box; font-size: 16px; }
   .font-item:last-child { border-bottom: none; }
   .font-item:active { background: #00ffff; color: #000; }
 
@@ -132,9 +110,7 @@
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; box-shadow: 0 0 10px #ff0000; border: 2px solid #ffffff; }
-  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; opacity: 0.4; pointer-events: none; }
-  #save.active { opacity: 1; pointer-events: auto; }
-  input[type=file], #yt-player { display: none; }
+  #save { background: #ff0000; border: none; font-size: 14px; color: white; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; }
 </style>
 </head>
 <body onclick="startAudio()">
@@ -159,10 +135,8 @@
       <option value="nv_2rz5BFDA">🕹️ Retro Wave</option>
     </select>
   </div>
-
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;"><svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg><span>Discord Server</span></a>
   <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Arcade Website</span></a>
-
   <div class="designed-by">DESIGNED BY <b>RISK</b></div>
 </div>
 
@@ -174,10 +148,12 @@
 <div id="frame-studio" class="studio-sec active-sec">
   <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
-    <label class="btn" onclick="playClick()">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
+    <label class="btn">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
     <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
+    <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
+    <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
     <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
     <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
     <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
@@ -192,9 +168,9 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),mSl=document.getElementById('m'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu'), sBtn=document.getElementById('save');
-const zVal=document.getElementById('z-val'),mVal=document.getElementById('m-val');
-let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,d:false,lx:0,ly:0},player,musicOn=true,audioStarted=false;
+const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),rSl=document.getElementById('r'),mSl=document.getElementById('m'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
+const zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val'),mVal=document.getElementById('m-val');
+let i=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,lx:0,ly:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function changeStudio(mode) {
@@ -208,21 +184,21 @@ function changeStudio(mode) {
   }
 }
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
-function toggleMenu(e) { e.stopPropagation(); initAudio(); playClick(); panel.classList.toggle('open'); }
+function toggleMenu(e) { e.stopPropagation(); panel.classList.toggle('open'); }
 
-// --- ✍️ CLEANED 1000+ FONT LIST (PURGED BUGS) ---
+// --- ✍️ FULL 1000+ FONT LIST ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const bases = [
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
   {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},
-  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
+  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶ℬ𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
   {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"},
   {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},
-  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞运转𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
+  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝐩𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
-  {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜𝗝𝗞𝗟𝗠𝗡𝗢𝗣𝗤𝗥𝗦𝗧𝗨ＶＷＸＹＺ𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶ｊ𝗄𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂ｖｗ𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
+  {m:"𝗔𝗕𝗖𝗗ＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ𝗮𝗯𝗰ｄｅ𝗳𝗴ｈ𝗶𝗷𝗸𝗹𝗺𝗻ｏｐ𝗾𝗿𝘀𝘁𝘂𝘃ｗ𝘅ｙ𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
   {m:"🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩0123456789"},
@@ -234,27 +210,19 @@ const bases = [
   {m:"̶A̶B̶C̶D̶E̶F̶G̶H̶I̶J̶K̶L̶M̶N̶O̶P̶Q̶R̶S̶T̶U̶V̶W̶X̶Y̶Z̶0̶1̶2̶3̶4̶5̶6̶7̶8̶9"},
   {m:"̳A̳B̳C̳D̳E̳F̳G̳H̳I̳J̳K̳L̳M̳N̳O̳P̳Q̳R̳S̳T̳U̳V̳W̳X̳Y̳Z̳0̳1̳2̳3̳4̳5̳6̳7̳8̳9"},
   {m:"̷A̷B̷C̷D̷E̷F̷G̷H̷I̷J̷K̷L̷M̷N̷O̷P̷Q̷R̷S̷T̷U̷V̷W̷X̷Y̷Z̷0̷1̷2̷3̷4̷5̷6̷7̷8̷9"},
-  {m:"A̲B̲C̲D̲E̲F̲G̲H̲I̲J̲K̲L̲M̲N̲O̲P̲Q̲R̲S̲T̲U̲V̲W̲X̲Y̲Z̲0̲1̲2̶3̶4̶5̶6̶7̶8̶9"},
   {m:"A♥B♥C♥D♥E♥F♥G♥H♥I♥J♥K♥L♥M♥N♥O♥P♥Q♥R♥S♥T♥U♥V♥W♥X♥Y♥Z♥0♥1♥2♥3♥4♥5♥6♥7♥8♥9"}
 ];
-
-const decorators = [
-  " ", "★|★", "『|』", "【|】", "꧁|꧂", "˗ˏ|ˎ˗", "⦗|⦘", "⁅|⁆", "☾|☽", "×|×", "☆|☆", "●|●", "■|■", "→|←", "⚡|⚡", "☠|☠", "☮|☮", 
-  "✈|✈", "❤|❤", "♛|♛", "∞|∞", "§|§", "₪|₪", "↺|↻", "❄|❄", "☁|☁", "☂|☂", "✂|✂", "✎|✎", "⚔|⚔", "⚓|⚓", "⚙|⚙", 
-  "⚛|⚛", "⚜|⚜", "⚠|⚠", "✧|✧", "✩|✩", "✪|✪", "✫|✫", "✬|✬", "✭|✭", "✮|✮", "✯|✯", "✰|✰", "✱|✱", "✲|✲", "✳|✳"
-];
+const decorators = [" ", "★|★", "『|』", "【|】", "꧁|꧂", "˗ˏ|ˎ˗", "⦗|⦘", "⁅|⁆", "☾|☽", "×|×", "☆|☆", "●|●", "■|■", "→|←", "⚡|⚡", "❤|❤", "♛|♛", "∞|∞", "§|§", "₪|₪", "↺|↻", "❄|❄", "☁|☁", "☂|☂", "✂|✂", "✎|✎", "⚔|⚔", "⚓|⚓", "⚙|⚙", "⚛|⚛", "⚜|⚜", "⚠|⚠", "✧|✧", "✩|✩", "✪|✪", "✫|✫", "✬|✬", "✭|✭", "✮|✮", "✯|✯", "✰|✰", "✱|✱", "✲|✲", "✳|✳"];
 
 function genFonts() {
   const val = document.getElementById('font-input').value, resBox = document.getElementById('font-results');
   resBox.innerHTML = ""; if(!val) return;
   let count = 0;
-  
   bases.forEach(b => {
     let baseTxt = "";
     const mapArr = Array.from(b.m);
     for(let char of val) {
       let idx = chars.indexOf(char);
-      // SAFETY FIX: If char exists in map, map it; otherwise return original
       baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char;
     }
     addF(baseTxt, resBox); count++;
@@ -267,29 +235,55 @@ function genFonts() {
 }
 function addF(t, b) { let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t); playShutter();}; b.appendChild(d); }
 
-// --- RESTORED CORE LOGIC ---
+// --- CORE ---
 function initAudio() { if(!audioStarted) { audioCtx.resume(); audioStarted=true; if(player && musicOn) player.playVideo(); } }
 window.addEventListener('click', initAudio, {once:true});
 window.addEventListener('touchstart', initAudio, {once:true});
 function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk' } }); }
 function changeMusic(id) { if(player) player.loadVideoById(id); playShutter(); }
-function toggleMusic() { initAudio(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
+function toggleMusic() { initAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
+function toggleMenu(e) { e.stopPropagation(); initAudio(); playClick(); panel.classList.toggle('open'); }
 function playClick() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);} }
 function playShutter() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);} }
 
-function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src) x.drawImage(i, 400-(i.width*cfg.s)/2 + (cfg.x-400), 400-(i.height*cfg.s)/2 + (cfg.y-400), i.width*cfg.s, i.height*cfg.s); x.restore(); if (i.src) sBtn.classList.add('active'); }
-function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; d();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function updateZ(v){ cfg.s=parseFloat(v); document.getElementById('z-val').innerText=Math.round(v*100)+"%"; d(); }
-function updateM(v){ cfg.m=parseInt(v); document.getElementById('m-val').innerText=v+"px"; d(); }
-function centerSubject(){ cfg.x=400; cfg.y=400; d(); }
+// --- 🖼️ CANVAS ENGINE (REPAIRED ROTATION) ---
+function d(){ 
+    x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
+    if(i.src){ 
+        let w=i.width*cfg.s, h=i.height*cfg.s; 
+        x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI/180); 
+        x.drawImage(i, -w/2, -h/2, w, h); x.restore(); 
+    } x.restore();
+}
+function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; d();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
+function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); } // RESTORED SLIDER LOGIC
+function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); } 
+function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; rVal.innerText="0°"; d(); }
 
-// --- FIXED UNIQUE DOWNLOAD FILENAME ---
+// --- GESTURE LOGIC (2-FINGER ROTATION RESTORED) ---
+let lastDist=0, lastAng=0;
+function getDist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+function getAng(t){ return Math.atan2(t[1].clientY-t[0].clientY, t[1].clientX-t[0].clientX) * 180/Math.PI; }
+
+c.addEventListener('touchstart', e => {
+    if(e.touches.length===1) { cfg.lx = e.touches[0].clientX - cfg.x; cfg.ly = e.touches[0].clientY - cfg.y; }
+    else if(e.touches.length===2) { lastDist = getDist(e.touches); lastAng = getAng(e.touches); }
+}, {passive:false});
+
+c.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if(e.touches.length===1) { cfg.x = e.touches[0].clientX - cfg.lx; cfg.y = e.touches[0].clientY - cfg.ly; }
+    else if(e.touches.length===2) {
+        let dScale = getDist(e.touches); cfg.s *= (dScale / lastDist); lastDist = dScale;
+        let aRot = getAng(e.touches); cfg.r += (aRot - lastAng); lastAng = aRot;
+        zSl.value = cfg.s; rSl.value = cfg.r; zVal.innerText=Math.round(cfg.s*100)+"%"; rVal.innerText=Math.round(cfg.r%360)+"°";
+    } d();
+}, {passive:false});
+
 function downloadPic(){ let a=document.createElement('a'); a.download=`Arcade_Export_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); }
-
-c.addEventListener('touchstart', e => { if(e.touches.length===1) { cfg.lx = e.touches[0].clientX - cfg.x; cfg.ly = e.touches[0].clientY - cfg.y; } }, {passive:false});
-c.addEventListener('touchmove', e => { e.preventDefault(); if(e.touches.length===1) { cfg.x = e.touches[0].clientX - cfg.lx; cfg.y = e.touches[0].clientY - cfg.ly; } d(); }, {passive:false});
-function updS(el){ el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
+function updateSliderColor(el) { el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updateSliderColor(el)); updateSliderColor(el); });
 </script>
 </body>
 </html>
