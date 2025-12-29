@@ -147,6 +147,8 @@
   <div id="switch-menu">
     <button id="nav-frame" class="active-link" onclick="changeStudio('frame')">🖼️ Frame Studio</button>
     <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
+    <button id="nav-gif" onclick="changeStudio('gif')">⚡ GIF Maker</button>
+
   </div>
 </div>
 
@@ -209,6 +211,12 @@ function changeStudio(mode) {
   } else {
     document.getElementById('font-studio').classList.add('active-sec'); document.getElementById('nav-font').classList.add('active-link');
     sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO";
+    else if(mode === 'gif') {
+    document.getElementById('gif-studio').classList.add('active-sec');
+    document.getElementById('nav-gif').classList.add('active-link');
+    sName.innerText = "NEON"; sSub.innerText = "GIF STUDIO";
+}
+
   }
 }
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
