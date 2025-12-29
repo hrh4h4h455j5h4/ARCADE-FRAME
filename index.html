@@ -41,8 +41,14 @@
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- 🖼️ FRAME STUDIO --- */
-  #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; box-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 10; background: #111; }
+  /* --- 🖼️ FRAME STUDIO (TRANSPARENCY FIX) --- */
+  #box { 
+    position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; 
+    /* RESTORED CHECKERBOARD BACKGROUND */
+    background-image: linear-gradient(45deg, #1a1a1c 25%, transparent 25%), linear-gradient(-45deg, #1a1a1c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1c 75%), linear-gradient(-45deg, transparent 75%, #1a1a1c 75%);
+    background-color: transparent; background-size: 20px 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5); z-index: 10; 
+  }
   canvas#c { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
   
   /* --- ✍️ FONT GENERATOR --- */
@@ -98,7 +104,7 @@
 <div id="frame-studio" class="studio-sec active-sec">
   <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
-    <label class="btn">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)"></label>
+    <label class="btn">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
     <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="4" step="0.01" value="1" oninput="updateZ(this.value)">
@@ -136,7 +142,7 @@ function changeStudio(mode) {
   }
 }
 
-// --- RESTORED: TAP ANYWHERE TO CLOSE MENU ---
+// --- TAP ANYWHERE TO CLOSE MENU ---
 window.onclick = e => {
   if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); }
   if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; }
@@ -145,19 +151,19 @@ window.onclick = e => {
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; }
 function toggleMenu(e) { e.stopPropagation(); panel.classList.toggle('open'); }
 
-// --- ✍️ RESTORED 1,100+ FONT ENGINE (NO UNDEFINED) ---
+// --- ✍️ 1,100+ FONT ENGINE (CLEANED & SAFE) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const bases = [
-  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔batch𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
+  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
   {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ℩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶ℬ𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
   {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"},
   {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},
-  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞运转𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
+  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝐩𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
-  {m:"𝗔𝗕ＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ𝗮ｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ𝗾𝗿𝘀𝘁ｕｖｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
+  {m:"𝗔𝗕ＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ𝗮ｂ𝗰ｄｅ𝗳𝗴ｈｉｊｋｌｍｎｏｐ𝗾𝗿𝘀𝘁𝘂ｖｗ𝘅ｙ𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
   {m:"₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ0123456789"},
@@ -183,7 +189,7 @@ function genFonts() {
     const mapArr = Array.from(b.m);
     for(let char of val) {
       let idx = chars.indexOf(char);
-      baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char; // CHARACTER MAPPING SAFETY CHECK
+      baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char;
     }
     addF(baseTxt, resBox); count++;
     decorators.forEach(dec => {
@@ -195,57 +201,52 @@ function genFonts() {
 }
 function addF(t, b) { let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t); playShutter();}; b.appendChild(d); }
 
-// --- RESTORED: 🖼️ CANVAS ENGINE (CIRCLE & ROTATION) ---
+// --- CORE ---
+function initAudio() { if(!audioStarted) { audioCtx.resume(); audioStarted=true; if(player && musicOn) player.playVideo(); } }
+window.addEventListener('click', initAudio, {once:true});
+window.addEventListener('touchstart', initAudio, {once:true});
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk' } }); }
+function changeMusic(id) { if(player) player.loadVideoById(id); playShutter(); }
+function toggleMusic() { initAudio(); playClick(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
+function playClick() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);} }
+function playShutter() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1);} }
+
+// --- 🖼️ CANVAS ENGINE (TRANSPARENT & ROTATABLE) ---
 function d(){ 
     x.clearRect(0,0,800,800); 
     x.save(); 
-    x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); // CIRCLE MASK RESTORED
+    x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
     if(i.src){ 
         let w=i.width*cfg.s, h=i.height*cfg.s; 
-        x.save(); 
-        x.translate(cfg.x, cfg.y); 
-        x.rotate(cfg.r * Math.PI/180); // ROTATION RESTORED
-        x.drawImage(i, -w/2, -h/2, w, h); 
-        x.restore(); 
-    } 
-    x.restore(); 
+        x.save(); x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI/180); 
+        x.drawImage(i, -w/2, -h/2, w, h); x.restore(); 
+    } x.restore();
 }
-
 function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
-function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); } // SLIDER ROTATION RESTORED
-function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); } 
+function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); }
-function downloadPic(){ let a=document.createElement('a'); a.download=`Arcade_Export_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); } // UNIQUE FILENAME
+function downloadPic(){ let a=document.createElement('a'); a.download=`Arcade_Export_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); }
 
-// --- RESTORED: GESTURE LOGIC (2-FINGER ROTATION) ---
+// --- GESTURE LOGIC ---
 let lastDist=0, lastAng=0;
 function getDist(t){ return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
 function getAng(t){ return Math.atan2(t[1].clientY-t[0].clientY, t[1].clientX-t[0].clientX) * 180/Math.PI; }
-
 c.addEventListener('touchstart', e => {
     if(e.touches.length===1) { cfg.lx = e.touches[0].clientX - cfg.x; cfg.ly = e.touches[0].clientY - cfg.y; }
     else if(e.touches.length===2) { lastDist = getDist(e.touches); lastAng = getAng(e.touches); }
 }, {passive:false});
-
 c.addEventListener('touchmove', e => {
     e.preventDefault();
     if(e.touches.length===1) { cfg.x = e.touches[0].clientX - cfg.lx; cfg.y = e.touches[0].clientY - cfg.ly; }
-    else if(e.touches.length===2) { // 2-FINGER ROTATION LOGIC RESTORED
+    else if(e.touches.length===2) {
         let dScale = getDist(e.touches); cfg.s *= (dScale / lastDist); lastDist = dScale;
         let aRot = getAng(e.touches); cfg.r += (aRot - lastAng); lastAng = aRot;
         zSl.value = cfg.s; rSl.value = cfg.r; zVal.innerText=Math.round(cfg.s*100)+"%"; rVal.innerText=Math.round(cfg.r%360)+"°";
     } d();
 }, {passive:false});
 
-// --- CORE ---
-function initAudio() { if(!audioStarted) { audioCtx.resume(); audioStarted=true; if(player && musicOn) player.playVideo(); } }
-window.addEventListener('click', initAudio, {once:true});
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk' } }); }
-function changeMusic(id) { if(player) player.loadVideoById(id); }
-function toggleMusic() { initAudio(); musicOn = !musicOn; if(musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
-function playClick() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1);}}
-function playShutter() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1);}}
 function updS(el){ el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 </script>
