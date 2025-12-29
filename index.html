@@ -17,17 +17,46 @@
   }
   
   /* --- NAVIGATION --- */
-  .menu-toggle { position: fixed; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 100000; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-  .switch-container { position: fixed; top: 15px; right: 15px; z-index: 100000; }
-  #switch-btn { background: #ff0000; color: white; border: 2px solid #ffffff; padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 10px rgba(255,0,0,0.5); display: flex; gap: 5px; align-items: center; }
-  #switch-menu { position: absolute; top: 45px; right: 0; background: #1a1a1c; border: 1px solid #ff0000; border-radius: 8px; width: 220px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
-  #switch-menu button { background: transparent; color: #aaa; border: none; padding: 14px; text-align: left; font-weight: bold; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase; }
-  #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
+  /* FIXED: Menu Button stays in place when scrolling */
+  .menu-toggle { 
+    position: fixed; top: 15px; left: 15px; 
+    background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); 
+    padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; 
+    z-index: 100000; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+  }
 
   /* SIDE PANEL */
-  #menu-panel { position: fixed; top: 0; left: -260px; width: 240px; height: 100%; background: #1a1a1c; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 99999; display: flex; flex-direction: column; gap: 10px; padding-left: 15px; padding-right: 15px; box-shadow: 2px 0 15px rgba(0,0,0,0.5); box-sizing: border-box; padding-bottom: 80px; }
+  #menu-panel { 
+    position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
+    background: #1a1a1c; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    z-index: 99999; display: flex; flex-direction: column; gap: 15px; 
+    padding-left: 15px; padding-right: 15px; box-shadow: 2px 0 15px rgba(0,0,0,0.5); 
+    box-sizing: border-box; padding-bottom: 80px; 
+  }
   #menu-panel.open { left: 0; }
-  .designed-by { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; text-transform: uppercase; letter-spacing: 2px; background: #1a1a1c; }
+
+  /* MOVED: Switch Container is now inside the Menu Panel */
+  .switch-container { position: relative; width: 100%; }
+  #switch-btn { 
+    background: #ff0000; color: white; border: 2px solid #ffffff; 
+    padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; 
+    font-size: 11px; text-transform: uppercase; width: 100%; text-align: center;
+    box-shadow: 0 0 10px rgba(255,0,0,0.5); 
+  }
+  #switch-menu { 
+    position: absolute; top: 45px; left: 0; background: #1a1a1c; 
+    border: 1px solid #ff0000; border-radius: 8px; width: 210px; 
+    display: none; flex-direction: column; overflow: hidden; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8); z-index: 100001;
+  }
+  #switch-menu button { 
+    background: transparent; color: #aaa; border: none; padding: 14px; 
+    text-align: left; font-weight: bold; font-size: 11px; cursor: pointer; 
+    border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase;
+  }
+  #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
+
+  .designed-by { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; background: #1a1a1c; }
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
 
   .music-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -35,9 +64,10 @@
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
   /* HEADERS */
-  h1 { color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000; animation: arcadeBounce 1.8s infinite ease-in-out; }
+  h1 { color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); animation: arcadeBounce 1.8s infinite ease-in-out; }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
+  
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
@@ -72,15 +102,15 @@
 
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
-<div class="switch-container">
-  <button id="switch-btn" onclick="toggleSwitchMenu(event)">SWITCH TO 📂</button>
-  <div id="switch-menu">
-    <button id="nav-frame" class="active-link" onclick="changeStudio('frame')">🖼️ Frame Studio</button>
-    <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
-  </div>
-</div>
-
 <div id="menu-panel">
+  <div class="switch-container">
+    <button id="switch-btn" onclick="toggleSwitchMenu(event)">SWITCH TO 📂</button>
+    <div id="switch-menu">
+      <button id="nav-frame" class="active-link" onclick="changeStudio('frame')">🖼️ Frame Studio</button>
+      <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
+    </div>
+  </div>
+
   <div class="music-section">
     <div class="music-btn" style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; cursor:pointer;" onclick="toggleMusic()">
       <span>MUSIC PLAYER</span> <span id="m-status" style="color:#ff0000;">ON</span>
@@ -91,7 +121,7 @@
     </select>
   </div>
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;"><svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg><span>Discord Server</span></a>
-  <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19(1).png 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Arcade Website</span></a>
+  <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff;"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg><span>Arcade Website</span></a>
   <div class="designed-by">DESIGNED BY <b>RISK</b></div>
 </div>
 
@@ -139,9 +169,9 @@ function changeStudio(mode) {
   }
 }
 
-// --- RESTORED: TAP ANYWHERE TO CLOSE MENU & START MUSIC ---
+// --- TAP ANYWHERE TO CLOSE MENU & START MUSIC ---
 window.onclick = e => {
-  initAudio(); // STARTS MUSIC ON TAP
+  initAudio(); 
   if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); }
   if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; }
 };
@@ -157,11 +187,11 @@ const bases = [
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ℩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶ℬ𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
-  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"},
+  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},
   {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕迫𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞运转𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
-  {m:"𝗔𝗕𝗖ＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ𝗮𝗯𝗰ｄｅｆｇｈｉｊｋｌｍｎｏｐ𝗾𝗿𝘀𝘁ｕｖｗ𝘅ｙ𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
+  {m:"𝗔𝗕ＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐ𝗾𝗿ｓ𝘁ｕｖｗ𝘅ｙ𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
   {m:"₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ0123456789"},
@@ -187,7 +217,7 @@ function genFonts() {
     const mapArr = Array.from(b.m);
     for(let char of val) {
       let idx = chars.indexOf(char);
-      baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char; // FIX: SAFETY CHECK
+      baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char;
     }
     addF(baseTxt, resBox); count++;
     decorators.forEach(dec => {
@@ -209,7 +239,7 @@ function toggleMusic() { initAudio(); playClick(); musicOn = !musicOn; if(musicO
 function playClick() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1);}}
 function playShutter() { if(audioCtx.state==='running'){const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(200, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1);}}
 
-// --- 🖼️ CANVAS ENGINE (TRANSPARENT & ROTATABLE) ---
+// --- 🖼️ CANVAS ENGINE ---
 function d(){ 
     x.clearRect(0,0,800,800); 
     x.save(); 
