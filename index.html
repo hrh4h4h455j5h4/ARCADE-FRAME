@@ -176,12 +176,13 @@
     box-shadow: inset 0 0 20px #000; 
   }
   
-  /* FIXED: No 'object-fit' CSS constraints here. JS handles sizing to ensure drag works. */
+  /* FIXED: Custom positioning logic instead of object-fit */
   #v { 
-    position: absolute;
+    position: absolute; 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%); /* Start Centered */
     pointer-events: none; 
     will-change: transform; 
-    transform-origin: center center;
   }
   #o { width: 100%; height: 100%; object-fit: contain; display: none; }
 
@@ -489,6 +490,7 @@ const speed=document.getElementById('speed'), sv=document.getElementById('sv'), 
 const dlBox=document.getElementById('dlBox'), dl=document.getElementById('dl'), resetBox=document.getElementById('resetBox');
 
 let gifX = 0, gifY = 0; // State for dragging
+let vidW = 0, vidH = 0; // Natural dimensions
 
 function resetGifProject() {
   v.src=''; o.style.display='none'; v.style.display='none';
@@ -499,26 +501,65 @@ function resetGifProject() {
   zoom.value=100; zv.innerText="100%";
   gfInput.value = '';
   gifX = 0; gifY = 0;
-  v.style.transform = `scale(1)`;
+  v.style.transform = `translate(-50%, -50%) scale(1)`;
 }
 
 gfInput.onchange=(e)=>{ 
     const file=e.target.files[0]; if(!file)return;
     v.style.display='block'; o.style.display='none'; dlBox.style.display='none'; resetBox.style.display='none';
     v.src=URL.createObjectURL(file); v.playbackRate=parseFloat(speed.value);
-    v.onloadedmetadata=()=>{ v.play(); };
+    v.onloadedmetadata=()=>{ 
+        vidW = v.videoWidth; vidH = v.videoHeight;
+        setCoverSize();
+        v.play(); 
+    };
 };
 
-// Unified update function for transform
+// CALCULATE "COVER" SIZE MANUALLY
+let renderW, renderH;
+function setCoverSize() {
+    const boxSize = 320;
+    const aspect = vidW / vidH;
+    
+    // Logic: Ensure smallest side hits 320px
+    if(aspect > 1) { // Landscape
+        renderH = boxSize;
+        renderW = boxSize * aspect;
+    } else { // Portrait or Square
+        renderW = boxSize;
+        renderH = boxSize / aspect;
+    }
+    
+    v.style.width = renderW + 'px';
+    v.style.height = renderH + 'px';
+    updateGifTransform();
+}
+
 function updateGifTransform() {
     if(!v.src) return;
     const z = parseInt(zoom.value) / 100;
-    v.style.transform = `translate3d(${gifX}px, ${gifY}px, 0) scale(${z})`;
+    
+    // --- CONSTRAINT LOGIC ---
+    // Calculate how much "extra" video extends beyond the 320px box
+    const currentW = renderW * z;
+    const currentH = renderH * z;
+    
+    // Max allowable drag in either direction from center (0,0)
+    // Formula: (CurrentSize - BoxSize) / 2
+    const maxX = Math.max(0, (currentW - 320) / 2);
+    const maxY = Math.max(0, (currentH - 320) / 2);
+    
+    // Clamp the drag values
+    gifX = Math.max(-maxX, Math.min(maxX, gifX));
+    gifY = Math.max(-maxY, Math.min(maxY, gifY));
+    
+    // Apply
+    v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
 }
 
 zoom.oninput = function() {
     zv.innerText = this.value + '%';
-    updateGifTransform();
+    updateGifTransform(); // Recalculate clamps on zoom
 };
 
 speed.oninput=()=>{ sv.innerText=speed.value+'x'; if(v.src)v.playbackRate=parseFloat(speed.value); };
@@ -583,14 +624,11 @@ go.onclick=()=>{
         let cTime=0;
         const scale = parseInt(zoom.value) / 100;
         
-        const vw = capVid.videoWidth;
-        const vh = capVid.videoHeight;
-        
         // Calculate dimensions proportional to 480x480 container
-        // COVER Logic (Fill Circle and Crop)
-        const aspect = vw / vh;
+        const aspect = capVid.videoWidth / capVid.videoHeight;
         let drawW, drawH;
         
+        // Match logic to setCoverSize (480 base instead of 320)
         if (aspect > 1) { 
             drawH = 480; 
             drawW = 480 * aspect; 
@@ -603,13 +641,14 @@ go.onclick=()=>{
         drawW *= scale;
         drawH *= scale;
         
-        // Center offsets
-        let dx = (480 - drawW) / 2;
-        let dy = (480 - drawH) / 2;
+        // Center offsets + User Drag
+        // Need to scale user drag from 320px world to 480px world
+        const dragScale = 480 / 320;
+        const finalX = gifX * dragScale;
+        const finalY = gifY * dragScale;
         
-        // Apply User Drag Offsets
-        dx += gifX;
-        dy += gifY;
+        let dx = (480 - drawW) / 2 + finalX;
+        let dy = (480 - drawH) / 2 + finalY;
 
         const captureFrame=()=>{
             if(cTime>=duration){ msg.innerText="Encoding..."; gif.render(); return; }
