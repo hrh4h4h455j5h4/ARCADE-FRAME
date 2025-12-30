@@ -6,6 +6,7 @@
 <title>Arcade Studio</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
   /* --- GLOBAL SETTINGS --- */
@@ -77,6 +78,13 @@
     50% { box-shadow: 0 0 35px #ff0000, inset 0 0 20px #ff0000; border-color: #ff3333; }
     100% { box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000; border-color: #ff0000; }
   }
+  
+  /* GIF NEON PULSE (BLUE/PURPLE) */
+  @keyframes neonPulseBlue {
+    0% { box-shadow: 0 0 20px #00f3ff, inset 0 0 10px #00f3ff; border-color: #00f3ff; }
+    50% { box-shadow: 0 0 35px #bc13fe, inset 0 0 20px #bc13fe; border-color: #bc13fe; }
+    100% { box-shadow: 0 0 20px #00f3ff, inset 0 0 10px #00f3ff; border-color: #00f3ff; }
+  }
 
   #box { 
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; 
@@ -98,13 +106,23 @@
   .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
   .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
   .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; font-size: 16px; white-space: pre-wrap; }
+  .sep-line { width: 100%; padding: 10px; background: #111; color: #555; font-size: 10px; font-weight: bold; text-align: center; letter-spacing: 2px; border-bottom: 1px solid #333; }
+
+  /* --- ✨ SYMBOLS STUDIO CSS --- */
+  .sym-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; width: 100%; max-height: 500px; overflow-y: auto; padding: 5px; box-sizing: border-box; }
+  .sym-btn { background: #1a1a1c; border: 1px solid #333; color: white; padding: 15px 0; font-size: 20px; border-radius: 6px; cursor: pointer; text-align: center; }
+  .sym-btn:active { background: #00ffff; color: #000; }
+  .cat-title { width: 100%; color: #00ffff; font-size: 12px; font-weight: bold; margin: 15px 0 5px 0; text-transform: uppercase; padding-left: 5px; }
 
   /* --- ⚡ GIF STUDIO CSS --- */
   :root { --neon: #00f3ff; --purple: #bc13fe; --red: #ff0055; }
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; }
-  .led-ring { position: absolute; inset: -15px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, var(--neon), var(--purple), transparent); animation: rotate 2s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; }
   
-  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; box-shadow: inset 0 0 20px #000; touch-action: none; display: flex; justify-content: center; align-items: center; }
+  .viewport { 
+    position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; touch-action: none; display: flex; justify-content: center; align-items: center;
+    border: 3px solid #00f3ff; 
+    animation: neonPulseBlue 2s infinite ease-in-out; /* RESTORED NEON ANIMATION */
+  }
   
   #v { 
     max-width: 100%; max-height: 100%; 
@@ -153,6 +171,11 @@
   
   .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 12px 30px; border-radius: 48px; font-weight: 900; font-size: 14px; z-index: 1; cursor: pointer; border: none; width: 100%; box-sizing: border-box; }
   input[type=file], #yt-player { display: none; }
+
+  /* --- 📱 NEON QR CSS --- */
+  #qr-result { margin-top: 20px; padding: 15px; background: white; border-radius: 10px; display: none; margin-bottom: 20px; }
+  .color-opts { display: flex; gap: 10px; margin-bottom: 20px; width: 100%; justify-content: center; }
+  .c-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; }
 </style>
 </head>
 <body onclick="startAudio()">
@@ -166,6 +189,8 @@
       <button id="nav-frame" class="active-link" onclick="changeStudio('frame')">🖼️ Frame Studio</button>
       <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
       <button id="nav-gif" onclick="changeStudio('gif')">⚡ GIF Maker</button>
+      <button id="nav-qr" onclick="changeStudio('qr')">📱 Neon QR Studio</button>
+      <button id="nav-sym" onclick="changeStudio('sym')">✨ Symbols Studio</button>
     </div>
   </div>
 
@@ -253,6 +278,28 @@
     </div>
 </div>
 
+<div id="qr-studio" class="studio-sec">
+    <input type="text" id="qr-input" class="font-input" placeholder="Enter URL or Text" style="border-color:#00ff00;">
+    
+    <div class="label-row" style="justify-content:center;">NEON COLOR</div>
+    <div class="color-opts">
+        <div class="c-btn" style="background:#00ffff;" onclick="setQrColor('#00ffff')"></div>
+        <div class="c-btn" style="background:#ff00ff;" onclick="setQrColor('#ff00ff')"></div>
+        <div class="c-btn" style="background:#00ff00;" onclick="setQrColor('#00ff00')"></div>
+        <div class="c-btn" style="background:#ffff00;" onclick="setQrColor('#ffff00')"></div>
+    </div>
+
+    <button class="btn-go" style="border-color:#00ff00; color:#00ff00;" onclick="genQR()">GENERATE QR CODE</button>
+    <div id="qr-result"></div>
+    
+    <button id="save-qr" class="btn" style="border-color:#00ff00; color:#00ff00; margin-top:15px; display:none;" onclick="downloadQR()">SAVE NEON QR</button>
+</div>
+
+<div id="sym-studio" class="studio-sec">
+    <div class="lbl">TAP SYMBOL TO COPY</div>
+    <div id="sym-container" class="font-scroll"></div>
+</div>
+
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),rSl=document.getElementById('r'),mSl=document.getElementById('m'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
@@ -266,6 +313,8 @@ function changeStudio(mode) {
   if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
   else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; }
   else if(mode === 'gif') { document.getElementById('gif-studio').classList.add('active-sec'); sName.innerText = "NEON"; sSub.innerText = "GIF STUDIO"; }
+  else if(mode === 'qr') { document.getElementById('qr-studio').classList.add('active-sec'); sName.innerText = "NEON"; sSub.innerText = "QR STUDIO"; }
+  else if(mode === 'sym') { document.getElementById('sym-studio').classList.add('active-sec'); sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; }
 }
 
 window.onclick = e => {
@@ -277,39 +326,36 @@ window.onclick = e => {
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 
-// --- ✍️ "OMEGA" FONT ENGINE (1200+ COMBINATIONS, ZERO GLITCH) ---
+// --- ✍️ CLEAN FONT ENGINE (NO INVERTED, NO DIAMONDS, SEPARATED DECORATORS) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-// 1. SAFE ALPHABETS (Expanded to 20 Verified Sets)
+// 1. CLEAN ALPHABETS ONLY (Verified English Readable)
 const alphas = [
-  {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}, // 0. Normal
-  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, // 1. Bold
-  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"}, // 2. Italic
-  {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"}, // 3. Bold Italic
-  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"}, // 4. Script
-  {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"}, // 5. Bold Script
-  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"}, // 6. Fraktur
-  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"}, // 7. Bold Fraktur
-  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"}, // 8. Double
-  {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"}, // 9. Sans
-  {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"}, // 10. Bold Sans
-  {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"}, // 11. Mono
-  {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"}, // 12. Circled
-  {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"}, // 13. Black Circled
-  {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"}, // 14. Wide
-  {m:"⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵0123456789"}, // 15. Parens
-  {m:"🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩0123456789"}, // 16. Boxed
-  {m:"🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉0123456789"}, // 17. Block
-  {m:"ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᑫᴿˢᵀᵁⱽᵂˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖqʳˢᵗᵘᵛʷˣʸᶻ0123456789"}, // 18. Tiny
-  {m:"ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢ0123456789"}, // 19. Small Caps
-  {m:"zʎxʍʌnʇsɹbdouɯlʞɾᴉɥƃɟǝpɔqɐzʎxʍʌnʇsɹbdouɯlʞɾᴉɥƃɟǝpɔqɐ0123456789"}, // 20. Inverted
+  {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}, // Normal
+  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, // Bold
+  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"}, // Italic
+  {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"}, // Bold Italic
+  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"}, // Script
+  {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"}, // Bold Script
+  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"}, // Fraktur
+  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"}, // Bold Fraktur
+  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"}, // Double
+  {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"}, // Sans
+  {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"}, // Bold Sans
+  {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"}, // Mono
+  {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"}, // Circled
+  {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"}, // Black Circled
+  {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"}, // Wide
+  {m:"⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵0123456789"}, // Parens
+  {m:"𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃𝄃0123456789"}, // Barcode
+  {m:"🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉0123456789"}, // Block
+  {m:"ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᑫᴿˢᵀᵁⱽᵂˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖqʳˢᵗᵘᵛʷˣʸᶻ0123456789"}, // Tiny
+  {m:"ₐbcdₑfgₕᵢⱼₖₗₘₙₒₚqᵣₛₜᵤᵥwₓyzₐbcdₑfgₕᵢⱼₖₗₘₙₒₚqᵣₛₜᵤᵥwₓyz0123456789"}, // Sub
+  {m:"ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢ0123456789"}, // Small Caps
 ];
 
-// 2. MASSIVE DECORATOR ARRAY (60+ Patterns x 20 Bases = 1200+ Fonts)
+// 2. SEPARATE DECORATORS (Applied ONLY to Normal Text)
 const decorators = [
-  (s)=>s, (s)=>` ${s} `, (s)=>`  ${s}  `, 
-  (s)=>s.split('').join(' '), (s)=>s.split('').join('  '), (s)=>s.split('').join('.'), 
-  (s)=>s.split('').join('-'), (s)=>s.split('').join('~'), (s)=>s.split('').join('*'),
   (s)=>`[${s}]`, (s)=>`[[${s}]]`, (s)=>`[ ${s} ]`, (s)=>`[[ ${s} ]]`,
   (s)=>`(${s})`, (s)=>`(( ${s} ))`, (s)=>`{${s}}`, (s)=>`{{ ${s} }}`, 
   (s)=>`<${s}>`, (s)=>`<< ${s} >>`, (s)=>`<<< ${s} >>>`, 
@@ -334,40 +380,73 @@ function genFonts(){
   if(!val) return;
   let count=0;
   
-  // ALGORITHM: APPLY EVERY DECORATOR TO EVERY ALPHABET BASE
+  // 1. ADD PURE FONTS FIRST (No mixing with decorations)
   alphas.forEach(alph => {
-    // 1. Create Base Text
-    let baseTxt = "";
-    if(alph.m.startsWith("zʎ")){ 
-        // Inverted Logic
-        const mapArr = Array.from(alph.m);
-        for(let i=val.length-1; i>=0; i--){
-            let idx = chars.indexOf(val[i]);
-            baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : val[i];
-        }
-    } else {
-        // Normal Mapping
-        const mapArr = Array.from(alph.m);
-        for(let char of val){
-          let idx = chars.indexOf(char);
-          baseTxt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char;
-        }
+    let txt = "";
+    const mapArr = Array.from(alph.m);
+    for(let char of val){
+      let idx = chars.indexOf(char);
+      txt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char;
     }
+    addF(txt, resBox);
+    count++;
+  });
 
-    // 2. Apply Every Decorator to this Base
-    decorators.forEach(dec => {
-        const final = dec(baseTxt);
-        // Deduplicate: Don't show plain bases twice if they match
-        addF(final, resBox);
-        count++;
-    });
+  // SEPARATOR
+  let sep = document.createElement('div'); sep.className="sep-line"; sep.innerText="--- DECORATIONS ---"; resBox.appendChild(sep);
+
+  // 2. ADD DECORATIONS (Only on Normal Text)
+  decorators.forEach(dec => {
+    addF(dec(val), resBox);
+    count++;
   });
   
   document.getElementById('font-count').innerText=count+" STYLES";
 }
 function addF(t,b){let d=document.createElement('div');d.className="font-item";d.innerText=t;d.onclick=()=>{navigator.clipboard.writeText(t);playShutter();};b.appendChild(d);}
 
-// --- ⚡ NEON GIF ENGINE (STABLE & CENTERED) ---
+// --- ✨ SYMBOLS STUDIO DATA ---
+const symData = {
+    "Arrows": ["←","↑","→","↓","↔","↕","↖","↗","↘","↙","↚","↛","↜","↝","↞","↟","↠","↡","↢","↣","↤","↥","↦","↧","↨","↩","↪","↫","↬","↭","↮","↯","↰","↱","↲","↳","↴","↵","↶","↷","↸","↹","↺","↻","↼","↽","↾","↿","⇀","⇁","⇂","⇃","⇄","⇅","⇆","⇇","⇈","⇉","⇊","⇋","⇌","⇍","⇎","⇏","⇐","⇑","⇒","⇓","⇔","⇕","⇖","⇗","⇘","⇙","⇚","⇛","⇜","⇝","⇞","⇟","⇠","⇡","⇢","⇣","⇤","⇥","⇦","⇧","⇨","⇩","⇪","⇫","⇬","⇭","⇮","⇯","⇰","⇱","⇲","⇳","⇴","⇵","⇶","⇷","⇸","⇹","⇺","⇻","⇼","⇽","⇾","⇿"],
+    "Stars & Sparkles": ["★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
+    "Hands": ["☚","☛","☜","☝","☞","☟","✌","✍","✑","✒"],
+    "Chess & Cards": ["♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧"],
+    "Music": ["♩","♪","♫","♬","♭","♮","♯"],
+    "Weather & Astro": ["☀","☁","☂","☃","☄","☾","☽","☉","☊","☋","☌","☍","☎","☏","☐","☑","☒","☓","☔","☕","☖","☗","☘","☙","☚","☛","☜","☝","☞","☟","☠","☡","☢","☣","☤","☥","☦","☧","☨","☩","☪","☫","☬","☭","☮","☯","☰","☱","☲","☳","☴","☵","☶","☷","☸","☹","☺","☻","☼","☽","☾","☿","♀","♁","♂","♃","♄","♅","♆","♇","♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"],
+    "Shapes": ["▀"," ","▂","▃","▄","▅","▆","▇","█","▉","▊","▋","▌","▍","▎","▏","▐","░","▒","▓","▔","▕","▖","▗","▘","▙","▚","▛","▜","▝","▞","▟","■","□","▢","▣","▤","▥","▦","▧","▨","▩","▪","▫","▬","▭","▮","▯","▰","▱","▲","△","▴","▵","▶","▷","▸","▹","►","▻","▼","▽","▾","▿","◀","◁","◂","◃","◄","◅","◆","◇","◈","◉","◊","○","◌","◍","◎","●","◐","◑","◒","◓","◔","◕","◖","◗","◘","◙","◚","◛","◜","◝","◞","◟","◠","◡","◢","◣","◤","◥","◦","◧","◨","◩","◪","◫","◬","◭","◮","◯","◰","◱","◲","◳","◴","◵","◶","◷","◸","◹","◺","◻","◼","◽","◾","◿"],
+    "Math & Tech": ["∀","∁","∂","∃","∄","∅","∆","∇","∈","∉","∊","∋","∌","∍","∎","∏","∐","∑","−","∓","∔","∕","∖","∗","∘","∙","√","∛","∜","∝","∞","∟","∠","∡","∢","∣","∤","∥","∦","∧","∨","∩","∪","∫","∬","∭","∮","∯","∰","∱","∲","∳","∴","∵","∶","∷","∸","∹","∺","∻","∼","∽","∾","∿","≀","≁","≂","≃","≄","≅","≆","≇","≈","≉","≊","≋","≌","≍","≎","≏","≐","≑","≒","≓","≔","≕","≖","≗","≘","≙","≚","≛","≜","≝","≞","≟","≠","≡","≢","≣","≤","≥","≦","≧","≨","≩","≪","≫","≬","≭","≮","≯","≰","≱","≲","≳","≴","≵","≶","≷","≸","≹","≺","≻","≼","≽","≾","≿","⊀","⊁","⊂","⊃","⊄","⊅","⊆","⊇","⊈","⊉","⊊","⊋","⊌","⊍","⊎","⊏","⊐","⊑","⊒","⊓","⊔","⊕","⊖","⊗","⊘","⊙","⊚","⊛","⊜","⊝","⊞","⊟","⊠","⊡","⊢","⊣","⊤","⊥","⊦","⊧","⊨","⊩","⊪","⊫","⊬","⊭","⊮","⊯","⊰","⊱","⊲","⊳","⊴","⊵","⊶","⊷","⊸","⊹","⊺","⊻","⊼","⊽","⊾","⊿","⋀","⋁","⋂","⋃","⋄","⋅","⋆","⋇","⋈","⋉","⋊","⋋","⋌","⋍","⋎","⋏","⋐","⋑","⋒","⋓","⋔","⋕","⋖","⋗","⋘","⋙","⋚","⋛","⋜","⋝","⋞","⋟","⋠","⋡","⋢","⋣","⋤","⋥","⋦","⋧","⋨","⋩","⋪","⋫","⋬","⋭","⋮","⋯","⋰","⋱"]
+};
+
+function renderSymbols(){
+    const box = document.getElementById('sym-container');
+    box.innerHTML = "";
+    
+    for (const [category, symbols] of Object.entries(symData)) {
+        // Title
+        let title = document.createElement('div');
+        title.className = "cat-title";
+        title.innerText = category;
+        box.appendChild(title);
+        
+        // Grid
+        let grid = document.createElement('div');
+        grid.className = "sym-grid";
+        
+        symbols.forEach(s => {
+            let btn = document.createElement('div');
+            btn.className = "sym-btn";
+            btn.innerText = s;
+            btn.onclick = () => { navigator.clipboard.writeText(s); playShutter(); };
+            grid.appendChild(btn);
+        });
+        
+        box.appendChild(grid);
+    }
+}
+// Render on load
+renderSymbols();
+
+// --- ⚡ NEON GIF ENGINE (CENTERED & STABLE) ---
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -456,6 +535,40 @@ go.onclick=()=>{
         msg.classList.remove('active'); go.style.display='none';
     });
 };
+
+// --- QR LOGIC (WITH DOWNLOAD) ---
+let qrColor = "#00ffff";
+function setQrColor(c){ qrColor=c; document.getElementById('qr-input').style.borderColor=c; }
+function genQR(){
+    const val = document.getElementById('qr-input').value;
+    const box = document.getElementById('qr-result');
+    const saveBtn = document.getElementById('save-qr');
+    box.innerHTML = "";
+    if(!val) return;
+    box.style.display="block";
+    new QRCode(box, {
+        text: val,
+        width: 200,
+        height: 200,
+        colorDark : qrColor,
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    saveBtn.style.display = "block"; // Show save button
+    playShutter();
+}
+
+function downloadQR(){
+    const box = document.getElementById('qr-result');
+    const img = box.querySelector('img');
+    if(img && img.src){
+        const a = document.createElement('a');
+        a.href = img.src;
+        a.download = 'Neon_QR.png';
+        a.click();
+        playShutter();
+    }
+}
 
 // --- AUDIO & CORE ---
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
