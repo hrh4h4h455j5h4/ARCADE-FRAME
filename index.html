@@ -82,6 +82,7 @@
   canvas#c { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; text-transform: uppercase; width: 100%; box-sizing: border-box; }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; } /* DISABLED STATE */
   .btn-r { border-color: #ff0000; }
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
@@ -203,7 +204,7 @@
     <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
     <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
     <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
-    <button id="save" class="btn" onclick="downloadPic()">DOWNLOAD PICTURE</button>
+    <button id="save" class="btn" onclick="downloadPic()" disabled>DOWNLOAD PICTURE</button>
   </div>
 </div>
 
@@ -270,7 +271,7 @@ window.onclick = e => {
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 
-// --- ✍️ FONT ENGINE (CURATED: NO DUPLICATES, NO SYMBOLS) ---
+// --- ✍️ FONT ENGINE (NO DUPLICATES/EMOJIS/GLITCHES) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const bases = [
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
@@ -287,11 +288,8 @@ const bases = [
   {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
-  {m:"ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢ0123456789"},
   {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"}
 ];
-
-// DECORATORS REMOVED TO PREVENT DUPLICATES WITH SYMBOLS
 
 function genFonts(){
   const val=document.getElementById('font-input').value,resBox=document.getElementById('font-results');
@@ -403,7 +401,6 @@ go.onclick=()=>{
     
     capVid.src=v.src; capVid.muted=true; capVid.playsInline=true;
     
-    // --- PIXEL FIX ---
     const rectV = v.getBoundingClientRect();
     const rectVP = vp.getBoundingClientRect();
     const offsetLeft = rectVP.left - rectV.left;
@@ -451,14 +448,33 @@ function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o
 
 // --- 🖼️ FRAME ENGINE ---
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } x.restore(); if(f.src) x.drawImage(f,0,0,800,800); }
-function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function handleFile(e){ 
+  let r=new FileReader(); 
+  r.onload=v=>{ 
+    let n=new Image(); 
+    n.onload=()=>{
+      i=n; 
+      cfg.s=Math.max(800/i.width,800/i.height); 
+      cfg.x=400; cfg.y=400; cfg.r=0; 
+      d(); playClick();
+      // UNLOCK DOWNLOAD BUTTON
+      document.getElementById('save').disabled = false;
+    }; 
+    n.src=v.target.result; 
+  }; 
+  r.readAsDataURL(e.target.files[0]); 
+}
 function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playShutter(); }
-function downloadPic(){ d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
+function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playShutter(); document.getElementById('save').disabled = true;}
+function downloadPic(){ 
+  if(!i.src) return; // double safety
+  d(); 
+  let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); 
+}
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
