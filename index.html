@@ -17,8 +17,13 @@
     -webkit-overflow-scrolling: touch; 
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px; touch-action: pan-y; 
-    transition: 0.3s;
   }
+
+  /* --- CUSTOM SCROLLBAR (ALWAYS VISIBLE) --- */
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track { background: #0a0a0c; border-left: 1px solid #333; }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; border: 2px solid #0a0a0c; }
+  ::-webkit-scrollbar-thumb:hover { background: #00ffff; }
 
   /* --- NAVIGATION --- */
   .menu-toggle { 
@@ -81,46 +86,52 @@
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- PC MODE STYLES (Professional Suite) --- */
+  /* --- PC MODE STYLES --- */
   body.pc-mode { justify-content: flex-start; padding-top: 40px; }
   
   /* Widen Containers */
   body.pc-mode .studio-sec { 
     width: 90%; 
-    max-width: 1100px; /* Constrain width to look professional */
+    max-width: 1100px; 
     flex-direction: row; 
     align-items: flex-start; 
     justify-content: center; 
-    gap: 60px; /* Space between canvas and tools */
+    gap: 60px; 
   }
 
   /* Frame & GIF Studio: Split View */
   body.pc-mode #frame-studio, body.pc-mode #gif-studio {
-    align-items: center; /* Vertically center in row */
+    align-items: center; 
   }
   body.pc-mode .ui, body.pc-mode .ui-gif {
-    width: 350px; /* Fixed width for controls */
+    width: 350px; 
     margin-top: 0;
   }
 
-  /* Font Studio: Grid View */
+  /* Font Studio: Grid View with Forced Scrollbar */
   body.pc-mode #font-studio { flex-direction: column; align-items: center; }
   body.pc-mode #font-results { 
     display: grid; 
-    grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 15px; 
-    max-height: 70vh; /* Taller scroll area */
+    max-height: 70vh; 
+    overflow-y: scroll; /* FORCE SCROLLBAR */
+    padding-right: 10px;
   }
   body.pc-mode .font-input { width: 50%; }
 
-  /* Symbols Studio: Wide Grid */
+  /* Symbols Studio: Wide Grid with Forced Scrollbar */
   body.pc-mode #sym-studio { flex-direction: column; align-items: center; }
   body.pc-mode .sym-box-container { width: 50%; }
+  
   body.pc-mode #sym-container {
-    max-height: 70vh;
+    max-height: 70vh; /* Set height to enable internal scrolling */
+    overflow-y: scroll; /* FORCE SCROLLBAR */
+    padding-right: 10px;
+    width: 100%;
   }
   body.pc-mode .sym-btn {
-    flex: 1 0 50px; /* Smaller, tighter buttons for mouse */
+    flex: 1 0 50px; 
   }
 
   /* --- 🖼️ FRAME STUDIO CSS --- */
@@ -137,7 +148,7 @@
     background-color: transparent; background-size: 20px 20px;
     animation: neonPulse 2s infinite ease-in-out;
     z-index: 10; 
-    flex-shrink: 0; /* Prevent shrinking in PC mode */
+    flex-shrink: 0; 
   }
   canvas#c { position: absolute; top: 0; left: 0; width: 310px; height: 310px; z-index: 15; touch-action: none; }
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
@@ -169,7 +180,6 @@
   
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; flex-shrink: 0; }
   
-  /* The Moving RGB Ring - Fast (1.0s) */
   .led-ring { 
     position: absolute; inset: -15px; border-radius: 50%; 
     background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); 
@@ -209,7 +219,7 @@
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; box-shadow: 0 0 10px #ff0000; }
   
-  /* GIF Studio Specific Sliders - FIXED VISIBILITY */
+  /* GIF Studio Specific Sliders */
   .ui-gif input[type="range"] { margin-bottom: 25px; -webkit-appearance: none; }
   .ui-gif input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 6px; border-radius: 3px; }
   .ui-gif input[type="range"]::-webkit-slider-thumb { 
@@ -227,7 +237,7 @@
   .status { margin-top: 20px; font-size: 14px; text-align: center; color: var(--neon); font-weight: 600; opacity: 0; transition: 0.3s; height: 20px; }
   .status.active { opacity: 1; }
   
-  /* NEON BUTTON WRAPPERS (RESTORED FOR GIF BUTTONS) */
+  /* NEON BUTTON WRAPPERS */
   .neon-wrap { position: relative; display: block; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
   
   /* Slower Rainbow Animation for Buttons (4.0s) */
@@ -380,14 +390,12 @@ function setPCMode(enable) {
     isPC = enable;
     if(isPC) {
         document.body.classList.add('pc-mode');
-        viewBtn.innerText = "📱"; // Click to go Mobile
+        viewBtn.innerText = "📱"; 
     } else {
         document.body.classList.remove('pc-mode');
-        viewBtn.innerText = "🖥️"; // Click to go PC
+        viewBtn.innerText = "🖥️"; 
     }
 }
-
-// Run detection on load
 detectDevice();
 
 function changeStudio(mode) {
@@ -408,7 +416,7 @@ window.onclick = e => {
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 
-// --- ✍️ OMEGA CLEAN FONT ENGINE (22 STYLES) ---
+// --- ✍️ SAFE FONT ENGINE (DIAMOND & GLITCH FREE) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}, // Normal
@@ -417,9 +425,6 @@ const alphas = [
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"}, // Bold Italic
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"}, // Script
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"}, // Bold Script
-  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"}, // Double
-  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"}, // Fraktur
-  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"}, // Bold Fraktur
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"}, // Sans
   {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"}, // Bold Sans
   {m:"𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻0123456789"}, // Italic Sans
