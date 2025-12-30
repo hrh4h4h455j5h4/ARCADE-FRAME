@@ -104,21 +104,23 @@
   .sym-input { width: 100%; background: #000; border: 1px solid #00ffff; color: #00ffff; padding: 12px; font-size: 18px; border-radius: 6px; text-align: center; box-sizing: border-box; outline: none; }
   .sym-input:focus { border-color: #ff00ff; box-shadow: 0 0 10px rgba(255,0,255,0.5); }
 
+  /* RED CATEGORY TITLES */
+  .cat-title { width: 100%; color: #ff0000; font-size: 12px; font-weight: bold; margin: 20px 0 5px 0; text-transform: uppercase; padding-left: 5px; border-bottom: 1px solid rgba(255,0,0,0.2); padding-bottom: 5px; }
+  
   .sym-grid { display: flex; flex-wrap: wrap; gap: 5px; width: 100%; padding: 5px; box-sizing: border-box; }
   .sym-btn { background: #1a1a1c; border: 1px solid #333; color: white; padding: 15px 0; font-size: 20px; border-radius: 6px; cursor: pointer; text-align: center; flex: 1 0 18%; min-width: 50px; }
-  .sym-btn:active { background: #00ffff; color: #000; }
-  .cat-title { width: 100%; color: #00ffff; font-size: 12px; font-weight: bold; margin: 20px 0 5px 0; text-transform: uppercase; padding-left: 5px; border-bottom: 1px solid rgba(0,255,255,0.2); padding-bottom: 5px; }
+  .sym-btn:active { background: #ff0000; color: #000; }
 
-  /* --- ⚡ GIF STUDIO CSS (ROTATING RAINBOW RESTORED) --- */
+  /* --- ⚡ GIF STUDIO CSS (FASTER ANIMATION & RESTORED BUTTONS) --- */
   @keyframes rotate { 100% { transform: rotate(360deg); } }
   
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; }
   
-  /* The Moving RGB Ring */
+  /* The Moving RGB Ring - Speed set to 1.0s (Faster) */
   .led-ring { 
     position: absolute; inset: -15px; border-radius: 50%; 
     background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); 
-    animation: rotate 2s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; 
+    animation: rotate 1.0s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; 
   }
   
   .viewport { 
@@ -142,7 +144,7 @@
       display: flex; flex-direction: column; align-items: center;
   }
   
-  /* Fixed Upload Button - Bright Gradient */
+  /* Upload Button - Bright Gradient */
   .btn-upload { background: linear-gradient(90deg, #00f3ff, #bc13fe); color: #000; border: none; padding: 15px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; margin-bottom: 25px; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.2); transition: 0.2s; }
   .btn-upload:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
   .btn-upload:active { transform: scale(0.98); }
@@ -154,7 +156,7 @@
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; box-shadow: 0 0 10px #ff0000; }
   
-  /* GIF Studio Specific Sliders - FIXED VISIBILITY */
+  /* GIF Studio Specific Sliders */
   .ui-gif input[type="range"] { margin-bottom: 25px; -webkit-appearance: none; }
   .ui-gif input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 6px; border-radius: 3px; }
   .ui-gif input[type="range"]::-webkit-slider-thumb { 
@@ -164,26 +166,26 @@
       background: #00f3ff; 
       box-shadow: 0 0 10px #00f3ff; 
       border: 2px solid #fff; 
-      margin-top: -7px; /* Centers the thumb */
+      margin-top: -7px; 
   }
   .ui-gif input[type="range"]:disabled { opacity: 0.3; cursor: not-allowed; }
-
-  /* Fixed Create GIF Button - Solid Gradient */
-  .btn-go { background: linear-gradient(90deg, #00f3ff, #bc13fe); color: #000; border: none; padding: 15px; width: 100%; border-radius: 15px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
-  .btn-go:disabled { opacity: 0.4; cursor: not-allowed; background: #1a1a1a; color: #666; box-shadow: none; }
-  .btn-go:active { transform: scale(0.98); }
 
   .status { margin-top: 20px; font-size: 14px; text-align: center; color: var(--neon); font-weight: 600; opacity: 0; transition: 0.3s; height: 20px; }
   .status.active { opacity: 1; }
   
-  .neon-wrap { position: relative; display: none; margin-top: 20px; padding: 3px; border-radius: 50px; overflow: hidden; width: fit-content; }
-  .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--neon), var(--purple), transparent, transparent); animation: rotate 2s linear infinite; z-index: 0; }
+  /* NEON BUTTON WRAPPERS (RESTORED FOR GIF BUTTONS) */
+  .neon-wrap { position: relative; display: block; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
+  
+  /* Faster Rainbow Animation (1.0s) */
+  .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 1.0s linear infinite; z-index: 0; }
   
   /* Reset Button Style */
   .neon-wrap.red { margin-top: 20px; }
-  .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--red), #ff5500, transparent, transparent); animation: rotate 2s linear infinite; z-index: 0; }
+  .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--red), #ff5500, transparent, transparent); animation: rotate 1.0s linear infinite; z-index: 0; }
   
   .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 12px 30px; border-radius: 48px; font-weight: 900; font-size: 14px; z-index: 1; cursor: pointer; border: none; width: 100%; box-sizing: border-box; }
+  .btn-inner:disabled { opacity: 0.3; color: #555; }
+  
   input[type=file], #yt-player { display: none; }
 </style>
 </head>
@@ -272,15 +274,17 @@
         <div class="label-row"><span>PLAYBACK SPEED</span><span id="sv">1.0x</span></div>
         <input type="range" id="speed" min="0.5" max="3.0" step="0.1" value="1.0">
 
-        <button id="go" class="btn-go">⚡ CREATE HD GIF</button>
+        <div class="neon-wrap blue">
+            <button id="go" class="btn-inner">⚡ CREATE HD GIF</button>
+        </div>
         
         <div id="msg" class="status">Processing...</div>
         
-        <div id="dlBox" class="neon-wrap blue">
+        <div id="dlBox" class="neon-wrap blue" style="display:none;">
             <a id="dl" class="btn-inner">⬇️ DOWNLOAD GIF</a>
         </div>
 
-        <div id="resetBox" class="neon-wrap blue" style="margin-top:20px;">
+        <div id="resetBox" class="neon-wrap red" style="display:none;">
             <button class="btn-inner" onclick="resetGifProject()">↻ RESET PROJECT</button>
         </div>
     </div>
@@ -357,7 +361,6 @@ function addF(t,b){let d=document.createElement('div');d.className="font-item";d
 
 // --- ✨ SYMBOLS STUDIO DATA ---
 const symData = {
-    "Collection": [" "],
     "Hearts": ["❤","❥","♡","♥","❦","❧","❣","💞","💗","💕","💘","💝","💟","💌","💋"],
     "Sparkles & Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
     "Hanging Stars": ["*̣̥☆·͙̥","‧͙⁺˚*･༓☾","☽༓･*˚⁺‧͙","★*","*★","☆.","¸.·","·.¸","*","**","***"],
