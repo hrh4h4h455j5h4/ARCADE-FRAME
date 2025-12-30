@@ -86,6 +86,33 @@
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
   
+  /* --- ⬇️ FIXED DOWNLOAD BUTTON STYLE --- */
+  #save {
+      background: #007bff; /* RESTORED BLUE */
+      border: none;
+      color: white;
+      padding: 12px;
+      text-align: center;
+      border-radius: 8px;
+      font-weight: bold;
+      display: block;
+      font-size: 14px;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+  }
+  #save:hover { background: #0056b3; }
+  /* BLOCKED STATE */
+  #save:disabled {
+      background: #333333;
+      color: #666666;
+      cursor: not-allowed;
+      box-shadow: none;
+      opacity: 0.7;
+  }
+
   /* --- ✍️ FONT STUDIO CSS --- */
   .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
   .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
@@ -104,7 +131,7 @@
     min-width: 100%; min-height: 100%; 
     pointer-events: none; 
     transform-origin: top left; 
-    will-change: transform; /* Hint to browser for smoothness */
+    will-change: transform; 
   }
   #o { width: 100%; height: 100%; object-fit: cover; display: none; }
 
@@ -203,7 +230,8 @@
     <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
     <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
     <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
-    <button id="save" onclick="downloadPic()">DOWNLOAD PICTURE</button>
+    
+    <button id="save" onclick="downloadPic()" disabled>DOWNLOAD PICTURE</button>
   </div>
 </div>
 
@@ -252,6 +280,7 @@ const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElemen
 const zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val'),mVal=document.getElementById('m-val');
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,lx:0,ly:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const saveBtn = document.getElementById('save');
 
 function changeStudio(mode) {
   playClick(); document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
@@ -309,8 +338,13 @@ gfInput.onchange=(e)=>{
         naturalW=v.videoWidth; naturalH=v.videoHeight;
         const aspect=naturalW/naturalH; 
         gifX = 0; gifY = 0; v.style.transform = `translate3d(0px, 0px, 0)`;
-        if(aspect>1){ v.style.height='320px'; v.style.width=(320*aspect)+'px'; } 
-        else { v.style.width='320px'; v.style.height=(320/aspect)+'px'; }
+        if(aspect>1){ 
+            v.style.height='320px'; 
+            v.style.width=(320*aspect)+'px'; 
+        } else { 
+            v.style.width='320px'; 
+            v.style.height=(320/aspect)+'px'; 
+        }
         v.play();
     };
 };
@@ -345,12 +379,16 @@ const sD=(x,y)=>{ if(!v.src)return; isDragging=true; startX=x; startY=y; vp.styl
 const dD=(x,y)=>{ 
   if(!isDragging)return; 
   const dx=x-startX, dy=y-startY; 
-  startX = x; startY = y; // Update start for continuous delta
+  startX = x; startY = y; 
   
   gifX += dx;
   gifY += dy;
 
-  const vw=parseFloat(v.style.width), vh=parseFloat(v.style.height); 
+  // Use getBoundingClientRect for accurate current dimensions
+  const rect = v.getBoundingClientRect();
+  const vw = rect.width; 
+  const vh = rect.height;
+
   if(gifX>0) gifX=0; if(gifX<-(vw-320)) gifX=-(vw-320); 
   if(gifY>0) gifY=0; if(gifY<-(vh-320)) gifY=-(vh-320); 
   
@@ -373,7 +411,10 @@ go.onclick=()=>{
     
     capVid.src=v.src; capVid.muted=true; capVid.playsInline=true;
     capVid.onloadeddata=()=>{
-        const cW=parseFloat(v.style.width), cH=parseFloat(v.style.height);
+        // FIXED LOGIC: Get Dimensions directly from the DOM Element to avoid NaN/0 issues
+        const rect = v.getBoundingClientRect();
+        const cW = rect.width;
+        const cH = rect.height;
         
         // USE TRACKED COORDINATES (Lock Position)
         const cL = Math.abs(gifX);
@@ -415,14 +456,33 @@ function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o
 
 // --- 🖼️ FRAME ENGINE ---
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } x.restore(); if(f.src) x.drawImage(f,0,0,800,800); }
-function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function handleFile(e){ 
+    let r=new FileReader(); 
+    r.onload=v=>{ 
+        let n=new Image(); 
+        n.onload=()=>{
+            i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; d(); playClick();
+            // UNBLOCK BUTTON WHEN IMAGE LOADED
+            saveBtn.disabled = false;
+        }; 
+        n.src=v.target.result; 
+    }; 
+    r.readAsDataURL(e.target.files[0]); 
+}
 function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playShutter(); }
-function downloadPic(){ let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
+function resetProject(){ 
+    i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playShutter(); 
+    // BLOCK BUTTON ON RESET
+    saveBtn.disabled = true;
+}
+function downloadPic(){ 
+    if(saveBtn.disabled) return;
+    let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); 
+}
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
