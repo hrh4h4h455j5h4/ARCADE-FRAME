@@ -95,8 +95,17 @@
   :root { --neon: #00f3ff; --purple: #bc13fe; --red: #ff0055; }
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; }
   .led-ring { position: absolute; inset: -15px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, var(--neon), var(--purple), transparent); animation: rotate 2s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; }
-  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; box-shadow: inset 0 0 20px #000; transform: translateZ(0); touch-action: none; cursor: move; }
-  #v { position: absolute; top: 0; left: 0; min-width: 100%; min-height: 100%; pointer-events: none; transform-origin: top left; }
+  
+  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; box-shadow: inset 0 0 20px #000; touch-action: none; cursor: move; }
+  
+  /* GPU ACCELERATION ENABLED ON VIDEO */
+  #v { 
+    position: absolute; top: 0; left: 0; 
+    min-width: 100%; min-height: 100%; 
+    pointer-events: none; 
+    transform-origin: top left; 
+    will-change: transform; /* Hint to browser for smoothness */
+  }
   #o { width: 100%; height: 100%; object-fit: cover; display: none; }
 
   .ui-gif { 
@@ -131,7 +140,7 @@
   .neon-wrap { position: relative; display: none; margin-top: 20px; padding: 3px; border-radius: 50px; overflow: hidden; width: fit-content; }
   .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--neon), var(--purple), transparent, transparent); animation: rotate 2s linear infinite; z-index: 0; }
   
-  /* RESET BUTTON now uses the same Blue logic */
+  /* Reset Button Style */
   .neon-wrap.red { margin-top: 20px; }
   .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--red), #ff5500, transparent, transparent); animation: rotate 2s linear infinite; z-index: 0; }
   
@@ -251,14 +260,14 @@ window.onclick = e => {
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 
-// --- ✍️ FONT ENGINE (UNTOUCHED) ---
+// --- ✍️ FONT ENGINE ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const bases = [{m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},{m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬ𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"},{m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝑚𝑛𝑜𝑝𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},{m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},{m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},{m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜𝔝𝔞𝔟𝔠𝔡™𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷0123456789"},{m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},{m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙🇮🇳𝕛𝕜𝕝𝕞𝕟𝕠𝐩𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},{m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆 n 𝗈𝗉𝗊𝗋 s 𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},{m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅ𝐟𝐠𝐡𝐢𝐣𝐤𝐥ｍ nｏ𝐩𝗾𝗿𝘀𝘁ｕｖｗ𝘅ｙ𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},{m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜ n ⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},{m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},{m:"₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ0123456789"},{m:"卂乃匚ᗪ乇千Ꮆ卄丨ﾌҜㄥ爪几ㄖ卩Ҝ尺丂ㄒㄩᐯ山乂ㄚ乙卂乃匚ᗪ乇千Ꮆ卄丨ﾌҜㄥ爪几ㄖ卩Ҝ尺丂ㄒㄩᐯ山乂ㄚ乙0123456789"},{m:"ﾑ乃cd乇ｷgんﾉﾌズﾚM刀oｱ尺丂ｲu√Wﾒﾘ乙ﾑ乃cd乇ｷgんﾉﾌズﾚM刀oｱ尺丂ｲu√Wﾒﾘ乙0123456789"},{m:"ᗩᗷᑕᗪEᖴGᕼIᒍKᒪMᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭YᘔᗩᗷᑕᗪEᖴGᕼIᒍKᒪMᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭Yᘔ0123456789"},{m:"αв¢∂єƒgнιנкℓмησρqяѕтυνωкуζαв¢∂єƒgнιנкℓмησρqяѕтυνωкуζ0123456789"},{m:"ค๒ς๔єŦﻮђเןкɭ๓ภ๏קợгรՇยงฬאץչค๒ς๔єŦﻮђเןкɭ๓ภ๏קợгรՇยงฬאץչ0123456789"},{m:"ǟɮƈɖɛʄɢɦɨʝӄʟʍռօքզʀֆтʊʋաӼʏʐǟɮƈɖɛʄɢɦɨʝӄʟʍռօքզʀֆтʊʋաӼʏʐ0123456789"},{m:"ᏗᏰፈᎴᏋᎦᎶᏂᎥᏠᏦᏝᎷ n ᎧᎮᎤᏒᏕᏖᏬᏉᏇጀᎩፚᏗᏰፈᎴᏋᎦᎶᏂᎥᏠᏦ奠奠奠奠奠奠奠奠奠奠奠奠奠奠奠0123456789"},{m:"ค๖ƈđēfɠɦıĵƙℓɱŋơ℘զŗşŧų۷ɯҳყʑค๖ƈđēfɠɦıĵƙℓɱŋơ℘զŗşŧų۷ɯҳყʑ0123456789"},{m:"ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎzɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz0123456789"},{m:"🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺 n 🅻🅼 n 🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺 n 🅻🅼 n 🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉0123456789"}];
 const decorators = [" ","★|★","『|』","【|】","꧁|꧂","˗ˏ|ˎ˗","⦗|⦘","⁅|⁆","☾|☽","×|×","☆|☆","●|●","■|■","→|←","⚡|⚡","☠|☠","☮|☮","✈|✈","❤|❤","♛|♛","∞|∞","§|§","₪|₪","↺|↻","❄|❄","☁|☁","☂|☂","✂|✂","✎|✎","⚔|⚔","⚓|⚓","⚙|⚙","⚛|⚛","⚜|⚜","⚠|⚠","✧|✧","✩|✩","✪|✪","✫|✫","✬|✬","✭|✭","✮|✮","✯|✯","✰|✰","✱|✱","✲|✲","✳|✳"];
 function genFonts(){const val=document.getElementById('font-input').value,resBox=document.getElementById('font-results');resBox.innerHTML="";if(!val)return;let count=0;bases.forEach(b=>{let baseTxt="";const mapArr=Array.from(b.m);for(let char of val){let idx=chars.indexOf(char);baseTxt+=(idx!==-1&&mapArr[idx])?mapArr[idx]:char;}addF(baseTxt,resBox);count++;decorators.forEach(dec=>{let [p,s]=dec.split("|");addF(p+baseTxt+(s||p),resBox);count++;});});document.getElementById('font-count').innerText=count+" STYLES";}
 function addF(t,b){let d=document.createElement('div');d.className="font-item";d.innerText=t;d.onclick=()=>{navigator.clipboard.writeText(t);playShutter();};b.appendChild(d);}
 
-// --- ⚡ GLITCH-FREE NEON GIF ENGINE (UNTOUCHED) ---
+// --- ⚡ NEON GIF ENGINE (GPU ACCELERATED) ---
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -266,7 +275,8 @@ const gfInput=document.getElementById('gfInput'), upBtn=document.getElementById(
 const speed=document.getElementById('speed'), sv=document.getElementById('sv'), zoom=document.getElementById('zoom'), zv=document.getElementById('zv'), go=document.getElementById('go'), msg=document.getElementById('msg');
 const dlBox=document.getElementById('dlBox'), dl=document.getElementById('dl'), resetBox=document.getElementById('resetBox');
 
-let isDragging=false, startX, startY, startLeft, startTop, naturalW=0, naturalH=0;
+let isDragging=false, startX, startY, naturalW=0, naturalH=0;
+let gifX = 0, gifY = 0; // GPU Coordinates
 
 // Reset Project Logic
 function resetGifProject() {
@@ -277,6 +287,7 @@ function resetGifProject() {
   msg.classList.remove('active');
   zoom.value=100; zv.innerText="100%";
   gfInput.value = '';
+  gifX = 0; gifY = 0; v.style.transform = `translate3d(0px, 0px, 0)`;
 }
 
 // 1. Upload
@@ -286,14 +297,15 @@ gfInput.onchange=(e)=>{
     v.src=URL.createObjectURL(file); v.playbackRate=parseFloat(speed.value);
     v.onloadedmetadata=()=>{
         naturalW=v.videoWidth; naturalH=v.videoHeight;
-        const aspect=naturalW/naturalH; v.style.left='0px'; v.style.top='0px';
+        const aspect=naturalW/naturalH; 
+        gifX = 0; gifY = 0; v.style.transform = `translate3d(0px, 0px, 0)`;
         if(aspect>1){ v.style.height='320px'; v.style.width=(320*aspect)+'px'; } 
         else { v.style.width='320px'; v.style.height=(320/aspect)+'px'; }
         v.play();
     };
 };
 
-// 2. Fixed Zoom
+// 2. Fixed Zoom with Boundary Checks
 zoom.oninput = function() {
     if(!v.src) return;
     zv.innerText = this.value + '%';
@@ -302,32 +314,62 @@ zoom.oninput = function() {
     let bW, bH;
     if(aspect > 1) { bH = 320; bW = 320 * aspect; } 
     else { bW = 320; bH = 320 / aspect; }
-    v.style.width = (bW * z) + 'px';
-    v.style.height = (bH * z) + 'px';
+    
+    // Apply Size
+    const newW = bW * z;
+    const newH = bH * z;
+    v.style.width = newW + 'px';
+    v.style.height = newH + 'px';
+
+    // Clamp Coordinates (Prevent gaps when zooming out)
+    if (gifX > 0) gifX = 0;
+    if (gifX < -(newW - 320)) gifX = -(newW - 320);
+    if (gifY > 0) gifY = 0;
+    if (gifY < -(newH - 320)) gifY = -(newH - 320);
+    
+    v.style.transform = `translate3d(${gifX}px, ${gifY}px, 0)`;
 };
 
-// 3. Dragging
-const sD=(x,y)=>{ if(!v.src)return; isDragging=true; startX=x; startY=y; startLeft=parseFloat(v.style.left||0); startTop=parseFloat(v.style.top||0); vp.style.cursor='grabbing'; };
-const dD=(x,y)=>{ if(!isDragging)return; const dx=x-startX, dy=y-startY; let nL=startLeft+dx, nT=startTop+dy; const vw=parseFloat(v.style.width), vh=parseFloat(v.style.height); if(nL>0)nL=0; if(nL<-(vw-320))nL=-(vw-320); if(nT>0)nT=0; if(nT<-(vh-320))nT=-(vh-320); v.style.left=nL+'px'; v.style.top=nT+'px'; };
+// 3. GPU Dragging (No Lag)
+const sD=(x,y)=>{ if(!v.src)return; isDragging=true; startX=x; startY=y; vp.style.cursor='grabbing'; };
+const dD=(x,y)=>{ 
+  if(!isDragging)return; 
+  const dx=x-startX, dy=y-startY; 
+  startX = x; startY = y; // Update start for continuous delta
+  
+  gifX += dx;
+  gifY += dy;
+
+  const vw=parseFloat(v.style.width), vh=parseFloat(v.style.height); 
+  if(gifX>0) gifX=0; if(gifX<-(vw-320)) gifX=-(vw-320); 
+  if(gifY>0) gifY=0; if(gifY<-(vh-320)) gifY=-(vh-320); 
+  
+  v.style.transform = `translate3d(${gifX}px, ${gifY}px, 0)`;
+};
 vp.onmousedown=e=>sD(e.pageX,e.pageY); window.onmousemove=e=>dD(e.pageX,e.pageY); window.onmouseup=()=>{ isDragging=false; vp.style.cursor='move'; };
 vp.ontouchstart=e=>sD(e.touches[0].pageX, e.touches[0].pageY); window.ontouchmove=e=>{if(isDragging)dD(e.touches[0].pageX,e.touches[0].pageY);}; window.ontouchend=()=>{ isDragging=false; };
 
 speed.oninput=()=>{ sv.innerText=speed.value+'x'; if(v.src)v.playbackRate=parseFloat(speed.value); };
 
-// 4. Processing (GLITCH FIX + LOCKED UI)
+// 4. Processing (Coordinate Locked)
 go.onclick=()=>{
     if(!v.src)return;
     go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
     msg.innerText="Processing..."; msg.classList.add('active');
     
-    // QUALITY: 10
     const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:workerUrl});
     const canvas=document.createElement('canvas'); canvas.width=480; canvas.height=480; const ctx=canvas.getContext('2d');
     const fps=15, duration=v.duration, playbackSpeed=parseFloat(speed.value), capVid=document.createElement('video');
     
     capVid.src=v.src; capVid.muted=true; capVid.playsInline=true;
     capVid.onloadeddata=()=>{
-        const cW=parseFloat(v.style.width), cH=parseFloat(v.style.height), cL=Math.abs(parseFloat(v.style.left||0)), cT=Math.abs(parseFloat(v.style.top||0)), rW=naturalW/cW, rH=naturalH/cH, sx=cL*rW, sy=cT*rH, sw=320*rW, sh=320*rH;
+        const cW=parseFloat(v.style.width), cH=parseFloat(v.style.height);
+        
+        // USE TRACKED COORDINATES (Lock Position)
+        const cL = Math.abs(gifX);
+        const cT = Math.abs(gifY);
+        
+        const rW=naturalW/cW, rH=naturalH/cH, sx=cL*rW, sy=cT*rH, sw=320*rW, sh=320*rH;
         let cTime=0;
         const captureFrame=()=>{
             if(cTime>=duration){ msg.innerText="Encoding..."; gif.render(); return; }
@@ -376,11 +418,9 @@ document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListen
 
 // --- 🕹️ FRAME STUDIO TOUCH CONTROLS (RESTORED) ---
 let isP=false, tStart={x:0,y:0}, tAng=0, initR=0;
-// Mouse
 c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
 c.onmousemove=e=>{
   if(!isP)return;
-  // Canvas is 800px, displayed at 310px. Scale factor approx 2.58
   let scale = 800 / c.offsetWidth;
   cfg.x += (e.offsetX - tStart.x) * scale;
   cfg.y += (e.offsetY - tStart.y) * scale;
@@ -389,7 +429,6 @@ c.onmousemove=e=>{
 }
 window.onmouseup=()=>{isP=false;}
 
-// Touch (Pan + 2-Finger Rotate)
 c.ontouchstart=e=>{
   e.preventDefault();
   if(e.touches.length===1){
