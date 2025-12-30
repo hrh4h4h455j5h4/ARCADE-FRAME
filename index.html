@@ -111,16 +111,16 @@
   .sym-btn { background: #1a1a1c; border: 1px solid #333; color: white; padding: 15px 0; font-size: 20px; border-radius: 6px; cursor: pointer; text-align: center; flex: 1 0 18%; min-width: 50px; }
   .sym-btn:active { background: #ff0000; color: #000; }
 
-  /* --- ⚡ GIF STUDIO CSS (FASTER ANIMATION & RESTORED BUTTONS) --- */
+  /* --- ⚡ GIF STUDIO CSS --- */
   @keyframes rotate { 100% { transform: rotate(360deg); } }
   
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; }
   
-  /* The Moving RGB Ring - Speed set to 1.0s (Faster) */
+  /* The Moving RGB Ring - Fast (1.5s) */
   .led-ring { 
     position: absolute; inset: -15px; border-radius: 50%; 
     background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); 
-    animation: rotate 1.0s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; 
+    animation: rotate 1.5s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; 
   }
   
   .viewport { 
@@ -131,7 +131,7 @@
   #v { 
     max-width: 100%; max-height: 100%; 
     width: 320px; height: 320px; 
-    pointer-events: none; 
+    pointer-events: none; /* Pointer events handled by JS on container */
     object-fit: cover;
     will-change: transform; 
   }
@@ -144,7 +144,7 @@
       display: flex; flex-direction: column; align-items: center;
   }
   
-  /* Upload Button - Bright Gradient */
+  /* Fixed Upload Button - Bright Gradient */
   .btn-upload { background: linear-gradient(90deg, #00f3ff, #bc13fe); color: #000; border: none; padding: 15px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; margin-bottom: 25px; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.2); transition: 0.2s; }
   .btn-upload:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
   .btn-upload:active { transform: scale(0.98); }
@@ -156,7 +156,7 @@
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; box-shadow: 0 0 10px #ff0000; }
   
-  /* GIF Studio Specific Sliders */
+  /* GIF Studio Specific Sliders - FIXED VISIBILITY */
   .ui-gif input[type="range"] { margin-bottom: 25px; -webkit-appearance: none; }
   .ui-gif input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 6px; border-radius: 3px; }
   .ui-gif input[type="range"]::-webkit-slider-thumb { 
@@ -170,18 +170,19 @@
   }
   .ui-gif input[type="range"]:disabled { opacity: 0.3; cursor: not-allowed; }
 
+  /* Status Text */
   .status { margin-top: 20px; font-size: 14px; text-align: center; color: var(--neon); font-weight: 600; opacity: 0; transition: 0.3s; height: 20px; }
   .status.active { opacity: 1; }
   
   /* NEON BUTTON WRAPPERS (RESTORED FOR GIF BUTTONS) */
   .neon-wrap { position: relative; display: block; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
   
-  /* Faster Rainbow Animation (1.0s) */
-  .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 1.0s linear infinite; z-index: 0; }
+  /* Slower Rainbow Animation for Buttons (4.0s) */
+  .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 4.0s linear infinite; z-index: 0; }
   
   /* Reset Button Style */
   .neon-wrap.red { margin-top: 20px; }
-  .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--red), #ff5500, transparent, transparent); animation: rotate 1.0s linear infinite; z-index: 0; }
+  .neon-wrap.red::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, var(--red), #ff5500, transparent, transparent); animation: rotate 4.0s linear infinite; z-index: 0; }
   
   .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 12px 30px; border-radius: 48px; font-weight: 900; font-size: 14px; z-index: 1; cursor: pointer; border: none; width: 100%; box-sizing: border-box; }
   .btn-inner:disabled { opacity: 0.3; color: #555; }
@@ -332,12 +333,15 @@ const alphas = [
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"}, // Bold Italic
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"}, // Script
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"}, // Bold Script
+  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"}, // Double
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"}, // Sans
   {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"}, // Bold Sans
   {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"}, // Mono
   {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"}, // Wide
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"}, // Circled
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"}, // Black Circled
+  {m:"⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵0123456789"}, // Parens
+  {m:"ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢ0123456789"}, // Small Caps
 ];
 
 function genFonts(){
@@ -413,6 +417,8 @@ const gfInput=document.getElementById('gfInput'), upBtn=document.getElementById(
 const speed=document.getElementById('speed'), sv=document.getElementById('sv'), zoom=document.getElementById('zoom'), zv=document.getElementById('zv'), go=document.getElementById('go'), msg=document.getElementById('msg');
 const dlBox=document.getElementById('dlBox'), dl=document.getElementById('dl'), resetBox=document.getElementById('resetBox');
 
+let gifX = 0, gifY = 0; // State for dragging
+
 function resetGifProject() {
   v.src=''; o.style.display='none'; v.style.display='none';
   dlBox.style.display='none'; resetBox.style.display='none';
@@ -421,6 +427,7 @@ function resetGifProject() {
   msg.classList.remove('active');
   zoom.value=100; zv.innerText="100%";
   gfInput.value = '';
+  gifX = 0; gifY = 0;
   v.style.transform = `scale(1)`;
 }
 
@@ -431,14 +438,63 @@ gfInput.onchange=(e)=>{
     v.onloadedmetadata=()=>{ v.play(); };
 };
 
-zoom.oninput = function() {
+// Unified update function for transform
+function updateGifTransform() {
     if(!v.src) return;
+    const z = parseInt(zoom.value) / 100;
+    v.style.transform = `translate3d(${gifX}px, ${gifY}px, 0) scale(${z})`;
+}
+
+zoom.oninput = function() {
     zv.innerText = this.value + '%';
-    const z = parseInt(this.value) / 100;
-    v.style.transform = `scale(${z})`;
+    updateGifTransform();
 };
 
 speed.oninput=()=>{ sv.innerText=speed.value+'x'; if(v.src)v.playbackRate=parseFloat(speed.value); };
+
+// GIF DRAGGING LOGIC (PC + MOBILE)
+let isGifDrag = false, startX, startY, initX, initY;
+
+vp.addEventListener('touchstart', e => {
+    if(!v.src) return;
+    isGifDrag = true;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    initX = gifX;
+    initY = gifY;
+}, {passive: false});
+
+vp.addEventListener('touchmove', e => {
+    if(!isGifDrag) return;
+    e.preventDefault(); // Prevent scrolling
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    gifX = initX + dx;
+    gifY = initY + dy;
+    updateGifTransform();
+}, {passive: false});
+
+vp.addEventListener('mousedown', e => {
+    if(!v.src) return;
+    isGifDrag = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initX = gifX;
+    initY = gifY;
+});
+
+window.addEventListener('mousemove', e => {
+    if(!isGifDrag) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    gifX = initX + dx;
+    gifY = initY + dy;
+    updateGifTransform();
+});
+
+window.addEventListener('mouseup', () => isGifDrag = false);
+window.addEventListener('touchend', () => isGifDrag = false);
+
 
 // GIF PROCESSING
 go.onclick=()=>{
@@ -458,17 +514,31 @@ go.onclick=()=>{
         
         const vw = capVid.videoWidth;
         const vh = capVid.videoHeight;
+        
+        // Calculate dimensions proportional to 480x480 container
+        // We simulate "object-fit: cover" logic manually for the canvas draw
         const aspect = vw / vh;
         let drawW, drawH;
         
-        if (aspect > 1) { drawH = 480; drawW = 480 * aspect; }
-        else { drawW = 480; drawH = 480 / aspect; }
+        if (aspect > 1) { 
+            drawH = 480; 
+            drawW = 480 * aspect; 
+        } else { 
+            drawW = 480; 
+            drawH = 480 / aspect; 
+        }
         
+        // Apply Scale
         drawW *= scale;
         drawH *= scale;
         
-        const dx = (480 - drawW) / 2;
-        const dy = (480 - drawH) / 2;
+        // Center offsets
+        let dx = (480 - drawW) / 2;
+        let dy = (480 - drawH) / 2;
+        
+        // Apply User Drag Offsets
+        dx += gifX;
+        dy += gifY;
 
         const captureFrame=()=>{
             if(cTime>=duration){ msg.innerText="Encoding..."; gif.render(); return; }
@@ -491,8 +561,20 @@ go.onclick=()=>{
         dl.download=`neon_focus_${rNum}.gif`; dl.href=url;
         dlBox.style.display='inline-block'; resetBox.style.display='inline-block';
         msg.classList.remove('active'); go.style.display='none';
+        // Hide upload button during result view for cleanliness
+        upBtn.parentElement.querySelector('.btn-upload').style.display='none';
     });
 };
+
+function restoreGifUI() {
+    upBtn.parentElement.querySelector('.btn-upload').style.display='block';
+}
+// Hook reset to restore UI
+const originalReset = resetGifProject;
+resetGifProject = function() {
+    originalReset();
+    restoreGifUI();
+}
 
 // --- AUDIO & CORE ---
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
