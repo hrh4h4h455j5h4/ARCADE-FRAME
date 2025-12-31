@@ -270,7 +270,7 @@
   </div>
 
   <div class="music-section">
-    <div class="menu-lbl">Button SFX</div>
+    <div class="menu-lbl">Sound effect</div>
     <select id="sfx-select" style="width:100%; background:#222; color:white; border:1px solid #444;">
       <option value="bit">👾 8-Bit Tone</option>
       <option value="arcade" selected>🕹️ Arcade Click</option>
@@ -300,8 +300,8 @@
 <div id="frame-studio" class="studio-sec active-sec">
   <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
-    <label class="btn" onclick="playClick()">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
-    <label class="btn btn-r" onclick="playClick()">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
+    <label class="btn">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
+    <label class="btn btn-r">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
     <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
     <button class="btn" style="border-color:#ff0000; color:#ff0000;" onclick="resetProject()">RESET PROJECT ↻</button>
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
@@ -379,6 +379,20 @@ function updateClock(){
 }
 setInterval(updateClock, 1000); updateClock();
 
+// --- GLOBAL CLICK HANDLER (ALL CLICKS PLAY SOUND) ---
+window.onclick = e => {
+  initAudio(); 
+  playClick(); // Trigger sound on ANY click anywhere
+
+  // Normal Menu Logic
+  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { 
+      panel.classList.remove('open'); 
+  }
+  if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { 
+      swMenu.style.display = 'none'; 
+  }
+};
+
 function detectDevice() {
     if(window.innerWidth > 1024) { setPCMode(true); } else { setPCMode(false); }
 }
@@ -393,7 +407,7 @@ function setPCMode(enable) {
 detectDevice();
 
 function changeStudio(mode) {
-  playClick(); document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
+  document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
   swMenu.style.display = 'none'; panel.classList.remove('open');
   if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
   else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; }
@@ -401,21 +415,15 @@ function changeStudio(mode) {
   else if(mode === 'sym') { document.getElementById('sym-studio').classList.add('active-sec'); sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; }
 }
 
-window.onclick = e => {
-  initAudio(); 
-  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); }
-  if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; playClick(); }
-};
-
-function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
-function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
+function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; }
+function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); }
 
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   // --- ORIGINAL 19 FONTS ---
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
-  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏ｃｄｅ𝑓ｇℎｉ𝑗𝑘ｌｍｎｏｐ𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥ｙｚ0123456789"},
+  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏ｃｄｅｆｇℎｉ𝑗𝑘ｌｍｎｏｐ𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥ｙｚ0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ⒩⒪⒫⒬ℛ𝒮𝒯𝒰⒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
@@ -815,6 +823,7 @@ let isP=false, tStart={x:0,y:0}, tAng=0, initR=0;
 c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
 c.onmousemove=e=>{
   if(!isP)return;
+  // Fix: Improved scaling for desktop mouse drag
   let scale = 800 / c.offsetWidth;
   cfg.x += (e.offsetX - tStart.x) * scale;
   cfg.y += (e.offsetY - tStart.y) * scale;
@@ -839,6 +848,7 @@ c.ontouchstart=e=>{
 c.ontouchmove=e=>{
   e.preventDefault();
   if(e.touches.length===1 && isP){
+    // Fix: Improved scaling for mobile touch drag
     let scale = 800 / c.offsetWidth;
     let dx = e.touches[0].clientX - tStart.x;
     let dy = e.touches[0].clientY - tStart.y;
