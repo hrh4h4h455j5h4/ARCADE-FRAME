@@ -679,38 +679,38 @@ go.onclick=()=>{
             cTime+=(1/fps);
             setTimeout(captureFrame, 10);
         };
-        captureFrame();
+              captureFrame();
     };
-    
-    gif.on('finished', blob=>{
-        const url=URL.createObjectURL(blob), rNum=Math.floor(Math.random()*90000)+10000;
-        v.style.display='none'; o.src=url; o.style.display='block';
-        dl.download=`neon_focus_${rNum}.gif`; dl.href=url;
-        dlBox.style.display='inline-block'; resetBox.style.display='inline-block';
-        msg.classList.remove('active'); go.style.display='none';
-        // Hide upload button during result view for cleanliness
-        upBtn.parentElement.querySelector('.btn-upload').style.display='none';
-        vp.style.pointerEvents = 'auto'; // UNLOCK
-    });
+  };
+
+  gif.on('finished', blob => {
+    const url = URL.createObjectURL(blob), rNum = Math.floor(Math.random() * 90000) + 10000;
+    v.style.display = 'none'; o.src = url; o.style.display = 'block';
+    dl.download = `neon_focus_${rNum}.gif`; dl.href = url;
+    dlBox.style.display = 'inline-block'; resetBox.style.display = 'inline-block';
+    msg.classList.remove('active'); go.style.display = 'none';
+    upBtn.parentElement.querySelector('.btn-upload').style.display = 'none';
+    vp.style.pointerEvents = 'auto'; // UNLOCK
+  });
 };
 
 function restoreGifUI() {
-    upBtn.parentElement.querySelector('.btn-upload').style.display='block';
-}
-// Hook reset to restore UI
-const originalReset = resetGifProject;
-resetGifProject = function() {
-    originalReset();
-    restoreGifUI();
+  upBtn.parentElement.querySelector('.btn-upload').style.display = 'block';
 }
 
-// --- AUDIO & CORE ---
-function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
-function onYouTubeIframeAPIReady(){ player=new YT.Player('yt-player',{height:'0',width:'0',videoId:'jfKfPfyJRdk',playerVars:{'autoplay':1,'loop':1,'playlist':'jfKfPfyJRdk','mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
-function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
-function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
-function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
-function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+const originalReset = resetGifProject;
+resetGifProject = function() {
+  originalReset();
+  restoreGifUI();
+}
+
+// --- 📻 AUDIO & CORE ---
+function initAudio() { if (!audioStarted) { audioCtx.resume().then(() => { audioStarted = true; if (player && musicOn) { player.unMute(); player.playVideo(); } }); } }
+function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute': 0 }, events: { 'onReady': e => { e.target.setVolume(25); } } }); }
+function changeMusic(id) { if (player) player.loadVideoById(id); playShutter(); }
+function toggleMusic() { initAudio(); playClick(); musicOn = !musicOn; if (musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
+function playClick() { if (audioCtx.state !== 'running') audioCtx.resume(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
+function playShutter() { if (audioCtx.state !== 'running') audioCtx.resume(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
 
 // --- 🖼️ FRAME ENGINE ---
 function d() {
