@@ -713,8 +713,37 @@ function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=a
 function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
 
 // --- 🖼️ FRAME ENGINE ---
-function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } x.restore(); if(f.src) x.drawImage(f,0,0,800,800); }
-function handleFile(e){ 
+function d() {
+  x.clearRect(0, 0, 800, 800);
+  x.save();
+  
+  // Create circular clipping window
+  x.beginPath();
+  x.arc(400, 400, cfg.m, 0, Math.PI * 2);
+  x.clip();
+
+  if (i.src) {
+    // Calculate full dimensions
+    let w = i.width * cfg.s;
+    let h = i.height * cfg.s;
+    
+    x.save();
+    x.translate(cfg.x, cfg.y);
+    x.rotate(cfg.r * Math.PI / 180);
+    
+    // Draw image centered like the GIF maker fix
+    x.drawImage(i, -w / 2, -h / 2, w, h);
+    x.restore();
+  }
+  
+  x.restore();
+  
+  // Draw frame on top
+  if (f.src) {
+    x.drawImage(f, 0, 0, 800, 800);
+  }
+}
+
   let r=new FileReader(); 
   r.onload=v=>{ 
     let n=new Image(); 
