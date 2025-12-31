@@ -52,26 +52,35 @@
 
   /* --- SLIDERS STYLING --- */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
-  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
+  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #333 var(--v, 0%)); border-radius: 4px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; box-shadow: 0 0 10px #ff0000; }
 
-  /* --- NAVIGATION --- */
+  /* --- NAVIGATION & MENU --- */
   .menu-toggle { position: fixed; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 100000; }
   #view-toggle { position: fixed; top: 15px; right: 15px; background: #1a1a1c; border: 1px solid #00ffff; padding: 8px 12px; border-radius: 4px; z-index: 100000; cursor: pointer; }
-  #menu-panel { position: fixed; top: 0; left: -260px; width: 240px; height: 100%; background: #1a1a1c; padding-top: 60px; transition: 0.3s ease; z-index: 99999; display: flex; flex-direction: column; gap: 12px; padding-left: 15px; padding-right: 15px; box-sizing: border-box; padding-bottom: 80px; box-shadow: 2px 0 15px rgba(0,0,0,0.5); }
+
+  #menu-panel { 
+    position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
+    background: #1a1a1c; padding-top: 60px; transition: 0.3s ease; 
+    z-index: 99999; display: flex; flex-direction: column; gap: 12px; 
+    padding-left: 15px; padding-right: 15px; box-sizing: border-box; padding-bottom: 20px; 
+    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
+  }
   #menu-panel.open { left: 0; }
 
   .menu-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
   .menu-lbl { font-size: 10px; font-weight: 900; color: #00ffff; text-transform: uppercase; }
 
-  .switch-container { position: relative; width: 100%; }
   #switch-btn { background: rgba(255,255,255,0.05); color: white; border: 2px solid #ff0000; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 11px; width: 100%; }
   #switch-menu { position: absolute; top: 45px; left: 0; background: #1a1a1c; border: 1px solid #ff0000; border-radius: 8px; width: 100%; display: none; flex-direction: column; z-index: 100001; }
   #switch-menu button { background: transparent; color: #aaa; border: none; padding: 12px; text-align: left; font-size: 11px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
   .lnk { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
+  .designed-by { margin-top: auto; padding: 15px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; color: #888; text-transform: uppercase; }
+  .designed-by b { color: #ff0000; }
 
+  /* --- HEADERS --- */
   h1 { color: #fff; margin: 20px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-shadow: 2px 2px 0px #ff0000; animation: arcadeBounce 1.8s infinite ease-in-out; }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { font-weight: bold; margin-bottom: 15px; font-size: 11px; letter-spacing: 2px; text-align: center; }
@@ -79,23 +88,31 @@
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- STUDIO PANELS --- */
-  #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; z-index: 10; }
+  /* --- 🖼️ FRAME STUDIO --- */
+  #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; z-index: 10; box-shadow: 0 0 20px rgba(255,0,0,0.5); }
   canvas#c { width: 310px; height: 310px; touch-action: none; }
   .ui, .ui-gif { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
-  .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; width: 100%; box-sizing: border-box; }
+  .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase; }
   .btn-r { border-color: #ff0000; }
+  .lbl { font-size: 9px; color: #888; text-transform: uppercase; display: flex; justify-content: space-between; width: 100%; margin-top: 5px; }
+  .val-tag { color: #ff0000; font-weight: bold; }
 
-  .viewport { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center; border: 3px solid #00ffff; }
-  #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-  #o { width: 100%; height: 100%; object-fit: contain; display: none; }
+  /* --- ⚡ GIF STUDIO RESTORED --- */
+  @keyframes rotate { 100% { transform: rotate(360deg); } }
+  .stage { position: relative; width: 310px; height: 310px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .led-ring { position: absolute; inset: -10px; border-radius: 50%; background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); animation: rotate 2s linear infinite; filter: blur(15px); z-index: 1; }
+  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center; border: 2px solid rgba(255,255,255,0.1); }
+  #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); will-change: transform; }
+  .neon-wrap { position: relative; padding: 2px; border-radius: 50px; overflow: hidden; width: 100%; }
+  .neon-wrap::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 3s linear infinite; z-index: 0; }
+  .btn-inner { position: relative; display: block; text-align: center; color: white; background: #000; padding: 10px; border-radius: 48px; font-weight: 900; z-index: 1; cursor: pointer; width: 100%; border: none; font-size: 12px; }
 
+  /* --- FONT & SYMBOLS --- */
   .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; outline: none; }
   .font-scroll { width: 100%; max-height: 400px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; }
   .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; text-align: center; cursor: pointer; white-space: pre-wrap; }
   .sym-grid { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; }
   .sym-btn { background: #1a1a1c; border: 1px solid #333; color: white; padding: 15px 0; font-size: 20px; border-radius: 6px; cursor: pointer; flex: 1 0 18%; text-align: center; }
-  .cat-title { color: #ff0000; font-size: 12px; font-weight: bold; margin: 15px 10px 5px; text-transform: uppercase; border-bottom: 1px solid rgba(255,0,0,0.2); }
 
   input[type=file], #yt-player { display: none; }
 </style>
@@ -109,9 +126,9 @@
 
 <div id="menu-panel">
   <div class="menu-section">
-    <div class="menu-lbl">Studio HUD</div>
-    <div class="switch-container">
-      <button id="switch-btn" onclick="toggleSwitchMenu(event)">SELECT TOOL 📂</button>
+    <div class="menu-lbl">Tool Selection</div>
+    <div class="switch-container" style="position:relative;">
+      <button id="switch-btn" onclick="toggleSwitchMenu(event)">SELECT STUDIO 📂</button>
       <div id="switch-menu">
         <button onclick="changeStudio('frame')">🖼️ Frame Studio</button>
         <button onclick="changeStudio('font')">✍️ Font Generator</button>
@@ -144,9 +161,12 @@
 
   <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="showAbout()">ABOUT STUDIO ℹ️</button>
 
-  <a href="https://platopedia.com/groups/arcade" target="_blank" class="lnk" style="border-color:#00ffff; margin-top:auto;">
-    <span>Arcade Website</span>
+  <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;">
+    <svg viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c2.36-24.44-5.42-48.18-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+    <span>Discord Server</span>
   </a>
+
+  <div class="designed-by">DESIGNED BY <b>RISK</b></div>
 </div>
 
 <div id="about-overlay" onclick="hideAbout()">
@@ -154,8 +174,8 @@
         <span class="close-about" onclick="hideAbout()">✖</span>
         <h2 style="font-style:italic;">ARCADE STUDIO ℹ️</h2>
         <p>A professional HUD built for the elite gaming community. <b>Arcade Studio</b> delivers high-speed creative tools for Discord profiles and tournament winners.</p>
-        <p><b>⚡ Engine:</b> HD GIF encoding with real-time stability for large video files.</p>
-        <p><b>🖼️ Logic:</b> Constraint Logic locks profile pictures to the frame, ensuring zero black gaps even during rotation.</p>
+        <p><b>⚡ Engine:</b> Our HD GIF processor handles heavy video files with instant real-time encoding.</p>
+        <p><b>🖼️ Logic:</b> Custom <b>Constraint Logic</b> ensures your profile frames are locked perfectly to the circle. No black gaps, ever.</p>
     </div>
 </div>
 
@@ -185,22 +205,28 @@
 </div>
 
 <div id="gif-studio" class="studio-sec">
-    <div class="viewport" id="vp"><video id="v" muted playsinline loop></video><img id="o"></div>
+    <div class="stage" id="stage">
+        <div class="led-ring"></div>
+        <div class="viewport" id="vp">
+            <video id="v" muted playsinline loop></video>
+            <img id="o">
+        </div>
+    </div>
     <div class="ui-gif">
         <button class="btn" onclick="document.getElementById('gfInput').click()">UPLOAD VIDEO</button>
         <input type="file" id="gfInput" accept="video/*" style="display:none">
-        <div class="lbl">ZOOM <span id="zv" class="val-tag">100%</span></div>
-        <input type="range" id="zoom" min="100" max="300" step="1" value="100">
+        <div class="lbl">ZOOM / SCALE <span id="zv" class="val-tag">100%</span></div>
+        <input type="range" id="zoom" min="100" max="300" step="1" value="100" oninput="updateGifZ(this.value)">
         <div class="lbl">SPEED <span id="sv" class="val-tag">1.0x</span></div>
-        <input type="range" id="speed" min="0.5" max="3.0" step="0.1" value="1.0">
-        <button id="go" class="btn" style="border-color:#00ffff; color:#00ffff;">⚡ CREATE HD GIF</button>
-        <div id="msg" style="text-align:center; font-size:11px; color:#00ffff;">Ready</div>
-        <div id="dlBox" style="display:none;"><a id="dl" class="btn">⬇️ DOWNLOAD GIF</a></div>
+        <input type="range" id="speed" min="0.5" max="3.0" step="0.1" value="1.0" oninput="updateGifS(this.value)">
+        <div class="neon-wrap"><button id="go" class="btn-inner" onclick="processGif()">⚡ CREATE HD GIF</button></div>
+        <div id="msg" style="text-align:center; font-size:11px; color:#00ffff; margin-top:5px;">Ready</div>
+        <div id="dlBox" style="display:none; margin-top:10px;"><a id="dl" class="btn-inner">⬇️ DOWNLOAD GIF</a></div>
     </div>
 </div>
 
 <div id="sym-studio" class="studio-sec">
-    <input type="text" id="sym-box" class="font-input" placeholder="Tapped symbols appear here...">
+    <input type="text" id="sym-box" class="font-input" placeholder="Build your bio here...">
     <div id="sym-container" class="font-scroll"></div>
 </div>
 
@@ -232,11 +258,11 @@ function handleGlobalClick(e) {
     for(let j=0;j<5;j++){
         const fire=document.createElement("div"); fire.className="fire-particle";
         fire.style.left=e.clientX+(Math.random()*20-10)+"px"; fire.style.top=e.clientY+(Math.random()*20-10)+"px";
-        document.body.appendChild(fire); setTimeout(()=>fire.remove(),600);
+        document.body.appendChild(fire); setTimeout(()=>fire.remove(), 600);
     }
     const bul=document.createElement("div"); bul.className="retro-bullet";
     bul.style.left=e.clientX-2+"px"; bul.style.top=e.clientY-6+"px";
-    document.body.appendChild(bul); setTimeout(()=>bul.remove(),400);
+    document.body.appendChild(bul); setTimeout(()=>bul.remove(), 400);
 }
 
 // --- AUDIO ---
@@ -261,10 +287,10 @@ const alphas = [
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
   {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈Ⓥ𝑊𝑋𝑌𝑍𝑎𝑏ｃｄｅｆｇｈｉ𝑗ｋｌｍｎｏｐ𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥ｙｚ0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼Ⓥ𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
-  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰Ⓥ𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊Ⓥ𝓌𝓍𝓎𝓏0123456789"},
+  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ⒩⒪⒫⒬ℛ𝒮𝒯𝒰Ⓥ𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊Ⓥ𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤Ⓥ𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𓋼𝔀𝔁𝔂𝔃0123456789"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴Ⓥ𝖂𝖃𝖄𝖅𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎Ⓥ𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
-  {m:"𝗔𝗕ＣＤＥ𝗙𝗚ＨＩＪＫＬＭＮＯＰ𝗤𝗥𝗦Ｔ𝗨Ⓥ𝗪𝗫Ｙ𝗭𝗮𝗯ｃｄｅｆｇｈｉ𝑗ｋｌｍｎｏｐ𝗾ｒｓｔｕｖｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
+  {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦𝗧𝗨Ⓥ𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱ｅｆｇｈｉ𝑗ｋｌｍｎｏｐ𝗾ｒｓｔｕｖｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
   {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙ｉ𝑗ｋｌｍｎｏｐ𝕢ｒｓｔｕ𓋼𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
   {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ𝔞𝔟𝔠𝔡𝔢𝔣𝔤ｈｉ𝑗ｋｌｍｎｏｐ𝔮ｒｓｔｕ𓋼𝔴𝔵𝔶𝔷0123456789"},
   {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𓋼𝖜𝖝𝖞𝖟0123456789"},
@@ -279,52 +305,41 @@ const alphas = [
   {m:"<A><B><C><D><E><F><G><H><I><J><K><L><M><N><O><P><Q><R><S><T><U><V><W><X><Y><Z><a><b><c><d><e><f><g><h><i><j><k><l><m><n><o><p><q><r><s><t><u><v><w><x><y><z><0><1><2><3><4><5><6><7><8><9>"},
   {m:"(A)(B)(C)(D)(E)(F)(G)(H)(I)(J)(K)(L)(M)(N)(O)(P)(Q)(R)(S)(T)(U)(V)(W)(X)(Y)(Z)(a)(b)(c)(d)(e)(f)(g)(h)(i)(j)(k)(l)(m)(n)(o)(p)(q)(r)(s)(t)(u)(v)(w)(x)(y)(z)(0)(1)(2)(3)(4)(5)(6)(7)(8)(9)"},
   {m:"♥A♥B♥C♥D♥E♥F♥G♥H♥I♥J♥K♥L♥M♥N♥O♥P♥Q♥R♥S♥T♥U♥V♥W♥X♥Y♥Z♥a♥b♥c♥d♥e♥f♥g♥h♥i♥j♥k♥l♥m♥n♥o♥p♥q♥r♥s♥t♥u♥v♥w♥x♥y♥z♥0♥1♥2♥3♥4♥5♥6♥7♥8♥9"},
-  {m:"★A★B★C★D★E★F★G★H★I★J★K★L♥M♥N♥O♥P♥Q♥R♥S♥T♥U♥V♥W♥X♥Y♥Z★a★b★c★d★e★f★g★h★i★j★k★l★m★n★o★p★q★r★s★t★u★v★w★x★y★z★0★1★2★3★4★5★6★7★8★9"},
+  {m:"★A★B★C★D★E★F★G★H★I★J★K★L♥M♥N♥O♥P♥Q♥R♥S★T★U★V★W★X★Y★Z★a★b★c★d★e★f★g★h★i★j★k★l★m★n★o★p★q★r★s★t★u★v★w★x★y★z★0★1★2★3★4★5★6★7★8★9"},
   {m:"A⋆B⋆C⋆D⋆E⋆F⋆G⋆H⋆I⋆J⋆K⋆L⋆M⋆N⋆O⋆P⋆Q⋆R⋆S⋆T⋆U⋆V⋆W⋆X⋆Y⋆Z⋆a⋆b⋆c⋆d⋆e⋆f⋆g⋆h⋆i⋆j⋆k⋆l⋆m⋆n⋆o⋆p⋆q⋆r⋆s⋆t⋆u⋆v⋆w⋆x⋆y⋆z⋆0⋆1⋆2⋆3⋆4⋆5⋆6⋆7⋆8⋆9"},
   {m:"A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.0.1.2.3.4.5.6.7.8.9"},
   {m:"A̲B̲C̲D̲E̲F̲G̲H̲I̲J̲K̲L̲M̲N̲O̲P̲Q̲R̲S̲T̲U̲V̲W̲X̲Y̲Z̲a̲b̲c̲d̲e̲f̲g̲h̲i̲j̲k̲l̲m̲n̲o̲p̲q̲r̲s̲t̲u̲v̲w̲x̲y̲z̲0̲1̲2̲3̲4̲5̲6̲7̲8̲9"},
-  {m:"A̶B̶C̶D̶E̶F̶G̶H̶I̶J̶K̶L̶M̶N̶O̶P̶Q̶R̶S̶T̶U̶V̶W̶X̶Y̶Z̶a̶b̶c̶d̶e̶f̶g̶h̶i̶j_k̶l̶m̶n̶o̶p̶q̶r̶s̶t̶u̶v̶w̶x̶y̶z̶0̶1̶2̶3̶4̶5̶6̶7̶8̶9"},
+  {m:"A̶B̶C̶D̶E̶F̶G̶H̶I̶J̶K̶L̶M̶N̶O̶P̶Q̶R̶S̶T̶U̶V̶W̶X̶Y̶Z̶a̶b̶c̶d̶e̶f̶g̶h̶i̶j̶k̶l̶m̶n̶o̶p̶q̶r̶s̶t̶u̶v̶w̶x̶y̶z̶0̶1̶2̶3̶4̶5_6̶7̶8̶9"},
   {m:"🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩0123456789"},
   {m:"ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ0123456789"},
-  {m:"🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🅀🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🅀🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉0123456789"}
+  {m:"🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉0123456789"}
 ];
 
-function genFonts(){
-  const v=document.getElementById('font-input').value, b=document.getElementById('font-results'); b.innerHTML=""; if(!v) return;
-  alphas.forEach(a => {
-    let t = ""; const m = Array.from(a.m);
-    for(let c of v){ let idx = chars.indexOf(c); t += (idx !== -1 && m[idx]) ? m[idx] : c; }
-    let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t);}; b.appendChild(d);
-  });
-}
+const symData = {
+    "Hearts": ["❤","❥","♡","♥","❦","❧","❣","💞","💗","💕","💘","💝","💟","💌","💋"],
+    "Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","❄","❅","❆"],
+    "Dice": ["🎲","⚀","⚁","⚂","⚃","⚄","⚅"],
+    "Arrows": ["←","↑","→","↓","↔","↕","↺","↻","↖","↗","↘","↙"]
+};
 
-function renderSymbols(){
-    const b = document.getElementById('sym-container'); b.innerHTML = "";
-    const s = { "Hearts": ["❤","❥","♡","♥","❦","❧","❣","💞","💗","💕","💘","💝","💟","💌","💋"], "Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","❄","❅","❆"], "Dice": ["🎲","⚀","⚁","⚂","⚃","⚄","⚅"], "Arrows": ["←","↑","→","↓","↔","↕","↺","↻","↖","↗","↘","↙"] };
-    for (const [c, y] of Object.entries(s)) {
-        let t = document.createElement('div'); t.className = "cat-title"; t.innerText = c; b.appendChild(t);
-        let g = document.createElement('div'); g.className = "sym-grid";
-        y.forEach(i => { let n = document.createElement('div'); n.className = "sym-btn"; n.innerText = i; n.onclick = () => { document.getElementById('sym-box').value += i; }; g.appendChild(n); }); b.appendChild(g);
-    }
-}
-renderSymbols();
-
-// --- GIF ENGINE ---
+// --- RESTORED GIF ENGINE ---
 const wB = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const wU = URL.createObjectURL(wB);
 const gfI=document.getElementById('gfInput'), v=document.getElementById('v'), o=document.getElementById('o'), go=document.getElementById('go'), msg=document.getElementById('msg');
 let gX=0, gY=0;
-gfI.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; v.style.display='block'; o.style.display='none'; v.src=URL.createObjectURL(f); v.onloadedmetadata=()=>{ v.play(); }; };
-go.onclick=()=>{
-  if(!v.src) return; go.disabled=true; msg.innerText="Processing...";
+
+gfI.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; v.style.display='block'; o.style.display='none'; v.src=URL.createObjectURL(f); v.onloadedmetadata=()=>v.play(); };
+
+function processGif() {
+  if(!v.src) return; document.getElementById('go').disabled=true; msg.innerText="Processing...";
   const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:wU});
   const can=document.createElement('canvas'); can.width=480; can.height=480; const ctx=can.getContext('2d');
   let cT=0; const fps=15;
   const cap=()=>{ if(cT>=v.duration){ msg.innerText="Encoding..."; gif.render(); return; } v.currentTime=cT; };
   v.onseeked=()=>{ ctx.drawImage(v, 0, 0, 480, 480); gif.addFrame(ctx,{copy:true, delay:1000/fps}); cT+=(1/fps); setTimeout(cap, 10); };
-  gif.on('finished', b=>{ const url=URL.createObjectURL(b); v.style.display='none'; o.src=url; o.style.display='block'; document.getElementById('dl').href=url; document.getElementById('dlBox').style.display='block'; msg.innerText="Ready"; go.disabled=false; });
+  gif.on('finished', b=>{ const url=URL.createObjectURL(b); v.style.display='none'; o.src=url; o.style.display='block'; document.getElementById('dl').href=url; document.getElementById('dlBox').style.display='block'; msg.innerText="Ready"; document.getElementById('go').disabled=false; });
   cap();
-};
+}
 
 // --- FRAME ENGINE ---
 function d(){ 
@@ -338,7 +353,7 @@ function d(){
   if(i.src){ x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-i.width*cfg.s/2,-i.height*cfg.s/2,i.width*cfg.s,i.height*cfg.s); x.restore(); } 
   x.restore(); if(f.src) x.drawImage(f,0,0,800,800); 
 }
-function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=Math.max(800/i.width, 800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; zSl.min=cfg.s; zSl.value=cfg.s; d(); document.getElementById('save').disabled=false; }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=Math.max(800/i.width, 800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; zSl.min=cfg.s; zSl.value=cfg.s; d(); document.getElementById('save').disabled = false; }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; d();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function updateZ(v){ cfg.s=parseFloat(v); d(); }
 function updateR(v){ cfg.r=parseInt(v); d(); }
@@ -359,11 +374,35 @@ function changeStudio(m) {
     panel.classList.remove('open');
 }
 
+function genFonts(){
+  const v=document.getElementById('font-input').value, b=document.getElementById('font-results'); b.innerHTML=""; if(!v) return;
+  alphas.forEach(a => {
+    let t = ""; const m = Array.from(a.m);
+    for(let c of v){ let idx = chars.indexOf(c); t += (idx !== -1 && m[idx]) ? m[idx] : c; }
+    let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t);}; b.appendChild(d);
+  });
+}
+
+function renderSymbols(){
+    const b = document.getElementById('sym-container'); b.innerHTML = "";
+    for (const [c, y] of Object.entries(symData)) {
+        let t = document.createElement('div'); t.className = "cat-title"; t.innerText = c; b.appendChild(t);
+        let g = document.createElement('div'); g.className = "sym-grid";
+        y.forEach(i => { let n = document.createElement('div'); n.className = "sym-btn"; n.innerText = i; n.onclick = () => { document.getElementById('sym-box').value += i; }; g.appendChild(n); }); b.appendChild(g);
+    }
+}
+renderSymbols();
+
 // --- SLIDER COLOR UPDATER ---
 document.querySelectorAll('input[type=range]').forEach(s => {
     const u = () => s.style.setProperty('--v', (s.value-s.min)/(s.max-s.min)*100+'%');
     s.addEventListener('input', u); u();
 });
+
+let isP=false, tStart={x:0,y:0};
+c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
+c.onmousemove=e=>{ if(!isP)return; cfg.x += (e.offsetX - tStart.x) * (800/310); cfg.y += (e.offsetY - tStart.y) * (800/310); tStart={x:e.offsetX,y:e.offsetY}; d(); }
+window.onmouseup=()=>{isP=false;}
 </script>
 </body>
 </html>
