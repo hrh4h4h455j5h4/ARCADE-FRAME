@@ -698,6 +698,13 @@ function restoreGifUI() {
   upBtn.parentElement.querySelector('.btn-upload').style.display = 'block';
 }
 
+// --- 🔧 VARIABLE SAFETY CHECK (Restores missing globals) ---
+if (typeof audioCtx === 'undefined') { var audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+if (typeof c === 'undefined') { var c = document.getElementById('c'); var x = c.getContext('2d'); }
+if (typeof i === 'undefined') { var i = new Image(), f = new Image(); }
+if (typeof cfg === 'undefined') { var cfg = { s: 1, m: 375, x: 400, y: 400, r: 0 }; }
+// -----------------------------------------------------------
+
 const originalReset = resetGifProject;
 resetGifProject = function() {
   originalReset();
@@ -714,6 +721,7 @@ function playShutter() { if (audioCtx.state !== 'running') audioCtx.resume(); co
 
 // --- 🖼️ FRAME ENGINE ---
 function d() {
+  if (typeof x === 'undefined') return; // Prevents freeze if canvas is missing
   x.clearRect(0, 0, 800, 800);
   x.save();
 
