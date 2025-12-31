@@ -176,11 +176,11 @@
     box-shadow: inset 0 0 20px #000; 
   }
   
-  /* FIXED: Custom positioning logic + no object-fit */
+  /* FIXED: Custom positioning logic instead of object-fit */
   #v { 
     position: absolute; 
     top: 50%; left: 50%;
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%); /* Start Centered */
     pointer-events: none; 
     will-change: transform; 
   }
@@ -330,7 +330,8 @@
         </div>
     </div>
 </div>
-  <div id="sym-studio" class="studio-sec">
+
+<div id="sym-studio" class="studio-sec">
     <div class="lbl">TAP SYMBOLS TO BUILD BIO</div>
     <div class="sym-box-container">
         <input type="text" id="sym-box" class="sym-input" placeholder="Type or tap symbols here...">
@@ -350,15 +351,26 @@ const viewBtn = document.getElementById('view-toggle');
 let isPC = false;
 
 function detectDevice() {
-    if(window.innerWidth > 1024) { setPCMode(true); } else { setPCMode(false); }
+    if(window.innerWidth > 1024) {
+        setPCMode(true);
+    } else {
+        setPCMode(false);
+    }
 }
 
-function toggleViewMode() { setPCMode(!isPC); }
+function toggleViewMode() {
+    setPCMode(!isPC);
+}
 
 function setPCMode(enable) {
     isPC = enable;
-    if(isPC) { document.body.classList.add('pc-mode'); viewBtn.innerText = "📱"; } 
-    else { document.body.classList.remove('pc-mode'); viewBtn.innerText = "🖥️"; }
+    if(isPC) {
+        document.body.classList.add('pc-mode');
+        viewBtn.innerText = "📱"; 
+    } else {
+        document.body.classList.remove('pc-mode');
+        viewBtn.innerText = "🖥️"; 
+    }
 }
 detectDevice();
 
@@ -380,10 +392,28 @@ window.onclick = e => {
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 
-// --- ✍️ SAFE FONT ENGINE ---
+// --- ✍️ SAFE FONT ENGINE (DIAMOND & GLITCH FREE) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
-  {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}
+  {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}, // Normal
+  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, // Bold
+  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789"}, // Italic
+  {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"}, // Bold Italic
+  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"}, // Script
+  {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"}, // Bold Script
+  {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"}, // Sans
+  {m:"𝗔𝗕𝗖𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦𝗧𝗨𝗩𝗪𝗫𝗬𝗭𝗮𝗯𝗰𝗱𝗲𝗳𝗴𝗵𝗶𝗷𝗸𝗹𝗺𝗻𝗼𝗽𝗾𝗿𝘀𝘁𝘂𝘃𝘄𝘅𝘆𝘇𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"}, // Bold Sans
+  {m:"𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣𝘤𝘥𝘦𝘧𝘨𝘩𝘪𝘫𝘬𝘭𝘮𝘯𝘰𝘱𝘲𝘳𝘴𝘵𝘶𝘷𝘸𝘹𝘺𝘻0123456789"}, // Italic Sans
+  {m:"𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯0123456789"}, // Bold Italic Sans
+  {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"}, // Mono
+  {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"}, // Wide
+  {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"}, // Circled
+  {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"}, // Black Circled
+  {m:"⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵0123456789"}, // Parens
+  {m:"🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩0123456789"}, // Square
+  {m:"🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉0123456789"}, // Black Square
+  {m:"ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢ0123456789"}, // Small Caps
+  {m:"ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᑫᴿˢᵀᵁⱽᵂˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖqʳˢᵗᵘᵛʷˣʸᶻ0123456789"}, // Tiny
 ];
 
 function genFonts(){
@@ -406,7 +436,19 @@ function genFonts(){
 function addF(t,b){let d=document.createElement('div');d.className="font-item";d.innerText=t;d.onclick=()=>{navigator.clipboard.writeText(t);playShutter();};b.appendChild(d);}
 
 // --- ✨ SYMBOLS STUDIO DATA ---
-const symData = {};
+const symData = {
+    "Hearts": ["❤","❥","♡","♥","❦","❧","❣","💞","💗","💕","💘","💝","💟","💌","💋"],
+    "Sparkles & Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
+    "Hanging Stars": ["*̣̥☆·͙̥","‧͙⁺˚*･༓☾","☽༓･*˚⁺‧͙","★*","*★","☆.","¸.·","·.¸","*","**","***"],
+    "Dividers": ["〰","﹏","—","─","━","│","┃","┄","┅","┆","┇","┈","┉","┊","┋","╌","╍","╎","╏","═","║","╒","╓","╔","╕","╖","╗","╘","╙","╚","╛","╜","╝","╞","╟","╠","╡","╢","╣","╤","╥","╦","╧","╨","╩","╪","╫","╬"],
+    "Borders": ["╔","╗","╚","╝","╠","╣","═","║","╬","╭","╮","╯","╰","╱","╲","╳","▏","▕","▖","▗","▘","▙","▚","▛","▜","▝","▞","▟"],
+    "Triangles": ["▲","△","▴","▵","▶","▷","▸","▹","►","▻","▼","▽","▾","▿","◀","◁","◂","◃","◄","◅","◢","◣","◤","◥","◬","◭","◮"],
+    "Circles & Dots": ["•","○","◌","◍","◎","●","◐","◑","◒","◓","◔","◕","◖","◗","◘","◙","◚","◛","◜","◝","◞","◟","◠","◡","◦","◧","◨","◩","◪","◫","◯","◰","◱","◲","◳","◴","◵","◶","◷"],
+    "Dice": ["⚀","⚁","⚂","⚃","⚄","⚅"],
+    "Dominos": ["🀰","🀱","🀲","🀳","🀴","🀵","🀶","🀷","🀸","🀹","🀺","🀻","🀼","🀽","🀾","🀿","🁀","🁁","🁂","🁃","🁄","🁅","🁆","🁇","🁈","🁉","🁊","🁋","🁌","🁍","🁎","🁏","🁐","🁑","🁒","🁓","🁔","🁕","🁖","🁗","🁘","🁙","🁚","🁛","🁜","🁝","🁞","🁟","🁠","🁡","🁢","🁣","🁤","🁥","🁦","🁧","🁨","🁩","🁪","🁫","🁬","🁭","🁮","🁯","🁰","🁱","🁲","🁳"],
+    "Arrows": ["←","↑","→","↓","↔","↕","↖","↗","↘","↙","↩","↪","↫","↬","↭","↮","↯","↰","↱","↲","↳","↴","↵","↶","↷","↸","↹","↺","↻","⇄","⇅","⇆","⇇","⇈","⇉","⇊","⇋","⇌","⇍","⇎","⇏","⇐","⇑","⇒","⇓","⇔","⇕","⇖","⇗","⇘","⇙","⇚","⇛"],
+    "Chess & Cards": ["♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧"]
+};
 
 function renderSymbols(){
     const box = document.getElementById('sym-container');
@@ -460,7 +502,6 @@ function resetGifProject() {
   gfInput.value = '';
   gifX = 0; gifY = 0;
   v.style.transform = `translate(-50%, -50%) scale(1)`;
-  vp.style.pointerEvents = 'auto'; // UNLOCK
 }
 
 gfInput.onchange=(e)=>{ 
@@ -571,7 +612,6 @@ window.addEventListener('touchend', () => isGifDrag = false);
 go.onclick=()=>{
     if(!v.src)return;
     go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
-    vp.style.pointerEvents = 'none'; // LOCK
     msg.innerText="Processing..."; msg.classList.add('active');
     
     const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:workerUrl});
@@ -622,192 +662,118 @@ go.onclick=()=>{
             cTime+=(1/fps);
             setTimeout(captureFrame, 10);
         };
-              captureFrame();
+        captureFrame();
     };
-  
-    gif.on('finished', blob => {
-        const url = URL.createObjectURL(blob), rNum = Math.floor(Math.random() * 90000) + 10000;
-        v.style.display = 'none'; o.src = url; o.style.display = 'block';
-        dl.download = `neon_focus_${rNum}.gif`; dl.href = url;
-        dlBox.style.display = 'inline-block'; resetBox.style.display = 'inline-block';
-        msg.classList.remove('active'); go.style.display = 'none';
-        upBtn.parentElement.querySelector('.btn-upload').style.display = 'none';
-        vp.style.pointerEvents = 'auto'; // UNLOCK
-    });
     
-    // Trigger video load
-    capVid.load();
+    gif.on('finished', blob=>{
+        const url=URL.createObjectURL(blob), rNum=Math.floor(Math.random()*90000)+10000;
+        v.style.display='none'; o.src=url; o.style.display='block';
+        dl.download=`neon_focus_${rNum}.gif`; dl.href=url;
+        dlBox.style.display='inline-block'; resetBox.style.display='inline-block';
+        msg.classList.remove('active'); go.style.display='none';
+        // Hide upload button during result view for cleanliness
+        upBtn.parentElement.querySelector('.btn-upload').style.display='none';
+    });
 };
 
 function restoreGifUI() {
-  upBtn.parentElement.querySelector('.btn-upload').style.display = 'block';
+    upBtn.parentElement.querySelector('.btn-upload').style.display='block';
 }
-
-// --- 🔧 VARIABLE SAFETY CHECK (Restores missing globals) ---
-if (typeof audioCtx === 'undefined') { var audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-if (typeof c === 'undefined') { var c = document.getElementById('c'); var x = c.getContext('2d'); }
-if (typeof i === 'undefined') { var i = new Image(), f = new Image(); }
-if (typeof cfg === 'undefined') { var cfg = { s: 1, m: 375, x: 400, y: 400, r: 0 }; }
-// -----------------------------------------------------------
-
+// Hook reset to restore UI
 const originalReset = resetGifProject;
 resetGifProject = function() {
-  originalReset();
-  restoreGifUI();
+    originalReset();
+    restoreGifUI();
 }
 
-// --- 📻 AUDIO & CORE ---
-function initAudio() { if (!audioStarted) { audioCtx.resume().then(() => { audioStarted = true; if (player && musicOn) { player.unMute(); player.playVideo(); } }); } }
-function onYouTubeIframeAPIReady() { player = new YT.Player('yt-player', { height: '0', width: '0', videoId: 'jfKfPfyJRdk', playerVars: { 'autoplay': 1, 'loop': 1, 'playlist': 'jfKfPfyJRdk', 'mute': 0 }, events: { 'onReady': e => { e.target.setVolume(25); } } }); }
-function changeMusic(id) { if (player) player.loadVideoById(id); playShutter(); }
-function toggleMusic() { initAudio(); playClick(); musicOn = !musicOn; if (musicOn) { player.playVideo(); mStat.innerText = "ON"; mStat.style.color = "#ff0000"; } else { player.pauseVideo(); mStat.innerText = "OFF"; mStat.style.color = "#888"; } }
-function playClick() { if (audioCtx.state !== 'running') audioCtx.resume(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
-function playShutter() { if (audioCtx.state !== 'running') audioCtx.resume(); const o = audioCtx.createOscillator(), g = audioCtx.createGain(); o.type = 'square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + 0.1); }
+// --- AUDIO & CORE ---
+function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
+function onYouTubeIframeAPIReady(){ player=new YT.Player('yt-player',{height:'0',width:'0',videoId:'jfKfPfyJRdk',playerVars:{'autoplay':1,'loop':1,'playlist':'jfKfPfyJRdk','mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
+function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
+function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
+function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
 
 // --- 🖼️ FRAME ENGINE ---
-function d() {
-  if (typeof x === 'undefined') return; // Prevents freeze if canvas is missing
-  x.clearRect(0, 0, 800, 800);
-  x.save();
-
-  // Create circular clipping window
-  x.beginPath();
-  x.arc(400, 400, cfg.m, 0, Math.PI * 2);
-  x.clip();
-
-  if (i.src) {
-    // Calculate full dimensions
-    let w = i.width * cfg.s;
-    let h = i.height * cfg.s;
-
-    x.save();
-    x.translate(cfg.x, cfg.y);
-    x.rotate(cfg.r * Math.PI / 180);
-
-    // Draw image centered like the GIF maker fix
-    x.drawImage(i, -w / 2, -h / 2, w, h);
-    x.restore();
-  }
-
-  x.restore();
-
-  // Draw frame on top
-  if (f.src) {
-    x.drawImage(f, 0, 0, 800, 800);
-  }
-}
-
-function handleFile(e) {
-  let r = new FileReader();
-  r.onload = v => {
-    let n = new Image();
-    n.onload = () => {
-      i = n;
-      cfg.s = Math.max(800 / i.width, 800 / i.height);
-      cfg.x = 400; cfg.y = 400; cfg.r = 0;
+function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } x.restore(); if(f.src) x.drawImage(f,0,0,800,800); }
+function handleFile(e){ 
+  let r=new FileReader(); 
+  r.onload=v=>{ 
+    let n=new Image(); 
+    n.onload=()=>{
+      i=n; 
+      cfg.s=Math.max(800/i.width,800/i.height); 
+      cfg.x=400; cfg.y=400; cfg.r=0; 
       d(); playClick();
       document.getElementById('save').disabled = false;
-    };
-    n.src = v.target.result;
-  };
-  r.readAsDataURL(e.target.files[0]);
+    }; 
+    n.src=v.target.result; 
+  }; 
+  r.readAsDataURL(e.target.files[0]); 
 }
-
-function handleFrame(e) {
-  let r = new FileReader();
-  r.onload = v => {
-    let n = new Image();
-    n.onload = () => { f = n; d(); playClick(); };
-    n.src = v.target.result;
-  };
-  r.readAsDataURL(e.target.files[0]);
+function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
+function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
+function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
+function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playShutter(); document.getElementById('save').disabled = true;}
+function downloadPic(){ 
+  if(!i.src) return; 
+  d(); 
+  let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); 
 }
-
-function updateZ(v) { cfg.s = parseFloat(v); zVal.innerText = Math.round(v * 100) + "%"; d(); }
-function updateR(v) { cfg.r = parseInt(v); rVal.innerText = v + "°"; d(); }
-function updateM(v) { cfg.m = parseInt(v); mVal.innerText = v + "px"; d(); }
-function centerSubject() { cfg.x = 400; cfg.y = 400; cfg.r = 0; rSl.value = 0; d(); playShutter(); }
-
-function resetProject() {
-  i = new Image();
-  f = new Image();
-  cfg = { s: 1, m: 375, x: 400, y: 400, r: 0 };
-  zSl.value = 1;
-  rSl.value = 0;
-  mSl.value = 375;
-  d();
-  playShutter();
-  document.getElementById('save').disabled = true;
-}
-
-function downloadPic() {
-  if (!i.src) return;
-  d();
-  let a = document.createElement('a');
-  a.download = `Arcade_${Date.now()}.png`;
-  a.href = c.toDataURL();
-  a.click();
-  playShutter();
-}
-
-function updS(el) {
-  if (el.parentElement.classList.contains('ui-gif')) return;
-  el.style.setProperty('--v', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
-}
-
-document.querySelectorAll('input[type=range]').forEach(el => {
-  el.addEventListener('input', () => updS(el));
-  updS(el);
-});
+function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
 // --- 🕹️ FRAME STUDIO TOUCH CONTROLS ---
-let isP = false, tStart = { x: 0, y: 0 }, tAng = 0, initR = 0;
-c.onmousedown = e => { isP = true; tStart = { x: e.offsetX, y: e.offsetY }; }
-c.onmousemove = e => {
-  if (!isP) return;
+let isP=false, tStart={x:0,y:0}, tAng=0, initR=0;
+c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
+c.onmousemove=e=>{
+  if(!isP)return;
   let scale = 800 / c.offsetWidth;
   cfg.x += (e.offsetX - tStart.x) * scale;
   cfg.y += (e.offsetY - tStart.y) * scale;
-  tStart = { x: e.offsetX, y: e.offsetY };
+  tStart={x:e.offsetX,y:e.offsetY};
   d();
 }
-window.onmouseup = () => { isP = false; }
+window.onmouseup=()=>{isP=false;}
 
-c.ontouchstart = e => {
+c.ontouchstart=e=>{
   e.preventDefault();
-  if (e.touches.length === 1) {
-    isP = true;
-    tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  } else if (e.touches.length === 2) {
-    isP = false;
+  if(e.touches.length===1){
+    isP=true;
+    tStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
+  } else if(e.touches.length===2){
+    isP=false; 
     let dx = e.touches[1].clientX - e.touches[0].clientX;
     let dy = e.touches[1].clientY - e.touches[0].clientY;
     tAng = Math.atan2(dy, dx);
     initR = cfg.r;
   }
 }
-c.ontouchmove = e => {
+c.ontouchmove=e=>{
   e.preventDefault();
-  if (e.touches.length === 1 && isP) {
+  if(e.touches.length===1 && isP){
     let scale = 800 / c.offsetWidth;
     let dx = e.touches[0].clientX - tStart.x;
     let dy = e.touches[0].clientY - tStart.y;
     cfg.x += dx * scale;
     cfg.y += dy * scale;
-    tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    tStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
     d();
-  } else if (e.touches.length === 2) {
+  }
+  else if(e.touches.length===2){
     let dx = e.touches[1].clientX - e.touches[0].clientX;
     let dy = e.touches[1].clientY - e.touches[0].clientY;
     let curAng = Math.atan2(dy, dx);
-    let rotDiff = (curAng - tAng) * (180 / Math.PI);
+    let rotDiff = (curAng - tAng) * (180/Math.PI);
     cfg.r = initR + rotDiff;
     rSl.value = (cfg.r % 360 + 360) % 360;
     rVal.innerText = Math.round(cfg.r) + "°";
     d();
   }
 }
-window.ontouchend = () => { isP = false; }
+window.ontouchend=()=>{isP=false;}
 </script>
 </body>
 </html>
