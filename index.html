@@ -25,19 +25,6 @@
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; border: 2px solid #0a0a0c; }
   ::-webkit-scrollbar-thumb:hover { background: #00ffff; }
 
-  /* --- LIVE ARCADE CLOCK (FIXED & RETRO) --- */
-  #arcade-clock {
-    position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-    font-family: "Courier New", Courier, monospace; 
-    font-size: 20px; font-weight: bold; letter-spacing: 2px;
-    color: #ff0000; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
-    background: rgba(10, 10, 12, 0.95); 
-    padding: 8px 15px; border-radius: 6px;
-    border: 1px solid rgba(255, 0, 0, 0.3); 
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.1);
-    z-index: 100000; pointer-events: none;
-  }
-
   /* --- NAVIGATION --- */
   .menu-toggle { 
     position: fixed; top: 15px; left: 15px; 
@@ -87,6 +74,7 @@
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
 
   .music-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .menu-lbl { font-size: 10px; font-weight: 900; color: #00ffff; text-transform: uppercase; margin-bottom: 5px; }
   .lnk { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
@@ -243,8 +231,6 @@
 </head>
 <body onclick="startAudio()">
 
-<div id="arcade-clock">00:00:00</div>
-
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 <button id="view-toggle" onclick="toggleViewMode()">🖥️</button>
 
@@ -270,8 +256,8 @@
   </div>
 
   <div class="music-section">
-    <div class="menu-lbl">Sound effect</div>
-    <select id="sfx-select" style="width:100%; background:#222; color:white; border:1px solid #444;">
+    <div class="menu-lbl">Sounds effect</div>
+    <select id="sfx-select" style="width:100%; background:#222; color:white; border:1px solid #444;" onchange="playClick()">
       <option value="bit">👾 8-Bit Tone</option>
       <option value="arcade" selected>🕹️ Arcade Click</option>
       <option value="bubble">🫧 Soft Pop</option>
@@ -300,8 +286,8 @@
 <div id="frame-studio" class="studio-sec active-sec">
   <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
-    <label class="btn">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
-    <label class="btn btn-r">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
+    <label class="btn" onclick="playClick()">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
+    <label class="btn btn-r" onclick="playClick()">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
     <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="centerSubject()">CENTER SUBJECT 🎯</button>
     <button class="btn" style="border-color:#ff0000; color:#ff0000;" onclick="resetProject()">RESET PROJECT ↻</button>
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
@@ -373,26 +359,6 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const viewBtn = document.getElementById('view-toggle');
 let isPC = false;
 
-// --- 12H LIVE ARCADE CLOCK ---
-function updateClock(){ 
-    document.getElementById('arcade-clock').innerText = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: true}); 
-}
-setInterval(updateClock, 1000); updateClock();
-
-// --- GLOBAL CLICK HANDLER (ALL CLICKS PLAY SOUND) ---
-window.onclick = e => {
-  initAudio(); 
-  playClick(); // Trigger sound on ANY click anywhere
-
-  // Normal Menu Logic
-  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { 
-      panel.classList.remove('open'); 
-  }
-  if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { 
-      swMenu.style.display = 'none'; 
-  }
-};
-
 function detectDevice() {
     if(window.innerWidth > 1024) { setPCMode(true); } else { setPCMode(false); }
 }
@@ -407,7 +373,7 @@ function setPCMode(enable) {
 detectDevice();
 
 function changeStudio(mode) {
-  document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
+  playClick(); document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
   swMenu.style.display = 'none'; panel.classList.remove('open');
   if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
   else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; }
@@ -415,15 +381,26 @@ function changeStudio(mode) {
   else if(mode === 'sym') { document.getElementById('sym-studio').classList.add('active-sec'); sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; }
 }
 
-function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; }
-function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); }
+// --- MENU CLOSING LOGIC (Sound Removed from here) ---
+window.onclick = e => {
+  initAudio(); 
+  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { 
+      panel.classList.remove('open'); 
+  }
+  if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { 
+      swMenu.style.display = 'none'; 
+  }
+};
+
+function toggleSwitchMenu(e) { e.stopPropagation(); playClick(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; }
+function toggleMenu(e) { e.stopPropagation(); initAudio(); playClick(); panel.classList.toggle('open'); }
 
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   // --- ORIGINAL 19 FONTS ---
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
-  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏ｃｄｅｆｇℎｉ𝑗𝑘ｌｍｎｏｐ𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥ｙｚ0123456789"},
+  {m:"𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽ＫＬＭ𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏ｃｄｅ𝑓ｇℎｉ𝑗𝑘ｌｍｎｏｐ𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥ｙｚ0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ⒩⒪⒫⒬ℛ𝒮𝒯𝒰⒱𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃0123456789"},
@@ -516,7 +493,7 @@ function renderSymbols(){
             btn.onclick = () => { 
                 const b = document.getElementById('sym-box');
                 b.value += s;
-                playShutter(); 
+                playClick(); 
             };
             grid.appendChild(btn);
         });
@@ -536,6 +513,7 @@ let gifX = 0, gifY = 0;
 let vidW = 0, vidH = 0; 
 
 function resetGifProject() {
+  playClick();
   v.src=''; o.style.display='none'; v.style.display='none';
   dlBox.style.display='none'; resetBox.style.display='none';
   go.style.display='block'; go.disabled=true; 
@@ -642,6 +620,7 @@ window.addEventListener('touchend', () => isGifDrag = false);
 
 go.onclick=()=>{
     if(!v.src)return;
+    playClick();
     go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
     vp.style.pointerEvents = 'none'; 
     msg.innerText="Processing..."; msg.classList.add('active');
@@ -813,9 +792,9 @@ function updateZ(v){
 }
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
-function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playShutter(); document.getElementById('save').disabled = true;}
-function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
+function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playClick(); }
+function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playClick(); document.getElementById('save').disabled = true;}
+function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playClick(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
