@@ -38,47 +38,27 @@
     box-shadow: 0 0 30px rgba(0,255,255,0.3);
   }
   .about-content h2 { color: #00ffff; margin-top: 0; }
-  .close-about { position: absolute; top: 15px; right: 15px; cursor: pointer; color: #888; }
+  .close-about { position: absolute; top: 15px; right: 15px; cursor: pointer; color: #888; font-size: 20px; }
 
   /* --- VISUAL FX --- */
-  .ripple {
-    position: fixed; border: 2px solid #ff0000; border-radius: 50%;
-    transform: scale(0); animation: rippleEffect 0.5s linear;
-    pointer-events: none; z-index: 999999;
-  }
+  .ripple { position: fixed; border: 2px solid #ff0000; border-radius: 50%; transform: scale(0); animation: rippleEffect 0.5s linear; pointer-events: none; z-index: 999999; }
   @keyframes rippleEffect { to { transform: scale(3.5); opacity: 0; } }
 
-  .fire-particle {
-    position: fixed; width: 8px; height: 8px; background: #ff4500;
-    box-shadow: 0 0 8px #ff0000; border-radius: 2px; pointer-events: none;
-    z-index: 999998; animation: fireRise 0.6s ease-out forwards;
-  }
-  @keyframes fireRise {
-    0% { transform: translateY(0) rotate(0); opacity: 1; }
-    100% { transform: translateY(-50px) rotate(90deg); opacity: 0; scale: 0.5; }
-  }
+  .fire-particle { position: fixed; width: 8px; height: 8px; background: #ff4500; box-shadow: 0 0 8px #ff0000; border-radius: 2px; pointer-events: none; z-index: 999998; animation: fireRise 0.6s ease-out forwards; }
+  @keyframes fireRise { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(-50px) rotate(90deg); opacity: 0; scale: 0.5; } }
 
-  .retro-bullet {
-    position: fixed; width: 4px; height: 12px; background: #ffff00;
-    box-shadow: 0 0 5px #ffff00; border-radius: 1px; pointer-events: none;
-    z-index: 999997; animation: bulletShoot 0.4s linear forwards;
-  }
-  @keyframes bulletShoot {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-200px); opacity: 0; }
-  }
+  .retro-bullet { position: fixed; width: 4px; height: 12px; background: #ffff00; box-shadow: 0 0 5px #ffff00; border-radius: 1px; pointer-events: none; z-index: 999997; animation: bulletShoot 0.4s linear forwards; }
+  @keyframes bulletShoot { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-200px); opacity: 0; } }
+
+  /* --- SLIDERS STYLING --- */
+  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
+  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; box-shadow: 0 0 10px #ff0000; }
 
   /* --- NAVIGATION --- */
   .menu-toggle { position: fixed; top: 15px; left: 15px; background: #1a1a1c; color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; z-index: 100000; }
   #view-toggle { position: fixed; top: 15px; right: 15px; background: #1a1a1c; border: 1px solid #00ffff; padding: 8px 12px; border-radius: 4px; z-index: 100000; cursor: pointer; }
-
-  #menu-panel { 
-    position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
-    background: #1a1a1c; padding-top: 60px; transition: 0.3s ease; 
-    z-index: 99999; display: flex; flex-direction: column; gap: 12px; 
-    padding-left: 15px; padding-right: 15px; box-sizing: border-box; padding-bottom: 80px; 
-    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-  }
+  #menu-panel { position: fixed; top: 0; left: -260px; width: 240px; height: 100%; background: #1a1a1c; padding-top: 60px; transition: 0.3s ease; z-index: 99999; display: flex; flex-direction: column; gap: 12px; padding-left: 15px; padding-right: 15px; box-sizing: border-box; padding-bottom: 80px; box-shadow: 2px 0 15px rgba(0,0,0,0.5); }
   #menu-panel.open { left: 0; }
 
   .menu-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 5px; }
@@ -99,27 +79,17 @@
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- 🖼️ FRAME STUDIO --- */
+  /* --- STUDIO PANELS --- */
   #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; z-index: 10; }
   canvas#c { width: 310px; height: 310px; touch-action: none; }
-  .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
+  .ui, .ui-gif { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; width: 100%; box-sizing: border-box; }
   .btn-r { border-color: #ff0000; }
-  .lbl { font-size: 9px; color: #888; text-transform: uppercase; display: flex; justify-content: space-between; width: 100%; }
-  .val-tag { color: #ff0000; font-weight: bold; }
 
-  /* --- ⚡ GIF STUDIO --- */
-  .viewport { position: relative; width: 320px; height: 320px; border-radius: 50%; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center; }
+  .viewport { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center; border: 3px solid #00ffff; }
   #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
   #o { width: 100%; height: 100%; object-fit: contain; display: none; }
-  .ui-gif { background: rgba(10, 10, 10, 0.9); padding: 25px; border-radius: 30px; width: 340px; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; }
-  .btn-upload { background: linear-gradient(90deg, #00f3ff, #bc13fe); color: #000; border: none; padding: 15px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; margin-bottom: 15px; }
-  .neon-wrap { position: relative; display: block; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
-  .neon-wrap::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 4s linear infinite; z-index: 0; }
-  .btn-inner { position: relative; display: block; text-align: center; color: white; background: #000; padding: 12px; border-radius: 48px; font-weight: 900; z-index: 1; cursor: pointer; border: none; width: 100%; }
-  @keyframes rotate { 100% { transform: rotate(360deg); } }
 
-  /* --- FONT & SYMBOLS --- */
   .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; outline: none; }
   .font-scroll { width: 100%; max-height: 400px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; }
   .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; text-align: center; cursor: pointer; white-space: pre-wrap; }
@@ -139,9 +109,9 @@
 
 <div id="menu-panel">
   <div class="menu-section">
-    <div class="menu-lbl">Select Tool</div>
+    <div class="menu-lbl">Studio HUD</div>
     <div class="switch-container">
-      <button id="switch-btn" onclick="toggleSwitchMenu(event)">STUDIO HUD 📂</button>
+      <button id="switch-btn" onclick="toggleSwitchMenu(event)">SELECT TOOL 📂</button>
       <div id="switch-menu">
         <button onclick="changeStudio('frame')">🖼️ Frame Studio</button>
         <button onclick="changeStudio('font')">✍️ Font Generator</button>
@@ -183,7 +153,7 @@
     <div class="about-content" onclick="event.stopPropagation()">
         <span class="close-about" onclick="hideAbout()">✖</span>
         <h2 style="font-style:italic;">ARCADE STUDIO ℹ️</h2>
-        <p>Prestige profile creation for the elite gaming community. <b>Arcade Studio</b> is optimized for tournament winners and top-tier Discord aesthetics.</p>
+        <p>A professional HUD built for the elite gaming community. <b>Arcade Studio</b> delivers high-speed creative tools for Discord profiles and tournament winners.</p>
         <p><b>⚡ Engine:</b> HD GIF encoding with real-time stability for large video files.</p>
         <p><b>🖼️ Logic:</b> Constraint Logic locks profile pictures to the frame, ensuring zero black gaps even during rotation.</p>
     </div>
@@ -216,16 +186,21 @@
 
 <div id="gif-studio" class="studio-sec">
     <div class="viewport" id="vp"><video id="v" muted playsinline loop></video><img id="o"></div>
-    <div class="ui-gif" style="margin-top:20px;">
-        <button class="btn-upload" onclick="document.getElementById('gfInput').click()">UPLOAD VIDEO</button>
+    <div class="ui-gif">
+        <button class="btn" onclick="document.getElementById('gfInput').click()">UPLOAD VIDEO</button>
         <input type="file" id="gfInput" accept="video/*" style="display:none">
-        <div class="neon-wrap"><button id="go" class="btn-inner">⚡ CREATE HD GIF</button></div>
-        <div id="dlBox" class="neon-wrap" style="display:none;"><a id="dl" class="btn-inner">⬇️ DOWNLOAD</a></div>
+        <div class="lbl">ZOOM <span id="zv" class="val-tag">100%</span></div>
+        <input type="range" id="zoom" min="100" max="300" step="1" value="100">
+        <div class="lbl">SPEED <span id="sv" class="val-tag">1.0x</span></div>
+        <input type="range" id="speed" min="0.5" max="3.0" step="0.1" value="1.0">
+        <button id="go" class="btn" style="border-color:#00ffff; color:#00ffff;">⚡ CREATE HD GIF</button>
+        <div id="msg" style="text-align:center; font-size:11px; color:#00ffff;">Ready</div>
+        <div id="dlBox" style="display:none;"><a id="dl" class="btn">⬇️ DOWNLOAD GIF</a></div>
     </div>
 </div>
 
 <div id="sym-studio" class="studio-sec">
-    <input type="text" id="sym-box" class="font-input" placeholder="Build your bio here...">
+    <input type="text" id="sym-box" class="font-input" placeholder="Tapped symbols appear here...">
     <div id="sym-container" class="font-scroll"></div>
 </div>
 
@@ -240,25 +215,28 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function updateClock(){ document.getElementById('arcade-clock').innerText = new Date().toTimeString().split(' ')[0]; }
 setInterval(updateClock, 1000); updateClock();
 
-// --- INTERACTION ---
+// --- GLOBAL HANDLER ---
 function handleGlobalClick(e) {
     if(!audioStarted) initAudio();
     if(panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) panel.classList.remove('open');
+    if(swMenu.style.display==='flex' && !e.target.closest('.switch-container')) swMenu.style.display='none';
     playClick();
-    const ripple = document.createElement("div"); ripple.className = "ripple";
-    let color = "#ff0000"; if(musicOn && player && document.getElementById('track-select').value==='jfKfPfyJRdk') color="#ffffff";
-    if(musicOn && player && document.getElementById('track-select').value==='nv_2rz5BFDA') color="#00ffff";
-    ripple.style.borderColor=color; ripple.style.boxShadow=`0 0 15px ${color}`;
-    ripple.style.left=e.clientX-25+"px"; ripple.style.top=e.clientY-25+"px"; ripple.style.width=ripple.style.height="50px";
-    document.body.appendChild(ripple); ripple.onanimationend=()=>ripple.remove();
+    
+    // FX
+    const rip = document.createElement("div"); rip.className = "ripple";
+    let col = "#ff0000"; if(musicOn && player){ const t=document.getElementById('track-select').value; if(t==='jfKfPfyJRdk')col="#ffffff"; if(t==='nv_2rz5BFDA')col="#00ffff"; }
+    rip.style.borderColor=col; rip.style.boxShadow=`0 0 15px ${col}`;
+    rip.style.left=e.clientX-25+"px"; rip.style.top=e.clientY-25+"px"; rip.style.width=rip.style.height="50px";
+    document.body.appendChild(rip); rip.onanimationend=()=>rip.remove();
+    
     for(let j=0;j<5;j++){
         const fire=document.createElement("div"); fire.className="fire-particle";
         fire.style.left=e.clientX+(Math.random()*20-10)+"px"; fire.style.top=e.clientY+(Math.random()*20-10)+"px";
         document.body.appendChild(fire); setTimeout(()=>fire.remove(),600);
     }
-    const bullet=document.createElement("div"); bullet.className="retro-bullet";
-    bullet.style.left=e.clientX-2+"px"; bullet.style.top=e.clientY-6+"px";
-    document.body.appendChild(bullet); setTimeout(()=>bullet.remove(),400);
+    const bul=document.createElement("div"); bul.className="retro-bullet";
+    bul.style.left=e.clientX-2+"px"; bul.style.top=e.clientY-6+"px";
+    document.body.appendChild(bul); setTimeout(()=>bul.remove(),400);
 }
 
 // --- AUDIO ---
@@ -266,18 +244,17 @@ function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStart
 function playClick(){
     if(!audioStarted) return; const type=document.getElementById('sfx-select').value;
     const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.connect(g); g.connect(audioCtx.destination);
-    if(type==='bit'){ o.type='sawtooth'; o.frequency.setValueAtTime(120, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(10, audioCtx.currentTime+0.1); g.gain.setValueAtTime(0.02, audioCtx.currentTime); }
+    if(type==='bit'){ o.type='sawtooth'; o.frequency.setValueAtTime(120, audioCtx.currentTime); g.gain.setValueAtTime(0.02, audioCtx.currentTime); }
     else if(type==='arcade'){ o.frequency.setValueAtTime(600, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); }
-    else if(type==='bubble'){ o.type='sine'; o.frequency.setValueAtTime(300, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime+0.05); g.gain.setValueAtTime(0.02, audioCtx.currentTime); }
-    else { o.type='square'; o.frequency.setValueAtTime(100, audioCtx.currentTime); g.gain.setValueAtTime(0.01, audioCtx.currentTime); }
+    else if(type==='bubble'){ o.type='sine'; o.frequency.setValueAtTime(400, audioCtx.currentTime); g.gain.setValueAtTime(0.02, audioCtx.currentTime); }
+    else { o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.01, audioCtx.currentTime); }
     o.start(); o.stop(audioCtx.currentTime+0.1);
 }
-function playShutter(){ const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
 function onYouTubeIframeAPIReady(){ player=new YT.Player('yt-player',{height:'0',width:'0',videoId:'jfKfPfyJRdk',playerVars:{'autoplay':1,'loop':1,'playlist':'jfKfPfyJRdk'},events:{'onReady':e=>{e.target.setVolume(25);}}});}
 function changeMusic(id){ if(player)player.loadVideoById(id); }
 function toggleMusic(){ initAudio(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
 
-// --- FONTS (FULL 38) ---
+// --- FONTS & SYMBOLS ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"},
@@ -287,10 +264,10 @@ const alphas = [
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰Ⓥ𝒲𝒳𝒴𝒵𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊Ⓥ𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤Ⓥ𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𓋼𝔀𝔁𝔂𝔃0123456789"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴Ⓥ𝖂𝖃𝖄𝖅𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎Ⓥ𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
-  {m:"𝗔𝗕Ｃ𝗗𝗘𝗙𝗚𝗛𝗜ＪＫＬＭＮＯＰ𝗤𝗥𝗦Ｔ𝗨Ⓥ𝗪𝗫Ｙ𝗭𝗮𝗯𝗰ｄｅｆｇ𝗵ｉ𝑗ｋｌｍｎｏｐ𝗾ｒｓｔｕｖｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
-  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙ｉ𝑗ｋｌｍｎｏｐ𝕢ｒｓｔｕ𝓿𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
-  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ𝔞𝔟𝔠𝔡𝔢𝔣𝔤ｈｉ𝑗ｋｌｍｎｏｐ𝔮ｒｓｔｕ𝓿𝔴𝔵𝔶𝔷0123456789"},
-  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝓿𝖜𝖝𝖞𝖟0123456789"},
+  {m:"𝗔𝗕ＣＤＥ𝗙𝗚ＨＩＪＫＬＭＮＯＰ𝗤𝗥𝗦Ｔ𝗨Ⓥ𝗪𝗫Ｙ𝗭𝗮𝗯ｃｄｅｆｇｈｉ𝑗ｋｌｍｎｏｐ𝗾ｒｓｔｕｖｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
+  {m:"𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙ｉ𝑗ｋｌｍｎｏｐ𝕢ｒｓｔｕ𓋼𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
+  {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ𝔞𝔟𝔠𝔡𝔢𝔣𝔤ｈｉ𝑗ｋｌｍｎｏｐ𝔮ｒｓｔｕ𓋼𝔴𝔵𝔶𝔷0123456789"},
+  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𓋼𝖜𝖝𝖞𝖟0123456789"},
   {m:"₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ0123456789"},
   {m:"ȺƀçĐɇfǤħɨɉꝁłmNøᵽꝗɍsŧᵾvwxyƵȺƀçĐɇfǤħɨɉꝁłmNøᵽꝗɍsŧᵾvwxyƵ0123456789"},
   {m:"αвc∂єƒgнιנкℓмиσρqяѕтυνωχуzαвc∂єƒgнιנкℓмиσρqяѕтυνωχуz0123456789"},
@@ -306,87 +283,87 @@ const alphas = [
   {m:"A⋆B⋆C⋆D⋆E⋆F⋆G⋆H⋆I⋆J⋆K⋆L⋆M⋆N⋆O⋆P⋆Q⋆R⋆S⋆T⋆U⋆V⋆W⋆X⋆Y⋆Z⋆a⋆b⋆c⋆d⋆e⋆f⋆g⋆h⋆i⋆j⋆k⋆l⋆m⋆n⋆o⋆p⋆q⋆r⋆s⋆t⋆u⋆v⋆w⋆x⋆y⋆z⋆0⋆1⋆2⋆3⋆4⋆5⋆6⋆7⋆8⋆9"},
   {m:"A.B.C.D.E.F.G.H.I.J.K.L.M.N.O.P.Q.R.S.T.U.V.W.X.Y.Z.a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.0.1.2.3.4.5.6.7.8.9"},
   {m:"A̲B̲C̲D̲E̲F̲G̲H̲I̲J̲K̲L̲M̲N̲O̲P̲Q̲R̲S̲T̲U̲V̲W̲X̲Y̲Z̲a̲b̲c̲d̲e̲f̲g̲h̲i̲j̲k̲l̲m̲n̲o̲p̲q̲r̲s̲t̲u̲v̲w̲x̲y̲z̲0̲1̲2̲3̲4̲5̲6̲7̲8̲9"},
-  {m:"A̶B̶C̶D̶E̶F̶G̶H̶I̶J̶K̶L̶M̶N̶O̶P̶Q̶R̶S̶T̶U̶V̶W̶X̶Y̶Z̶a̶b̶c̶d̶e̶f̶g̶h̶i̶j̶k̶l̶m̶n̶o̶p̶q̶r̶s̶t̶u̶v̶w̶x̶y̶z̶0̶1̶2̶3̶4̶5̶6̶7̶8̶9"}
+  {m:"A̶B̶C̶D̶E̶F̶G̶H̶I̶J̶K̶L̶M̶N̶O̶P̶Q̶R̶S̶T̶U̶V̶W̶X̶Y̶Z̶a̶b̶c̶d̶e̶f̶g̶h̶i̶j_k̶l̶m̶n̶o̶p̶q̶r̶s̶t̶u̶v̶w̶x̶y̶z̶0̶1̶2̶3̶4̶5̶6̶7̶8̶9"},
+  {m:"🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩🄐🄑🄒🄓🄔🄕🄖🄗🄘🄙🄚🄛🄜🄝🄞🄟🄠🄡🄢🄣🄤🄥🄦🄧🄨🄩0123456789"},
+  {m:"ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ0123456789"},
+  {m:"🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🅀🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🅀🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉0123456789"}
 ];
 
 function genFonts(){
-  const val=document.getElementById('font-input').value, resBox=document.getElementById('font-results');
-  resBox.innerHTML=""; if(!val) return;
-  alphas.forEach(alph => {
-    let txt = ""; const mapArr = Array.from(alph.m);
-    for(let char of val){ let idx = chars.indexOf(char); txt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char; }
-    let d=document.createElement('div'); d.className="font-item"; d.innerText=txt; d.onclick=()=>{navigator.clipboard.writeText(txt); playShutter();}; resBox.appendChild(d);
+  const v=document.getElementById('font-input').value, b=document.getElementById('font-results'); b.innerHTML=""; if(!v) return;
+  alphas.forEach(a => {
+    let t = ""; const m = Array.from(a.m);
+    for(let c of v){ let idx = chars.indexOf(c); t += (idx !== -1 && m[idx]) ? m[idx] : c; }
+    let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t);}; b.appendChild(d);
   });
 }
 
 function renderSymbols(){
-    const box = document.getElementById('sym-container'); box.innerHTML = "";
-    const symData = {
-        "Hearts": ["❤","❥","♡","♥","❦","❧","❣","💞","💗","💕","💘","💝","💟","💌","💋"],
-        "Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","❄","❅","❆"],
-        "Hanging": ["*̣̥☆·͙̥","‧͙⁺˚*･༓☾","☽༓･*˚⁺‧͙","★*","*★","☆.","¸.·","·.¸"],
-        "Symbols": ["▲","△","▶","▷","▼","▽","◀","◁","•","○","◌","◍","◎","●","🎲","♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧","←","↑","→","↓","↔","↕","↺","↻"]
-    };
-    for (const [category, symbols] of Object.entries(symData)) {
-        let title = document.createElement('div'); title.className = "cat-title"; title.innerText = category; box.appendChild(title);
-        let grid = document.createElement('div'); grid.className = "sym-grid";
-        symbols.forEach(s => {
-            let btn = document.createElement('div'); btn.className = "sym-btn"; btn.innerText = s;
-            btn.onclick = () => { document.getElementById('sym-box').value += s; playShutter(); }; grid.appendChild(btn);
-        }); box.appendChild(grid);
+    const b = document.getElementById('sym-container'); b.innerHTML = "";
+    const s = { "Hearts": ["❤","❥","♡","♥","❦","❧","❣","💞","💗","💕","💘","💝","💟","💌","💋"], "Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","❄","❅","❆"], "Dice": ["🎲","⚀","⚁","⚂","⚃","⚄","⚅"], "Arrows": ["←","↑","→","↓","↔","↕","↺","↻","↖","↗","↘","↙"] };
+    for (const [c, y] of Object.entries(s)) {
+        let t = document.createElement('div'); t.className = "cat-title"; t.innerText = c; b.appendChild(t);
+        let g = document.createElement('div'); g.className = "sym-grid";
+        y.forEach(i => { let n = document.createElement('div'); n.className = "sym-btn"; n.innerText = i; n.onclick = () => { document.getElementById('sym-box').value += i; }; g.appendChild(n); }); b.appendChild(g);
     }
 }
 renderSymbols();
 
-// --- LOGIC ---
-function toggleMenu(e){ e.stopPropagation(); initAudio(); panel.classList.toggle('open'); }
-function toggleSwitchMenu(e){ e.stopPropagation(); swMenu.style.display = swMenu.style.display==='flex'?'none':'flex'; }
-function toggleViewMode(){ document.body.classList.toggle('pc-mode'); }
-function showAbout(){ document.getElementById('about-overlay').style.display='flex'; }
-function hideAbout(){ document.getElementById('about-overlay').style.display='none'; }
-
-function changeStudio(mode) {
-  document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
-  swMenu.style.display = 'none'; panel.classList.remove('open');
-  if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
-  else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR"; }
-  else if(mode === 'gif') { document.getElementById('gif-studio').classList.add('active-sec'); sName.innerText = "NEON"; sSub.innerText = "GIF STUDIO"; }
-  else if(mode === 'sym') { document.getElementById('sym-studio').classList.add('active-sec'); sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; }
-}
+// --- GIF ENGINE ---
+const wB = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
+const wU = URL.createObjectURL(wB);
+const gfI=document.getElementById('gfInput'), v=document.getElementById('v'), o=document.getElementById('o'), go=document.getElementById('go'), msg=document.getElementById('msg');
+let gX=0, gY=0;
+gfI.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; v.style.display='block'; o.style.display='none'; v.src=URL.createObjectURL(f); v.onloadedmetadata=()=>{ v.play(); }; };
+go.onclick=()=>{
+  if(!v.src) return; go.disabled=true; msg.innerText="Processing...";
+  const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:wU});
+  const can=document.createElement('canvas'); can.width=480; can.height=480; const ctx=can.getContext('2d');
+  let cT=0; const fps=15;
+  const cap=()=>{ if(cT>=v.duration){ msg.innerText="Encoding..."; gif.render(); return; } v.currentTime=cT; };
+  v.onseeked=()=>{ ctx.drawImage(v, 0, 0, 480, 480); gif.addFrame(ctx,{copy:true, delay:1000/fps}); cT+=(1/fps); setTimeout(cap, 10); };
+  gif.on('finished', b=>{ const url=URL.createObjectURL(b); v.style.display='none'; o.src=url; o.style.display='block'; document.getElementById('dl').href=url; document.getElementById('dlBox').style.display='block'; msg.innerText="Ready"; go.disabled=false; });
+  cap();
+};
 
 // --- FRAME ENGINE ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   if(i.src) {
-     let w = i.width * cfg.s, h = i.height * cfg.s;
-     let minDim = Math.min(w, h);
-     let maxDist = (minDim > 800) ? (minDim - 800) / 2 : 0;
-     if(cfg.x < 400 - maxDist) cfg.x = 400 - maxDist; if(cfg.x > 400 + maxDist) cfg.x = 400 + maxDist;
-     if(cfg.y < 400 - maxDist) cfg.y = 400 - maxDist; if(cfg.y > 400 + maxDist) cfg.y = 400 + maxDist;
+     let w=i.width*cfg.s, h=i.height*cfg.s, m=Math.min(w, h), dist=(m>800)?(m-800)/2:0;
+     if(cfg.x<400-dist)cfg.x=400-dist; if(cfg.x>400+dist)cfg.x=400+dist;
+     if(cfg.y<400-dist)cfg.y=400-dist; if(cfg.y>400+dist)cfg.y=400+dist;
   }
   x.save(); x.beginPath(); x.arc(400,400,375,0,6.28); x.clip(); 
-  if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
+  if(i.src){ x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-i.width*cfg.s/2,-i.height*cfg.s/2,i.width*cfg.s,i.height*cfg.s); x.restore(); } 
   x.restore(); if(f.src) x.drawImage(f,0,0,800,800); 
 }
-function handleFile(e){ 
-  let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{
-    i=n; let minScale = Math.max(800/i.width, 800/i.height);
-    cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0; 
-    zSl.min = minScale; zSl.max = minScale * 5; zSl.value = minScale;
-    zVal.innerText = "100%"; d(); document.getElementById('save').disabled = false;
-  }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); 
-}
+function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; cfg.s=Math.max(800/i.width, 800/i.height); cfg.x=400; cfg.y=400; cfg.r=0; zSl.min=cfg.s; zSl.value=cfg.s; d(); document.getElementById('save').disabled=false; }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; d();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
-function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+function updateZ(v){ cfg.s=parseFloat(v); d(); }
+function updateR(v){ cfg.r=parseInt(v); d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; d(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,x:400,y:400,r:0}; d(); document.getElementById('save').disabled=true;}
+function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,x:400,y:400,r:0}; d(); }
 function downloadPic(){ d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); }
 
-let isP=false, tStart={x:0,y:0};
-c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
-c.onmousemove=e=>{ if(!isP)return; let scale = 310 / c.offsetWidth; cfg.x += (e.offsetX - tStart.x) * (800/310); cfg.y += (e.offsetY - tStart.y) * (800/310); tStart={x:e.offsetX,y:e.offsetY}; d(); }
-window.onmouseup=()=>{isP=false;}
+// --- HELPERS ---
+function toggleMenu(e){ e.stopPropagation(); panel.classList.toggle('open'); }
+function toggleSwitchMenu(e){ e.stopPropagation(); swMenu.style.display = swMenu.style.display==='flex'?'none':'flex'; }
+function toggleViewMode(){ document.body.classList.toggle('pc-mode'); }
+function showAbout(){ document.getElementById('about-overlay').style.display='flex'; }
+function hideAbout(){ document.getElementById('about-overlay').style.display='none'; }
+function changeStudio(m) { 
+    document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec'));
+    document.getElementById(m+'-studio').classList.add('active-sec');
+    sName.innerText = m.toUpperCase(); sSub.innerText = m==='frame'?'FRAME STUDIO':m==='font'?'GENERATOR':'STUDIO';
+    panel.classList.remove('open');
+}
+
+// --- SLIDER COLOR UPDATER ---
+document.querySelectorAll('input[type=range]').forEach(s => {
+    const u = () => s.style.setProperty('--v', (s.value-s.min)/(s.max-s.min)*100+'%');
+    s.addEventListener('input', u); u();
+});
 </script>
 </body>
 </html>
