@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 
 <style>
-  /* --- GLOBAL SETTINGS (BUTTER SMOOTH) --- */
+  /* --- GLOBAL SETTINGS --- */
   html { scroll-behavior: smooth; overflow-y: auto; }
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
@@ -61,13 +61,7 @@
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- ABOUT OVERLAY --- */
-  #about-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 200000; display: none; align-items: center; justify-content: center; padding: 20px; }
-  .about-content { background: #1a1a1c; border: 2px solid #00ffff; border-radius: 15px; padding: 30px; max-width: 500px; line-height: 1.6; position: relative; box-shadow: 0 0 30px rgba(0,255,255,0.3); }
-  .about-content h2 { color: #00ffff; margin-top: 0; }
-  .close-about { position: absolute; top: 15px; right: 15px; cursor: pointer; color: #888; font-size: 20px; }
-
-  /* --- FRAME STUDIO (CHECKERED BG RESTORED) --- */
+  /* --- FRAME STUDIO --- */
   @keyframes neonPulse {
     0% { box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000; border-color: #ff0000; }
     50% { box-shadow: 0 0 35px #ff0000, inset 0 0 20px #ff0000; border-color: #ff3333; }
@@ -76,7 +70,6 @@
   #box { 
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; 
     border: 3px solid #ff0000; box-sizing: border-box; 
-    /* CHECKERED TRANSPARENCY GRID */
     background-image: linear-gradient(45deg, #1a1a1c 25%, transparent 25%), linear-gradient(-45deg, #1a1a1c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1c 75%), linear-gradient(-45deg, transparent 75%, #1a1a1c 75%);
     background-color: transparent; background-size: 20px 20px; background-position: center center;
     animation: neonPulse 2s infinite ease-in-out;
@@ -86,6 +79,7 @@
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; width: 100%; box-sizing: border-box; text-transform: uppercase; }
   .btn-r { border-color: #ff0000; }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; }
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; display: flex; justify-content: space-between; width: 100%; margin-top: 5px; }
   .val-tag { color: #ff0000; font-weight: bold; }
 
@@ -99,12 +93,12 @@
   
   .ui-gif { z-index: 10; background: rgba(10, 10, 10, 0.9); padding: 25px; border-radius: 30px; width: 340px; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; display:flex; flex-direction:column; align-items:center; margin-bottom:20px; }
   .btn-upload { background: linear-gradient(90deg, #00f3ff, #bc13fe); color: #000; border: none; padding: 15px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; margin-bottom: 15px; }
-  
   .neon-wrap { position: relative; display: block; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
   .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 3s linear infinite; z-index: 0; }
   .btn-inner { position: relative; display: block; text-align: center; color: white; background: #000; padding: 12px; border-radius: 48px; font-weight: 900; z-index: 1; cursor: pointer; width: 100%; border: none; font-size: 14px; }
+  .btn-inner:disabled { color: #555; cursor: wait; }
 
-  /* --- SLIDERS --- */
+  /* --- GRADIENT SLIDERS (RED/CYAN) --- */
   input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #333 var(--v, 0%)); border-radius: 4px; }
   .ui-gif input[type=range]::-webkit-slider-runnable-track { background: linear-gradient(to right, #00ffff var(--v, 0%), #333 var(--v, 0%)); }
@@ -112,9 +106,10 @@
   .ui-gif input[type=range]::-webkit-slider-thumb { border-color: #00ffff; box-shadow: 0 0 10px #00ffff; }
 
   /* --- FONTS & SYMBOLS --- */
-  .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; outline: none; box-sizing: border-box; }
+  .font-row { display: flex; gap: 10px; width: 100%; align-items: center; margin-bottom: 10px; }
+  .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; text-align: center; outline: none; box-sizing: border-box; }
   .font-scroll { width: 100%; max-height: 400px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; box-sizing: border-box; }
-  .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; text-align: center; cursor: pointer; white-space: pre-wrap; }
+  .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; text-align: center; cursor: pointer; white-space: pre-wrap; transition: font-size 0.2s; }
   .sym-grid { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; }
   .sym-btn { background: #1a1a1c; border: 1px solid #333; color: white; padding: 15px 0; font-size: 20px; border-radius: 6px; cursor: pointer; flex: 1 0 18%; text-align: center; }
   .cat-title { color: #ff0000; font-size: 12px; font-weight: bold; margin: 15px 10px 5px; text-transform: uppercase; border-bottom: 1px solid rgba(255,0,0,0.2); }
@@ -177,16 +172,6 @@
   <div class="designed-by">DESIGNED BY <b>RISK</b></div>
 </div>
 
-<div id="about-overlay" onclick="hideAbout()">
-    <div class="about-content" onclick="event.stopPropagation()">
-        <span class="close-about" onclick="hideAbout()">✖</span>
-        <h2 style="font-style:italic;">ARCADE STUDIO ℹ️</h2>
-        <p>A professional HUD built for the elite gaming community. <b>Arcade Studio</b> delivers high-speed creative tools for Discord profiles and tournament winners.</p>
-        <p><b>⚡ Engine:</b> HD GIF processor handles heavy video files with instant real-time encoding.</p>
-        <p><b>🖼️ Logic:</b> Custom <b>Constraint Logic</b> ensures your profile frames are locked perfectly to the circle. No black gaps, ever.</p>
-    </div>
-</div>
-
 <div id="yt-player"></div>
 
 <h1 id="studio-name">ARCADE</h1>
@@ -209,6 +194,8 @@
 
 <div id="font-studio" class="studio-sec">
   <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
+  <div class="lbl" style="margin-bottom:5px;">SIZE: <span id="fs-val" class="val-tag">20px</span></div>
+  <input type="range" id="fs-slide" min="12" max="60" value="20" oninput="updateFontSize(this.value)">
   <div id="font-results" class="font-scroll"></div>
 </div>
 
@@ -231,6 +218,8 @@
         <input type="range" id="speed" min="0.5" max="3.0" step="0.1" value="1.0" oninput="updateGifS(this.value)">
         
         <div class="neon-wrap blue"><button id="go" class="btn-inner" onclick="processGif()">⚡ CREATE HD GIF</button></div>
+        <button class="btn" style="border-color:#ff0000; color:#ff0000; margin-top:10px;" onclick="resetGif()">RESET PROJECT ↻</button>
+        
         <div id="msg" style="text-align:center; font-size:11px; color:#00ffff; margin-top:5px;">Ready</div>
         <div id="dlBox" class="neon-wrap blue" style="display:none; margin-top:10px;"><a id="dl" class="btn-inner">⬇️ DOWNLOAD GIF</a></div>
     </div>
@@ -252,7 +241,7 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 function updateClock(){ document.getElementById('arcade-clock').innerText = new Date().toTimeString().split(' ')[0]; }
 setInterval(updateClock, 1000); updateClock();
 
-// --- GLOBAL HANDLER (MENU + NO FX) ---
+// --- GLOBAL HANDLER (MENU + 8-BIT SFX) ---
 function handleGlobalClick(e) {
     if(!audioStarted) initAudio();
     if(panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) panel.classList.remove('open');
@@ -260,7 +249,7 @@ function handleGlobalClick(e) {
     playClick();
 }
 
-// --- AUDIO (8-BIT DEFAULT) ---
+// --- AUDIO ---
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
 function playClick(){
     if(!audioStarted) return; const type=document.getElementById('sfx-select').value;
@@ -312,11 +301,18 @@ const alphas = [
 
 function genFonts(){
   const v=document.getElementById('font-input').value, b=document.getElementById('font-results'); b.innerHTML=""; if(!v) return;
+  const fs = document.getElementById('fs-slide').value + 'px';
   alphas.forEach(a => {
     let t = ""; const m = Array.from(a.m);
     for(let c of v){ let idx = chars.indexOf(c); t += (idx !== -1 && m[idx]) ? m[idx] : c; }
-    let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.onclick=()=>{navigator.clipboard.writeText(t);}; b.appendChild(d);
+    let d=document.createElement('div'); d.className="font-item"; d.innerText=t; d.style.fontSize = fs; d.onclick=()=>{navigator.clipboard.writeText(t);}; b.appendChild(d);
   });
+}
+
+function updateFontSize(val) {
+    document.getElementById('fs-val').innerText = val + 'px';
+    const items = document.querySelectorAll('.font-item');
+    items.forEach(item => item.style.fontSize = val + 'px');
 }
 
 function renderSymbols(){
@@ -338,12 +334,35 @@ let gX=0, gY=0;
 
 gfI.onchange=(e)=>{ const f=e.target.files[0]; if(!f)return; v.style.display='block'; o.style.display='none'; v.src=URL.createObjectURL(f); v.onloadedmetadata=()=>v.play(); };
 
+function resetGif() {
+    v.src = ""; v.style.display = "block"; o.style.display = "none";
+    document.getElementById('dlBox').style.display = "none";
+    msg.innerText = "Ready";
+    document.getElementById('zoom').value = 100; document.getElementById('zv').innerText = "100%";
+    document.getElementById('speed').value = 1.0; document.getElementById('sv').innerText = "1.0x";
+    gX = 0; gY = 0; v.style.transform = "translate(-50%, -50%) scale(1)";
+    go.disabled = false;
+}
+
 function processGif() {
-  if(!v.src) return; document.getElementById('go').disabled=true; msg.innerText="Processing...";
+  if(!v.src) return; 
+  go.disabled=true; 
+  document.querySelectorAll('.ui-gif button').forEach(b => b.disabled = true);
+  msg.innerText="Processing...";
+  
   const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:wU});
   const can=document.createElement('canvas'); can.width=480; can.height=480; const ctx=can.getContext('2d');
   let cT=0; const fps=15;
-  const cap=()=>{ if(cT>=v.duration){ msg.innerText="Encoding..."; gif.render(); return; } v.currentTime=cT; };
+  
+  const cap=()=>{ 
+      if(cT>=v.duration){ 
+          msg.innerText="Encoding..."; 
+          gif.render(); 
+          return; 
+      } 
+      v.currentTime=cT; 
+  };
+  
   v.onseeked=()=>{ 
       const scale = parseInt(document.getElementById('zoom').value) / 100;
       let drawW, drawH;
@@ -355,9 +374,20 @@ function processGif() {
       const dy = (480 - drawH) / 2 + (gY * dragScale);
       ctx.fillStyle='#000'; ctx.fillRect(0,0,480,480);
       ctx.drawImage(v, dx, dy, drawW, drawH); 
-      gif.addFrame(ctx,{copy:true, delay:1000/fps}); cT+=(1/fps); setTimeout(cap, 10); 
+      gif.addFrame(ctx,{copy:true, delay:1000/fps}); 
+      cT+=(1/fps); 
+      setTimeout(cap, 10); 
   };
-  gif.on('finished', b=>{ const url=URL.createObjectURL(b); v.style.display='none'; o.src=url; o.style.display='block'; document.getElementById('dl').href=url; document.getElementById('dlBox').style.display='block'; msg.innerText="Ready"; document.getElementById('go').disabled=false; });
+  
+  gif.on('finished', b=>{ 
+      const url=URL.createObjectURL(b); 
+      v.style.display='none'; o.src=url; o.style.display='block'; 
+      document.getElementById('dl').href=url; 
+      document.getElementById('dlBox').style.display='block'; 
+      msg.innerText="Ready"; 
+      go.disabled=false;
+      document.querySelectorAll('.ui-gif button').forEach(b => b.disabled = false);
+  });
   cap();
 }
 
@@ -379,7 +409,7 @@ function updateGifTransform() {
     v.style.transform = `translate(calc(-50% + ${gX}px), calc(-50% + ${gY}px)) scale(${z})`;
 }
 
-// --- GIF DRAG EVENT LISTENERS ---
+// --- GIF DRAG LISTENERS ---
 const vp = document.getElementById('vp');
 let isGifDrag = false, startX, startY, initX, initY;
 vp.addEventListener('mousedown', e => { if(!v.src) return; isGifDrag = true; startX = e.clientX; startY = e.clientY; initX = gX; initY = gY; });
@@ -389,7 +419,7 @@ window.addEventListener('touchmove', e => { if(!isGifDrag) return; e.preventDefa
 window.addEventListener('mouseup', () => isGifDrag = false);
 window.addEventListener('touchend', () => isGifDrag = false);
 
-// --- FRAME ENGINE ---
+// --- FRAME ENGINE (MULTI-TOUCH + CONSTRAINT) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   if(i.src) {
@@ -406,15 +436,41 @@ function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image()
 function updateZ(v){ cfg.s=parseFloat(v); d(); }
 function updateR(v){ cfg.r=parseInt(v); d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; d(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,x:400,y:400,r:0}; d(); }
+function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,x:400,y:400,r:0}; d(); document.getElementById('save').disabled = true; }
 function downloadPic(){ d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); }
+
+// --- MULTI-TOUCH FRAME LOGIC ---
+let initDist=0, initAng=0, startS=1, startR=0;
+c.addEventListener('touchstart', e => {
+    e.preventDefault();
+    if(e.touches.length === 1) { isP=true; tStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; }
+    if(e.touches.length === 2) {
+        let dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+        initDist = Math.hypot(dx, dy); initAng = Math.atan2(dy, dx);
+        startS = cfg.s; startR = cfg.r;
+    }
+}, {passive:false});
+c.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if(e.touches.length === 1 && isP) {
+        cfg.x += (e.touches[0].clientX - tStart.x) * (800/310);
+        cfg.y += (e.touches[0].clientY - tStart.y) * (800/310);
+        tStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; d();
+    }
+    if(e.touches.length === 2) {
+        let dx=e.touches[0].clientX-e.touches[1].clientX, dy=e.touches[0].clientY-e.touches[1].clientY;
+        let dist = Math.hypot(dx, dy), ang = Math.atan2(dy, dx);
+        cfg.s = startS * (dist / initDist); zSl.value = cfg.s;
+        cfg.r = startR + (ang - initAng) * (180/Math.PI); rSl.value = cfg.r % 360;
+        d();
+    }
+}, {passive:false});
+c.addEventListener('touchend', () => isP=false);
 
 // --- HELPERS ---
 function toggleMenu(e){ e.stopPropagation(); panel.classList.toggle('open'); }
 function toggleSwitchMenu(e){ e.stopPropagation(); swMenu.style.display = swMenu.style.display==='flex'?'none':'flex'; }
 function toggleViewMode(){ document.body.classList.toggle('pc-mode'); }
-function showAbout(){ document.getElementById('about-overlay').style.display='flex'; }
-function hideAbout(){ document.getElementById('about-overlay').style.display='none'; }
 function changeStudio(m) { 
     document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec'));
     document.getElementById(m+'-studio').classList.add('active-sec');
