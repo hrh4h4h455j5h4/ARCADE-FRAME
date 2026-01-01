@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 
 <style>
-  /* --- GLOBAL SETTINGS (RESTORED EXACTLY) --- */
+  /* --- GLOBAL SETTINGS (EXACTLY AS PER FIRST CODE) --- */
   html { scroll-behavior: smooth; overflow-y: auto; }
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
@@ -19,17 +19,11 @@
     background-size: 100% 4px; touch-action: pan-y; 
   }
 
-  /* --- NEW ARCADE FX CSS --- */
+  /* --- ARCADE FX: CYAN PARTICLES --- */
   .particle {
-    position: fixed; pointer-events: none; width: 5px; height: 5px; border-radius: 1px;
-    z-index: 200000;
+    position: fixed; pointer-events: none; width: 4px; height: 4px;
+    background: #00ffff; box-shadow: 0 0 5px #00ffff; z-index: 200000;
   }
-  @keyframes shake {
-    0%, 100% { transform: translate(0,0); }
-    25% { transform: translate(-3px, 2px); }
-    75% { transform: translate(3px, -2px); }
-  }
-  .shake-anim { animation: shake 0.15s ease-in-out; }
 
   /* --- CUSTOM SCROLLBAR --- */
   ::-webkit-scrollbar { width: 12px; }
@@ -44,12 +38,14 @@
     padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; 
     z-index: 100000; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
   }
+
   #view-toggle {
     position: fixed; top: 15px; right: 15px; 
     background: #1a1a1c; color: #fff; border: 1px solid #00ffff; 
     padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; 
     z-index: 100000; font-size: 16px; box-shadow: 0 0 10px rgba(0,255,255,0.2);
   }
+
   #menu-panel { 
     position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
     background: #1a1a1c; padding-top: 60px; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
@@ -79,14 +75,10 @@
   }
   #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
 
-  .section-box { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-  .sfx-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-  .sfx-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 0; border-radius: 4px; font-size: 14px; cursor: pointer; text-align: center; }
-  .sfx-btn:active { background: #ff0000; border-color: #fff; }
-
   .designed-by { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; background: #1a1a1c; }
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
 
+  .music-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .lnk { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
@@ -95,58 +87,141 @@
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
   
+  /* --- LAYOUT LOGIC --- */
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* PC MODE */
+  /* --- PC MODE STYLES --- */
   body.pc-mode { justify-content: flex-start; padding-top: 40px; }
-  body.pc-mode .studio-sec { width: 90%; max-width: 1100px; flex-direction: row; align-items: flex-start; justify-content: center; gap: 60px; }
+  
+  body.pc-mode .studio-sec { 
+    width: 90%; max-width: 1100px; 
+    flex-direction: row; align-items: flex-start; 
+    justify-content: center; gap: 60px; 
+  }
+
   body.pc-mode #frame-studio, body.pc-mode #gif-studio { align-items: center; }
   body.pc-mode .ui, body.pc-mode .ui-gif { width: 350px; margin-top: 0; }
+
   body.pc-mode #font-studio { flex-direction: column; align-items: center; }
-  body.pc-mode #font-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-height: 70vh; overflow-y: scroll; padding-right: 10px; }
+  body.pc-mode #font-results { 
+    display: grid; grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; max-height: 70vh; 
+    overflow-y: scroll; padding-right: 10px;
+  }
   body.pc-mode .font-input { width: 50%; }
 
-  /* FRAME STUDIO CSS (SECURED) */
+  body.pc-mode #sym-studio { flex-direction: column; align-items: center; }
+  body.pc-mode .sym-box-container { width: 50%; }
+  body.pc-mode #sym-container {
+    max-height: 70vh; overflow-y: scroll; 
+    padding-right: 10px; width: 100%;
+  }
+  body.pc-mode .sym-btn { flex: 1 0 50px; }
+
+  /* --- 🖼️ FRAME STUDIO CSS --- */
   @keyframes neonPulse {
     0% { box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000; border-color: #ff0000; }
     50% { box-shadow: 0 0 35px #ff0000, inset 0 0 20px #ff0000; border-color: #ff3333; }
     100% { box-shadow: 0 0 20px #ff0000, inset 0 0 10px #ff0000; border-color: #ff0000; }
   }
+
   #box { 
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; 
     border: 3px solid #ff0000; box-sizing: border-box; 
     background-image: linear-gradient(45deg, #1a1a1c 25%, transparent 25%), linear-gradient(-45deg, #1a1a1c 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1c 75%), linear-gradient(-45deg, transparent 75%, #1a1a1c 75%);
-    background-color: transparent; background-size: 20px 20px; animation: neonPulse 2s infinite ease-in-out; z-index: 10; flex-shrink: 0; 
+    background-color: transparent; background-size: 20px 20px;
+    background-position: center center;
+    animation: neonPulse 2s infinite ease-in-out;
+    z-index: 10; 
+    flex-shrink: 0; 
   }
-  canvas#c { position: absolute; top: 50%; left: 50%; width: 310px; height: 310px; transform: translate(-50%, -50%); z-index: 15; touch-action: none; }
+  canvas#c { 
+    position: absolute; top: 50%; left: 50%; 
+    width: 310px; height: 310px; 
+    transform: translate(-50%, -50%); 
+    z-index: 15; touch-action: none; 
+  }
+  
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; }
   .btn { background: #111; border: 2px solid #ffffff; color: white; padding: 10px; text-align: center; border-radius: 8px; font-weight: bold; display: block; font-size: 12px; cursor: pointer; text-transform: uppercase; width: 100%; box-sizing: border-box; }
+  .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; }
   .btn-r { border-color: #ff0000; }
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
   
-  /* FONT STUDIO CSS (SECURED) */
+  /* --- ✍️ FONT STUDIO CSS --- */
   .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
-  .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; }
+  .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
   .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; font-size: 16px; white-space: pre-wrap; }
   
-  /* SYMBOLS STUDIO CSS */
+  /* --- ✨ SYMBOLS STUDIO CSS --- */
   .sym-box-container { width: 100%; margin-bottom: 15px; }
   .sym-input { width: 100%; background: #000; border: 1px solid #00ffff; color: #00ffff; padding: 12px; font-size: 18px; border-radius: 6px; text-align: center; box-sizing: border-box; outline: none; }
+  .sym-input:focus { border-color: #ff00ff; box-shadow: 0 0 10px rgba(255,0,255,0.5); }
+
   .cat-title { width: 100%; color: #ff0000; font-size: 12px; font-weight: bold; margin: 20px 0 5px 0; text-transform: uppercase; padding-left: 5px; border-bottom: 1px solid rgba(255,0,0,0.2); padding-bottom: 5px; }
   .sym-grid { display: flex; flex-wrap: wrap; gap: 5px; width: 100%; padding: 5px; box-sizing: border-box; }
   .sym-btn { background: #1a1a1c; border: 1px solid #333; color: white; padding: 15px 0; font-size: 20px; border-radius: 6px; cursor: pointer; text-align: center; flex: 1 0 18%; min-width: 50px; }
+  .sym-btn:active { background: #ff0000; color: #000; }
 
-  /* GIF STUDIO CSS (SECURED) */
+  /* --- ⚡ GIF STUDIO CSS --- */
   @keyframes rotate { 100% { transform: rotate(360deg); } }
+  
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; flex-shrink: 0; }
-  .led-ring { position: absolute; inset: -15px; border-radius: 50%; background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); animation: rotate 1.0s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; }
-  .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; touch-action: none; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 20px #000; }
-  #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; will-change: transform; }
+  
+  .led-ring { 
+    position: absolute; inset: -15px; border-radius: 50%; 
+    background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); 
+    animation: rotate 1.0s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; 
+  }
+  
+  .viewport { 
+    position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; touch-action: none; display: flex; justify-content: center; align-items: center;
+    box-shadow: inset 0 0 20px #000; 
+  }
+  
+  #v { 
+    position: absolute; 
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%); 
+    pointer-events: none; 
+    will-change: transform; 
+  }
   #o { width: 100%; height: 100%; object-fit: contain; display: none; }
-  .ui-gif { z-index: 10; background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px); padding: 25px; border-radius: 30px; width: 340px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 90%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
+
+  .ui-gif { 
+      z-index: 10; background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px); 
+      padding: 25px; border-radius: 30px; width: 340px; border: 1px solid rgba(255,255,255,0.1); 
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin-bottom: 20px; max-width: 90%; box-sizing: border-box;
+      display: flex; flex-direction: column; align-items: center;
+  }
+  
   .btn-upload { background: linear-gradient(90deg, #00f3ff, #bc13fe); color: #000; border: none; padding: 15px; border-radius: 50px; font-weight: 800; cursor: pointer; width: 100%; margin-bottom: 25px; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.2); transition: 0.2s; }
+  .btn-upload:disabled { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
+
+  .label-row { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 8px; font-weight: 600; width: 100%; }
+  
+  /* --- SLIDERS (EXACTLY AS PER FIRST CODE) --- */
+  input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 10px 0; cursor: pointer; }
+  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #ff0000; margin-top: -6px; border: 2px solid #ffffff; box-shadow: 0 0 10px #ff0000; }
+  
+  .ui-gif input[type="range"] { margin-bottom: 25px; -webkit-appearance: none; }
+  .ui-gif input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 6px; border-radius: 3px; }
+  .ui-gif input[type="range"]::-webkit-slider-thumb { 
+      -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; 
+      background: #00f3ff; box-shadow: 0 0 10px #00f3ff; border: 2px solid #fff; margin-top: -7px; 
+  }
+
+  .status { margin-top: 20px; font-size: 14px; text-align: center; font-weight: 600; opacity: 0; transition: 0.3s; height: 20px; }
+  .status.active { opacity: 1; }
+  
+  .neon-wrap { position: relative; display: block; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; width: 100%; }
+  .neon-wrap.blue::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); animation: rotate 4.0s linear infinite; z-index: 0; }
+  
+  .btn-inner { position: relative; display: block; text-decoration: none; text-align: center; color: white; background: #000; padding: 12px 30px; border-radius: 48px; font-weight: 900; font-size: 14px; z-index: 1; cursor: pointer; border: none; width: 100%; box-sizing: border-box; }
+  
   input[type=file], #yt-player { display: none; }
 </style>
 </head>
@@ -166,25 +241,15 @@
     </div>
   </div>
 
-  <div class="section-box">
-    <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; cursor:pointer;" onclick="toggleMusic()">
+  <div class="music-section">
+    <div class="music-btn" style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; cursor:pointer;" onclick="toggleMusic()">
       <span>MUSIC PLAYER</span> <span id="m-status" style="color:#ff0000;">ON</span>
     </div>
-    <select id="station-sel" style="width:100%; margin-top:5px;" onchange="changeMusic(this.value)">
-      <option value="jfKfPfyJRdk">☕ Lofi Focus</option>
+    <select class="station-select" style="width:100%; margin-top:5px;" onchange="changeMusic(this.value)">
+      <option value="jfKfPfyJRdk" selected>☕ Lofi Focus</option>
       <option value="nv_2rz5BFDA">🕹️ Retro Wave</option>
       <option value="XN_Wk8W8L6s">👾 8-Bit Arcade</option>
     </select>
-  </div>
-
-  <div class="section-box">
-    <div style="font-size:12px; font-weight:bold;">SOUNDS EFFECT</div>
-    <div class="sfx-grid">
-      <div class="sfx-btn" onclick="playArcadeSFX('pew')">🔫</div>
-      <div class="sfx-btn" onclick="playArcadeSFX('up')">🍄</div>
-      <div class="sfx-btn" onclick="playArcadeSFX('coin')">🪙</div>
-      <div class="sfx-btn" onclick="playArcadeSFX('dead')">👾</div>
-    </div>
   </div>
   
   <a href="https://discord.gg/ardc" target="_blank" class="lnk" style="border-color:#5865F2;">
@@ -254,7 +319,7 @@
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-// --- FULL DATA RESTORED FROM THE VERY FIRST CODE ---
+// --- FULL DATA RESTORED FROM ORIGINAL ---
 const symData = {
     "Hearts": ["ֶָ֢","ᵕ̈","❣︎","-'♡'-","ᥫ᭡","。♡","̆̈","♡︎","ᢉ𐭩","ᥫ᭡.","˗ˋˏ ♡ ˎˊ˗","˚₊· ͟͟͞͞➳❥","𖨆♡𖨆","ـــــــــــــــﮩ٨ـ❤️️","♡ ᪲᪲᪲","🖤⃝🦋","𐀶"],
     "Sparkles & Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
@@ -263,23 +328,7 @@ const symData = {
     "Astrological": ["☉","⊕","♁","☽","☿","♀︎","♂︎","♃","♄","♅","⛢","♆","⯓","♇","⯔","⯕","⯖","🌑︎","🌒︎","🌓︎","🌔︎","🌕︎","🌖︎","🌗︎","🌘︎","⚳","⚴","⚵","⚶","⯙","⚕","⯚","⚷","☄︎","⯰","⯘","⯗","⊗","⚸","⯞","☊","☋","☿"],
     "Bracket": ["（","）","[","]","【","】","『","』","「","」","《","》","〈","〉","〔","〕","︹","︺","︷","︸","︵","︶","︻","︼","︽","︾","︿","﹀","﹁","﹂","﹃","﹄","〚","〛","〘","〙","〖","〗","｛","｝","＜","＞","﹤","﹥","﹙","﹚","﹝","﹞","﹛","﹜","〈","〉","«","»","‹","›"],
     "Check Marks": ["✓","✔","✔️","✅","✘","✗","☓","∨","√","☐","☒","☑","〤","〥","✇","💯","❌","❎"],
-    "Cross": ["ⵜ","𐤕","𐤲","𓏶","†","✝","✞","✟","☨","☦","♱","☥","♰","‡","⊹","☩","✙"],
-    "Email": ["✉️","📨","📧","💌","📩","📥","📤","📫","📪","📬","📭","📮","📦"],
     "Flowers": ["❁","❃","❀","✿","🌺","🌼","🍀","🌸","🌻","💮","✿","⚘","✾","⚜","💐","🌷","🌹","☘","✥","✤","✣","❈","❉","❊","❇","❋","✽","✻","✼","ꕤ","ꕥ","🏵️","꧁","꧂","⁕","ꙮ","᪥","֎","🥀","𓇋","𓁙","𓆹","𓇑","𓋇","𓇗","𓇚","𓆸","𓇊","𓇬","𓆱","𓇣","𓆼","𓇕","𓇛","𓇟","𓆭","𓆰","𓁋"],
-    "Lines": ["┃","╽","╿","╏","║","╎","┇","︱","┊","︳","┋","┆","╵","〡","╹","╻","╷","〢","〣","☴","☵","☶","☷","☰","☱","☲","☳","﹉","﹍","﹊","﹎","≡","═","━","─","┄","┈","╌","╍","┅","┉","╴","╶","╸","╺","╼","╾","︲","⑆","⑇","⑈","⑉","⑊","⑄","⑀","︴","﹏","﹌","﹋","╲","╱","︶","︵","〵","〴","〆","`","ᐟ","‐","⁃","⎯"],
-    "Music": ["♩","♪","♬","♫","♭","♮","♯","°","ø","؂","≠","≭","🎶","🎵","🎼","🎤","🎧","📻","🎸","🎷","🎹","🎻","🎺","📣","📢","🔊"],
-    "Peace": ["✌","✙","✚","✛","✜","✝","✞","✟","†","⊹","‡","☮","☸","☨","☩","☫","☬","☭","☯","☽","☾","♁","⚔","❖","❆","♅","✠","✡","✢","卍","卐","〷","☠","☢","☣","☦","⚖"],
-    "Punctuation": ["‒","–","—","―","·","‑","‖","†","‡","‰","‱","ʰ","ʱ","ʲ","ʳ","ʴ","ʵ","ʶ","ʷ","ʸ","‗","‘","’","‚","‛","“","”","„","‟","•","‣","․","‥","…","‧","′","″","‴","‵","‶","‷","❛","❜","❝","❞","ʹ","ʺ","ʻ","ʼ","ʽ","ʾ","ʿ","ˀ","ˁ","˂","˃","˄","˅","ˆ","ˇ","ː","ˑ","˒","˓","˔","˕","˖","˗","˘","˙","ˈ","ˉ","ˊ","ˋ","ˌ","ˍ","ˎ","ˏ","˚","˛","˜","˝","ˠ","～","¿","〃","〝","〞","︰","！","﹐","﹒","﹔","﹕","，","．","：","；","、","。"],
-    "Rectangle": ["▁","▂","▃","▄","▀","▅","▆","▇","▉","▊","▋","█","▌","▐","▍","▎","▏","▕","❘","❙","❚","▔","▬","▭","▮","▯","░","▒","▓"],
-    "Time & Calendar": ["⏰","🕐","🕑","🕒","🕓","🕔","🕕","🕟","🕠","🕡","🕢","🕣","🕤","🕥","🕦","🕖","🕗","🕘","🕙","🕚","🕛","🕜","🕝","🕞","⏳","⧖","⧗","⋈","⧑","⧒","⧓","⧔","⧕","⌛","📅","📆","🗓","⌚","⏱","𝍄"],
-    "Degree & Weather": ["⛅","☀","☁","🌀","🌈","☂","🌂","☔"," snowman","🔥","💧","💦","🌊","🌑","🌓","🌔","🌕","🌙","🌛","🌌","°","℃","℉","ϟ","⚡","☃","☉","☼","☽","☾","♁","♨","❄","❅","❆","☇","☈","☄"],
-    "Zodiac": ["♈︎","♉︎","♊︎","♋︎","♌︎","♍︎","♎︎","♏︎","♐︎","♑︎","♒︎","♓︎"],
-    "Writing": ["✐","✎","✍︎","✏","📝","✒","✑","✒️","✉","🔏"],
-    "Dividers": ["〰","﹏","—","─","━","│","┃","┄","┅","┆","┇","┈","┉","┊","┋","╌","╍","╎","╏","═","║","╒","╓","╔","╕","╖","╗","╘","╙","╚","╛","╜","╝","╞","╟","╠","╡","╢","╣","╤","╥","╦","╧","╨","╩","╪","╫","╬"],
-    "Borders": ["╔","╗","╚","╝","╠","╣","═","║","╬","╭","╮","╯","╰","╱","╲","╳","▏","▕","▖","▗","▘","▙","▚","▛","▜","▝","▞","▟"],
-    "Triangles": ["▲","△","▴","▵","▶","▷","▸","▹","►","▻","▼","▽","▾","▿","◀","◁","◂","◃","◄","◅","◢","◣","◤","◥","◬","◭","◮"],
-    "Circles & Dots": ["•","○","◌","◍","◎","●","◐","◑","◒","◓","◔","◕","◖","◗","◘","◙","◚","◛","◜","◝","◞","◟","◠","◡","◦","◧","◨","◩","◪","◫","◯","◰","◱","◲","◳","◴","◵","◶","◷"],
-    "Dice": ["⚀","⚁","⚂","⚃","⚄","⚅"],
     "Dominos": ["🀰","🀱","🀲","🀳","🀴","🀵","🀶","🀷","🀸","🀹","🀺","🀻","🀼","🀽","🀾","🀿","🁀","🁁","🁂","🁃","🁄","🁅","🁆","🁇","🁈","🁉","🁊","🁋","🁌","🁍","🁎","🁏","🁐","🁑","🁒","🁓","🁔","🁕","🁖","🁗","🁘","🁙","🁚","🁛","🁜","🁝","🁞","🁟","🁠","🁡","🁢","🁣","🁤","🁥","🁦","🁧","🁨","🁩","🁪","🁫","🁬","🁭","🁮","🁯","🁰","🁱","🁲","🁳"],
     "Chess & Cards": ["♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧"]
 };
@@ -292,10 +341,10 @@ const alphas = [
   {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ⒩⒪⒫⒬ℛ𝒮𝒯𝒰⒱⒲⒳⒴⒵𝒶Ⓑ𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝒖Ⓥ𝓌𝓍𝓎𝓏0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𓋼𝔀𝔁𝔂𝔃0123456789"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴Ⓥ𝖂𝖃𝖄𝖅𝖺𝖻𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎Ⓥ𝗐𝗑𝗒𝗓𝟢𝟣𝟤𝟥𝟦𝟧𝟨𝟩𝟪𝟫"},
-  {m:"𝗔𝗕Ｃ𝗗𝗘𝗙𝗚ＨＩＪＫＬＭＮ𝐎𝐏𝗤𝗥𝗦Ｔ𝗨Ⓥ𝗪𝗫Ｙ𝗭𝗮𝗯𝗰ｄｅｆ𝗴𝗵ｉ𝑗ｋｌｍｎｏｐ𝗾ｒｓ𝘵𝙪𝐯ｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
-  {m:"𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣ｃｄｅｆｇｈｉ𝑗𝑘ｌｍｎｏｐ𝘲𝘳𝘴𝘵𝑢𝑣𝑤𝑥𝑦𝘻0123456789"},
-  {m:"𝘼𝘽ＣＤＥ𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈ＮＯＰ𝙌𝙍𝙎Ｔ𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘ｄｅｆ𝙜𝙝𝙞𝙟𝙠𝙡𝓶ｎｏ𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯0123456789"},
-  {m:"𝙰𝙱ＣＤＥＦ𝙶𝙷𝙸𝙹𝙺𝙻𝙼ＮＯ𝙿𝚀𝚁𝚂Ｔ𝚄Ⓥ𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝑗𝚔𝚕ｍ𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
+  {m:"𝗔𝗕Ｃ𝗗Ｅ𝗙𝗚ＨＩＪＫＬＭＮ𝐎𝐏𝗤𝗥𝗦Ｔ𝗨Ⓥ𝗪𝗫Ｙ𝗭𝗮𝗯𝗰ｄｅｆ𝗴𝗵ｉ𝑗ｋｌｍ𝒏𝒐𝒑𝗾𝒓𝒔𝘵𝙪𝐯ｗ𝘅ｙｚ𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴𝟵"},
+  {m:"𝘈𝘉𝘊𝘋𝘌𝘍𝘎𝘏𝘐𝘑𝘒𝘓𝘔𝘕𝘖𝘗𝘘𝘙𝘚𝘛𝘜𝘝𝘞𝘟𝘠𝘡𝘢𝘣ｃｄｅｆｇｈｉ𝑗𝑘ｌｍｎ𝒐𝒑𝘲𝘳𝘴𝘵𝑢𝑣𝑤𝑥𝑦𝘻0123456789"},
+  {m:"𝘼𝘽ＣＤＥ𝙁𝙂𝙃𝙄𝙅𝙆𝙇𝙈ＮＯＰ𝙌𝙍𝙎Ｔ𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘ｄｅｆ𝙜𝙝𝙞𝙟𝙠𝙡𝓶ｎ𝒐𝒑𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯0123456789"},
+  {m:"𝙰𝙱ＣＤＥＦ𝙶𝙷𝙸𝙹𝙺𝙻𝙼ＮＯ𝙿𝚀𝚁𝚂Ｔ𝚄Ⓥ𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝑗𝚔𝚕ｍｎ𝒐𝚙𝚚𝚛𝚜𝚝𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
   {m:"⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵0123456789"},
@@ -303,16 +352,16 @@ const alphas = [
   {m:"🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉0123456789"},
   {m:"ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘQʀꜱᴛᴜᴠᴡxʏᴢ0123456789"},
   {m:"ᴬᴮᶜᴰᴱᶠᴳᴴᴵᴶᴷᴸᴹᴺᴼᴾᑫᴿˢᵀᵁⱽᵂˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖqʳˢᵗᵘᵛʷˣʸᶻ0123456789"},
-  {m:"𝔸mathbb{B}mathbb{C}mathbb{D}mathbb{E}mathbb{F}mathbb{G}mathbb{H}mathbb{I}mathbb{J}mathbb{K}mathbb{L}mathbb{M}mathbb{N}mathbb{O}mathbb{P}mathbb{Q}mathbb{R}mathbb{S}mathbb{T}mathbb{U}mathbb{V}mathbb{W}mathbb{X}mathbb{Y}mathbb{Z}𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
+  {m:"mathbb{A}mathbb{B}mathbb{C}mathbb{D}mathbb{E}mathbb{F}mathbb{G}mathbb{H}mathbb{I}mathbb{J}mathbb{K}mathbb{L}mathbb{M}mathbb{N}mathbb{O}mathbb{P}mathbb{Q}mathbb{R}mathbb{S}mathbb{T}mathbb{U}mathbb{V}mathbb{W}mathbb{X}mathbb{Y}mathbb{Z}𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫𝟘𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡"},
   {m:"𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰ŧ𝔲𝔳𝔴𝔵𝔶𝔷0123456789"},
-  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},
+  {m:"𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝒏𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789"},
   {m:"₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ₳฿₵ĐɆ₣₲ⱧłJ₭Ⱡ₥₦Ø₱QⱤ₴₮ɄV₩ӾɎⱫ0123456789"},
   {m:"ȺƀçĐɇfǤħɨɉꝁłmNøᵽꝗɍsŧᵾvwxyƵȺƀçĐɇfǤħɨɉꝁłmNøᵽꝗɍsŧᵾvwxyƵ0123456789"},
   {m:"αвc∂єƒgнιנкℓмиσρqяѕтυνωχуzαвc∂єƒgнιנкℓмиσρqяѕтυνωχуz0123456789"},
   {m:"ΛBᄃDΣFGΉIJKLMПӨPQЯƧƬЦVЩXYZΛBᄃDΣFGΉIJKLMПӨPQЯƧƬЦVЩXYZ0123456789"},
   {m:"ДБCDΞFGHłJҜLMИФPǪЯSΓЦVЩXYZдъcdξfgнιjκlмnøpqяsтцvωxчz0123456789"},
   {m:"ﾑ乃cd乇fGんﾉjズlm刀oｱq尺sｲu√wﾒﾘzﾑ乃cd乇fGんﾉjズlm刀oｱq尺sｲu√wﾒﾘz0123456789"},
-  {m: "𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"}
+  {m: "𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄Ⓥ𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"}
 ];
 
 const c=document.getElementById('c'),x=c.getContext('2d'),zSl=document.getElementById('z'),rSl=document.getElementById('r'),mSl=document.getElementById('m'),panel=document.getElementById('menu-panel'),mStat=document.getElementById('m-status'), sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
@@ -320,7 +369,7 @@ const zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val'
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,lx:0,ly:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// --- ARCADE FX ENGINE (RESTORED WITH MIXED COLORS) ---
+// --- ARCADE FX: CYAN PARTICLES (CLEAN) ---
 function playArcadeSFX(type) {
     if(!audioStarted) initAudio();
     const g = audioCtx.createGain();
@@ -328,33 +377,26 @@ function playArcadeSFX(type) {
     g.connect(audioCtx.destination);
     o.connect(g);
     const now = audioCtx.currentTime;
-    if(type === 'pew') { 
-        o.type='sawtooth'; o.frequency.setValueAtTime(800, now); o.frequency.exponentialRampToValueAtTime(10, now+0.2); 
-        g.gain.setValueAtTime(0.1, now); triggerShake(); 
-    }
+    if(type === 'pew') { o.type='sawtooth'; o.frequency.setValueAtTime(800, now); o.frequency.exponentialRampToValueAtTime(10, now+0.2); g.gain.setValueAtTime(0.1, now); }
     else if(type === 'up') { o.type='square'; o.frequency.setValueAtTime(200, now); o.frequency.setValueAtTime(400, now+0.1); g.gain.setValueAtTime(0.05, now); }
     else if(type === 'coin') { o.type='sine'; o.frequency.setValueAtTime(900, now); o.frequency.setValueAtTime(1200, now+0.1); g.gain.setValueAtTime(0.1, now); }
-    else if(type === 'dead') { o.type='triangle'; o.frequency.setValueAtTime(300, now); o.frequency.exponentialRampToValueAtTime(40, now+0.5); g.gain.setValueAtTime(0.1, now); triggerShake(); }
+    else if(type === 'dead') { o.type='triangle'; o.frequency.setValueAtTime(300, now); o.frequency.exponentialRampToValueAtTime(40, now+0.5); g.gain.setValueAtTime(0.1, now); }
     o.start(); o.stop(now + 0.5);
 }
-function triggerShake() { document.body.classList.add('shake-anim'); setTimeout(()=>document.body.classList.remove('shake-anim'),150); }
 
 document.addEventListener('mousedown', e => spawnParticles(e.clientX, e.clientY));
 document.addEventListener('touchstart', e => spawnParticles(e.touches[0].clientX, e.touches[0].clientY), {passive:true});
 
 function spawnParticles(x, y) {
-    const colors = ['#00ffff', '#ff0000', '#bc13fe', '#ff0055'];
-    for(let i=0; i<8; i++) {
+    for(let i=0; i<6; i++) {
         const p = document.createElement('div');
         p.className = 'particle';
-        p.style.background = colors[Math.floor(Math.random()*colors.length)];
-        p.style.boxShadow = `0 0 5px ${p.style.background}`;
         p.style.left = x + 'px'; p.style.top = y + 'px';
         document.body.appendChild(p);
         const a = Math.random()*Math.PI*2; const v = 2+Math.random()*4;
         let px=x, py=y, op=1;
         function anim() {
-            px += Math.cos(a)*v; py += Math.sin(a)*v; op -= 0.04;
+            px += Math.cos(a)*v; py += Math.sin(a)*v; op -= 0.05;
             p.style.transform = `translate(${px-x}px, ${py-y}px)`; p.style.opacity = op;
             if(op>0) requestAnimationFrame(anim); else p.remove();
         }
@@ -362,19 +404,16 @@ function spawnParticles(x, y) {
     }
 }
 
-// --- CURSOR BUG FIX FOR SYMBOLS & FONTS ---
+// --- CURSOR INSERT FIX ---
 function insertAtCursor(el, val) {
     if (el.selectionStart || el.selectionStart == '0') {
-        let startPos = el.selectionStart;
-        let endPos = el.selectionEnd;
+        let startPos = el.selectionStart; let endPos = el.selectionEnd;
         el.value = el.value.substring(0, startPos) + val + el.value.substring(endPos, el.value.length);
-        el.selectionStart = startPos + val.length;
-        el.selectionEnd = startPos + val.length;
-    } else {
-        el.value += val;
-    }
+        el.selectionStart = startPos + val.length; el.selectionEnd = startPos + val.length;
+    } else { el.value += val; }
 }
 
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 function genFonts(){
   const val=document.getElementById('font-input').value, resBox=document.getElementById('font-results');
   resBox.innerHTML=""; if(!val) return;
@@ -382,8 +421,7 @@ function genFonts(){
     let txt = ""; const mapArr = Array.from(alph.m);
     for(let char of val){ let idx = chars.indexOf(char); txt += (idx !== -1 && mapArr[idx]) ? mapArr[idx] : char; }
     let d=document.createElement('div'); d.className="font-item"; d.innerText=txt; 
-    d.onclick=()=>{ navigator.clipboard.writeText(txt); playArcadeSFX('pew'); }; 
-    resBox.appendChild(d);
+    d.onclick=()=>{ navigator.clipboard.writeText(txt); playArcadeSFX('pew'); }; resBox.appendChild(d);
   });
 }
 
@@ -394,14 +432,13 @@ function renderSymbols(){
         let g = document.createElement('div'); g.className="sym-grid";
         syms.forEach(s => {
             let b = document.createElement('div'); b.className="sym-btn"; b.innerText=s;
-            b.onclick=()=>{ insertAtCursor(document.getElementById('sym-box'), s); playArcadeSFX('coin'); }; 
-            g.appendChild(b);
+            b.onclick=()=>{ insertAtCursor(document.getElementById('sym-box'), s); playArcadeSFX('coin'); }; g.appendChild(b);
         }); box.appendChild(g);
     }
 }
 renderSymbols();
 
-// --- ALL STUDIOS SECURED AND UNCHANGED ---
+// --- ALL STUDIOS SECURED (UNCHANGED) ---
 function changeStudio(mode) {
   document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
   swMenu.style.display = 'none'; panel.classList.remove('open');
@@ -419,18 +456,22 @@ window.onclick = e => {
     if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playArcadeSFX('dead'); } 
 };
 
-// --- SECURED: CORE STUDIO LOGIC (UNCHANGED) ---
+// --- CORE STUDIO LOGIC ---
 function d(){ x.clearRect(0,0,800,800); x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } x.restore(); if(f.src) x.drawImage(f,0,0,800,800); }
 function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{i=n; cfg.s=Math.max(800/i.width,800/i.height); cfg.x=400; cfg.y=400; d(); document.getElementById('save').disabled=false;}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
 function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; d();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); }
-function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
-function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
+function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round(v*100)+"%"; d(); updateSlider(document.getElementById('z')); }
+function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); updateSlider(document.getElementById('r')); }
+function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); updateSlider(document.getElementById('m')); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; d(); playArcadeSFX('up'); }
 function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; d(); playArcadeSFX('dead'); }
 function downloadPic(){ d(); let a=document.createElement('a'); a.download=`Arcade.png`; a.href=c.toDataURL(); a.click(); playArcadeSFX('pew'); }
 
-// AUDIO & PERFORMANCE
+// SLIDER HELPER (RE-APPLIED)
+function updateSlider(el){ el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updateSlider(el)); updateSlider(el); });
+
+// AUDIO
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>audioStarted=true); }}
 function onYouTubeIframeAPIReady(){ player=new YT.Player('yt-player',{height:'0',width:'0',videoId:'jfKfPfyJRdk',playerVars:{'autoplay':1,'mute':0},events:{'onReady':e=>e.target.setVolume(25)}}); }
 function changeMusic(id){ player.loadVideoById(id); playArcadeSFX('up'); }
