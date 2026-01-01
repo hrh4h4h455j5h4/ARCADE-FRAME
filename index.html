@@ -642,7 +642,8 @@ go.onclick=()=>{
     vp.style.pointerEvents = 'none'; 
     msg.innerText="Processing..."; msg.classList.add('active');
     
-    const gif=new GIF({workers:2, quality:10, width:480, height:480, workerScript:workerUrl});
+    // --- ⚡ SPEED OPTIMIZATION: 5 WORKERS, QUALITY 15 ---
+    const gif=new GIF({workers:5, quality:15, width:480, height:480, workerScript:workerUrl});
     const canvas=document.createElement('canvas'); canvas.width=480; canvas.height=480; const ctx=canvas.getContext('2d');
     const fps=15, duration=v.duration, playbackSpeed=parseFloat(speed.value), capVid=document.createElement('video');
     capVid.src=v.src; capVid.muted=true; capVid.playsInline=true;
@@ -671,6 +672,8 @@ go.onclick=()=>{
             if(cTime>=duration){ msg.innerText="Encoding..."; gif.render(); return; }
             capVid.currentTime=cTime;
         };
+        
+        // --- ⚡ ANTI-BLACK SCREEN / LAG FIX (Wait for Seek) ---
         capVid.onseeked=()=>{
             ctx.fillStyle = '#000000'; 
             ctx.fillRect(0, 0, 480, 480);
