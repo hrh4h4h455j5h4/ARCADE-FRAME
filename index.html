@@ -33,6 +33,7 @@
     z-index: 100000; font-size: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.5); 
   }
 
+  /* PC TOGGLE BUTTON */
   #view-toggle {
     position: fixed; top: 15px; right: 15px; 
     background: #1a1a1c; color: #fff; border: 1px solid #00ffff; 
@@ -156,11 +157,14 @@
   .status { margin-top: 20px; font-size: 14px; text-align: center; color: var(--neon); font-weight: 600; opacity: 0; transition: 0.3s; height: 20px; }
   .status.active { opacity: 1; }
   
-  /* --- FIXED NEON BUTTONS --- */
-  .neon-wrap { position: relative; width: 100%; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; box-sizing: border-box; display: inline-block; }
+  /* --- FIXED NEON BORDER BUTTONS --- */
+  .neon-wrap { position: relative; width: 100%; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; box-sizing: border-box; display: inline-block; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
   
   /* The spinning border (behind) */
-  .neon-wrap::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; z-index: 0; animation: rotate 3s linear infinite; }
+  .neon-wrap::before { 
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
+      z-index: 0; animation: rotate 3s linear infinite; pointer-events: none; /* ALLOWS CLICKS */
+  }
   
   .neon-wrap.blue::before { background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); }
   .neon-wrap.red { margin-top: 20px; }
@@ -173,10 +177,10 @@
       color: white; padding: 15px 0; border-radius: 46px; 
       font-weight: 900; font-size: 14px; text-align: center; 
       text-decoration: none; border: none; cursor: pointer;
-      box-sizing: border-box;
+      box-sizing: border-box; pointer-events: auto; /* ENSURES CLICKS */
   }
   .btn-inner:disabled { opacity: 0.5; color: #555; cursor: not-allowed; }
-  .btn-inner:active { background: #111; }
+  .btn-inner:active { background: #1a1a1a; }
 
   input[type=file], #yt-player { display: none; }
 </style>
@@ -298,6 +302,7 @@ const zVal=document.getElementById('z-val'),rVal=document.getElementById('r-val'
 let i=new Image(),f=new Image(),cfg={s:1,m:375,x:400,y:400,r:0,lx:0,ly:0},player,musicOn=true,audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+// --- PC VIEW LOGIC ---
 const viewBtn = document.getElementById('view-toggle');
 let isPC = false;
 
@@ -483,6 +488,10 @@ gfInput.onchange=(e)=>{
     const file=e.target.files[0]; if(!file)return;
     v.style.display='block'; o.style.display='none'; dlBox.style.display='none'; resetBox.style.display='none';
     v.src=URL.createObjectURL(file); v.playbackRate=parseFloat(speed.value);
+    
+    // FIX: Enable button immediately
+    go.disabled = false;
+    
     v.onloadedmetadata=()=>{ 
         vidW = v.videoWidth; vidH = v.videoHeight;
         setCoverSize();
