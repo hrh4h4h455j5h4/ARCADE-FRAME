@@ -798,6 +798,8 @@ function handleFile(e){
       zSl.value = minScale;
       zVal.innerText = "100%"; 
       d(); playClick();
+      // FIX: Update slider gradient immediately
+      updS(zSl);
       document.getElementById('save').disabled = false;
     }; 
     n.src=v.target.result; 
@@ -813,7 +815,13 @@ function updateZ(v){
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playClick(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; zSl.value=1; rSl.value=0; mSl.value=375; d(); playClick(); document.getElementById('save').disabled = true;}
+function resetProject(){ 
+    i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0}; 
+    zSl.value=1; rSl.value=0; mSl.value=375; 
+    // FIX: Reset all slider gradients
+    updS(zSl); updS(rSl); updS(mSl);
+    d(); playClick(); document.getElementById('save').disabled = true;
+}
 function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playClick(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; el.style.setProperty('--v', ((el.value-el.min)/(el.max-el.min)*100)+'%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
