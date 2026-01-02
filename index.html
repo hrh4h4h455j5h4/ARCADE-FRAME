@@ -115,7 +115,6 @@
   body.pc-mode .sym-btn { flex: 1 0 50px; }
 
   /* --- 🖼️ FRAME STUDIO CSS --- */
-  /* FIXED: No animation, no black background, solid border */
   #box { 
     position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; 
     border: 3px solid #ff0000; box-sizing: border-box; 
@@ -123,19 +122,17 @@
     z-index: 10; flex-shrink: 0; 
   }
   
-  /* FIX: Allow pan-y (vertical scrolling) on the canvas */
+  /* FIX 1: Allow pan-y (vertical scrolling) on the Frame canvas */
   canvas#c { 
     position: absolute; top: 50%; left: 50%; 
     width: 310px; height: 310px; 
     transform: translate(-50%, -50%); 
     z-index: 15; 
-    touch-action: pan-y; /* KEY FIX HERE */
+    touch-action: pan-y; 
   }
   
-  /* FIXED: UI Background Transparent (No Black Board) */
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; background: transparent; }
   
-  /* RESTORED: Classic Black & White Buttons for Frame Studio */
   .btn { 
     background: #000; border: 2px solid #fff; color: white; padding: 12px; 
     text-align: center; border-radius: 8px; font-weight: 900; 
@@ -166,16 +163,19 @@
   @keyframes rotate { 100% { transform: rotate(360deg); } }
   .stage { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; margin-bottom: 30px; touch-action: none; flex-shrink: 0; }
   .led-ring { position: absolute; inset: -15px; border-radius: 50%; background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); animation: rotate 1.0s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; }
-  /* FIX: Allow scrolling on the viewport unless active */
+  
+  /* FIX 2: Allow scrolling (pan-y) on the GIF Viewport when empty */
   .viewport { 
-      position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; 
-      display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 20px #000; 
-      touch-action: pan-y; /* KEY FIX HERE FOR GIF MAKER */
+      position: relative; z-index: 5; width: 100%; height: 100%; 
+      border-radius: 50%; overflow: hidden; background-color: #000; 
+      display: flex; justify-content: center; align-items: center; 
+      box-shadow: inset 0 0 20px #000; 
+      touch-action: pan-y; /* THIS IS THE CRITICAL FIX */
   }
+  
   #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; will-change: transform; }
   #o { width: 100%; height: 100%; object-fit: contain; display: none; }
   
-  /* FIXED: UI Background Transparent (No Black Board) */
   .ui-gif { z-index: 10; background: transparent; padding: 25px; border-radius: 30px; width: 340px; border: none; margin-bottom: 20px; max-width: 90%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
   
   .label-row { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-bottom: 8px; font-weight: 600; width: 100%; }
@@ -191,29 +191,14 @@
   .status { margin-top: 20px; font-size: 14px; text-align: center; color: var(--neon); font-weight: 600; opacity: 0; transition: 0.3s; height: 20px; }
   .status.active { opacity: 1; }
   
-  /* --- NEON BORDER BUTTONS (GIF STUDIO ONLY) --- */
+  /* --- NEON BORDER BUTTONS --- */
   .neon-wrap { position: relative; width: 100%; margin-top: 15px; padding: 3px; border-radius: 50px; overflow: hidden; box-sizing: border-box; display: inline-block; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
-  
-  /* Spinning border (behind) */
-  .neon-wrap::before { 
-      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
-      z-index: 0; animation: rotate 3s linear infinite; pointer-events: none;
-  }
-  
+  .neon-wrap::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; z-index: 0; animation: rotate 3s linear infinite; pointer-events: none; }
   .neon-wrap.blue::before { background: conic-gradient(transparent, transparent, #00f3ff, #bc13fe, #ff0055, #00f3ff, transparent, transparent); }
   .neon-wrap.red { margin-top: 20px; }
   .neon-wrap.red::before { background: conic-gradient(transparent, transparent, #ff0000, #ff5500, transparent, transparent); }
   
-  /* The button itself (Black center, Clickable) */
-  .btn-inner { 
-      position: relative; z-index: 10; display: block; width: 100%;
-      background: #000; /* Solid Black Center */
-      color: white; padding: 15px 0; border-radius: 46px; 
-      font-weight: 900; font-size: 14px; text-align: center; 
-      text-decoration: none; border: none; cursor: pointer;
-      box-sizing: border-box; pointer-events: auto;
-      text-transform: uppercase;
-  }
+  .btn-inner { position: relative; z-index: 10; display: block; width: 100%; background: #000; color: white; padding: 15px 0; border-radius: 46px; font-weight: 900; font-size: 14px; text-align: center; text-decoration: none; border: none; cursor: pointer; box-sizing: border-box; pointer-events: auto; text-transform: uppercase; }
   .btn-inner:disabled { opacity: 0.5; color: #555; cursor: not-allowed; }
   .btn-inner:active { background: #1a1a1a; }
 
@@ -428,14 +413,14 @@ function genFonts(){
 }
 function addF(t,b){let d=document.createElement('div');d.className="font-item";d.innerText=t;d.onclick=()=>{navigator.clipboard.writeText(t);playShutter();};b.appendChild(d);}
 
-// --- ✨ SYMBOLS STUDIO DATA (CURSOR FIX) ---
+// --- ✨ SYMBOLS STUDIO DATA ---
 const symData = {
     "Hearts": ["ֶָ֢","ᵕ̈","❣︎","-'♡'-","ᥫ᭡","。♡","̆̈","♡︎","ᢉ𐭩","ᥫ᭡.","˗ˋˏ ♡ ˎˊ˗","˚₊· ͟͟͞͞➳❥","𖨆♡𖨆","ـــــــــــــــﮩ٨ـ❤️️","♡ ᪲᪲᪲","🖤⃝🦋","𐀶"],
     "Sparkles & Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
     "Hanging Stars": ["*̣̥☆·͙̥","‧͙⁺˚*･༓☾","☽༓･*˚⁺‧͙","★*","*★","☆.","¸.·","·.¸","*","**","***"],
     "Arrows": ["←","→","↓","↑","↖","↗","↘","↙","↔","↕","↚","↛","↜","↝","↞","↟","↠","↡","↢","↣","↤","↥","↦","↧","↨","↩","↪","↫","↬","↭","↮","↯","↰","↱","↲","↳","↴","↶","↷","↸","↹","↺","↻","↼","↽","↾","↿","⇀","⇁","⇂","⇃","⇄","⇅","⇆","⇇","⇈","⇉","⇊","⇋","⇌","⇍","⇎","⇏","⇕","⇖","⇗","⇘","⇙","⇚","⇛","⇜","⇝","⇞","⇟","⇠","⇡","⇢","⇣","⇤","⇥","⇦","⇧","⇨","⇩","⇪","⌅","⌆","⌤","⏎","▶","☇","☈","☊","☋","☌","☍","➔","➘","➙","➚","➛","➜","➝","➞","➟","➠","➡","➢","➣","➤","➥","➦","➧","➨","➩","➪","➫","➬","➭","➮","➯","➱","➲","➳","➴","➵","➶","➷","➸","➹","➺","➻","➼","➽","➾","⤴","⤵","↵","⇰","⇫","⇬","⇭","⇳","⇮","⇯","⇱","⇲","⇴","⇵","⇷","⇸","⇹","⇺","⇑","⇓","⤪","⤨","⤧","⤩","⤭","⤮","⤯","⤰","⤱","⤲","⤫","⤬","⇽","⇾","⇿","⬳","⟿","⤉","⤈","⇻","⇼","⬴","⤀","⬵","⤁","⬹","⤔","⬺","⤕","⬶","⤅","⬻","⤖","⬷","⤐","⬼","⤗","⬽","⤘","⤝","⤞","⤟","⤠","⤡","⤢","⤣","⤤","⤥","⤦","⬐","⬎","⬑","⬏","⤶","⤷","⥂","⥃","⥄","⭀","⥱","⥶","⥸","⭂","⭈","⭊","⥵","⭁","⭇","⭉","⥲","⭋","⭌","⥳","⥴","⥆","⥅","⥹","⥻","⬰","⥈","⬾","⥇","⬲","⟴","⥷","⭃","⥺","⭄","⥉","⥰","⬿","⤳","⥊","⥋","⥌","⥍","⥎","⥏","⥐","⥑","⥒","⥓","⥔","⥕","⥖","⥗","⥤","⥣","⥥","⥦","⥨","⥧","⥩","⥮","⥯","⥪","⥬","⥫","⥭","⤌","⤍","⤎","⤏","⬸","⤑","⟵","⟶","⟷","⬅","⬆","⬇","⬈","⬉","⬊","⬋","⬌","⬍","⬄","⬀","⬁","⬂","⬃","⟻","⟼","⤒","⤓","⤙","⤚","⤛","⤜","⥼","⥽","⥾","⥿","⤼","⤽","⤾","⤿","⤸","⤺","⤹","⤻","⥀","⥁","⟲","⟳","⬱","⟸","⟹","⟺","⤂","⤃","⤄","⤆","⤇","⤊","⤋","⇐","⇒","⇔","⇶","⭅","⭆","⟰","⟱"],
     "Astrological": ["☉","⊕","♁","☽","☿","♀︎","♂︎","♃","♄","♅","⛢","♆","⯓","♇","⯔","⯕","⯖","🌑︎","🌒︎","🌓︎","🌔︎","🌕︎","🌖︎","🌗︎","🌘︎","⚳","⚴","⚵","⚶","⯙","⚕","⯚","⚷","☄︎","⯰","⯘","⯗","⊗","⚸","⯞","☊","☋","☿"],
-    "Bracket": ["（","）","[","]","【","】","『","』","「","」","《","》","〈","〉","〔","〕","︹","︺","︷","︸","︵","︶","︻","︼","︽","︾","︿","﹀","﹁","﹂","﹃","﹄","〚","〛","〘","〙","〖","〗","｛","｝","＜","＞","﹤","﹥","﹙","﹚","﹝","﹞","﹛","﹜","〈","〉","«","»","‹","›"],
+    "Bracket": ["（","）","[","]","【","】","『","』","「","」","《","》","〈","〉","〔","〕","︹","︺","︷","︸","︵","︶","︻","︼","︽","︾","︿","﹀","﹁","﹂","﹃","﹄","〚","㛛","〘","〙","〖","〗","｛","｝","＜","＞","﹤","﹥","﹙","﹚","﹝","﹞","﹛","﹜","〈","〉","«","»","‹","›"],
     "Check Marks": ["✓","✔","✔️","✅","✘","✗","☓","∨","√","☐","☒","☑","〤","〥","✇","💯","❌","❎"],
     "Cross": ["ⵜ","𐤕","𐤲","𓏶","†","✝","✞","✟","☨","☦","♱","☥","♰","‡","⊹","☩","✙"],
     "Email": ["✉️","📨","📧","💌","📩","📥","📤","📫","📪","📬","📭","📮","📦"],
@@ -593,7 +578,7 @@ let isGifDrag = false, startX, startY, initX, initY;
 
 vp.addEventListener('touchstart', e => {
     // FIX: ONLY PREVENT DEFAULT IF VIDEO IS LOADED
-    if(!v.src) return; 
+    if(!v.src || v.style.display === 'none') return;
     
     isGifDrag = true;
     startX = e.touches[0].clientX;
@@ -604,7 +589,7 @@ vp.addEventListener('touchstart', e => {
 
 vp.addEventListener('touchmove', e => {
     // FIX: ONLY PREVENT DEFAULT IF VIDEO IS LOADED
-    if(!v.src) return; 
+    if(!v.src || v.style.display === 'none') return;
     
     if(!isGifDrag) return;
     e.preventDefault(); // Prevent scrolling
@@ -853,6 +838,7 @@ c.addEventListener('drop', (e) => {
                     cfg.s = minScale;
                     cfg.x = 400; cfg.y = 400; cfg.r = 0;
                     
+                    // Set Max Zoom to 2.5x the base scale (250%)
                     zSl.min = minScale;
                     zSl.max = minScale * 2.5;
                     zSl.value = minScale;
