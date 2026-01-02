@@ -903,8 +903,11 @@ c.onmousemove=e=>{
 window.onmouseup=()=>{isP=false;}
 
 c.ontouchstart=e=>{
-  if(!i.src) return; // FIX: ALLOW SCROLLING IF CANVAS IS EMPTY
-  e.preventDefault();
+  // FIX: ONLY PREVENT DEFAULT IF IMAGE IS LOADED
+  if(i.src) {
+      e.preventDefault();
+  }
+  
   if(e.touches.length===1){
     isP=true;
     tStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
@@ -920,8 +923,11 @@ c.ontouchstart=e=>{
   }
 }
 c.ontouchmove=e=>{
-  if(!i.src) return; // FIX: ALLOW SCROLLING IF CANVAS IS EMPTY
-  e.preventDefault();
+  // FIX: ONLY PREVENT DEFAULT IF IMAGE IS LOADED
+  if(i.src) {
+      e.preventDefault();
+  }
+  
   if(e.touches.length===1 && isP){
     let scale = 800 / c.offsetWidth;
     let dx = e.touches[0].clientX - tStart.x;
