@@ -25,7 +25,7 @@
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; border: 2px solid #0a0a0c; }
   ::-webkit-scrollbar-thumb:hover { background: #00ffff; }
 
-  /* --- NAVIGATION BUTTONS (ALIGNED) --- */
+  /* --- MENU BUTTON (Absolute Top Left) --- */
   .menu-toggle { 
     position: absolute; 
     top: 15px; left: 15px;
@@ -42,17 +42,6 @@
     text-shadow: 0 0 5px rgba(255,255,255,0.2);
   }
   .menu-toggle:active { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
-
-  #view-toggle {
-    position: absolute; 
-    top: 15px; right: 15px;
-    height: 38px; box-sizing: border-box;
-    display: flex; align-items: center; justify-content: center;
-    background: #1a1a1c; color: #fff; border: 1px solid #00ffff; 
-    padding: 0 12px; border-radius: 4px; font-weight: bold; cursor: pointer; 
-    z-index: 100000; font-size: 16px; 
-    box-shadow: 0 0 10px rgba(0,255,255,0.2);
-  }
 
   /* --- SIDEBAR MENU --- */
   #menu-panel { 
@@ -98,37 +87,39 @@
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
   
-  /* --- LAYOUT LOGIC --- */
+  /* --- LAYOUT LOGIC (MOBILE FIRST) --- */
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
 
-  /* --- PC MODE STYLES --- */
-  body.pc-mode { justify-content: flex-start; padding-top: 40px; }
-  
-  body.pc-mode .studio-sec { 
-    width: 90%; max-width: 1100px; 
-    flex-direction: row; align-items: flex-start; 
-    justify-content: center; gap: 60px; 
-  }
+  /* --- PC MODE AUTO-DETECT (MEDIA QUERY) --- */
+  @media (min-width: 1024px) {
+    body { justify-content: flex-start; padding-top: 40px; }
+    
+    .studio-sec { 
+      width: 90%; max-width: 1100px; 
+      flex-direction: row; align-items: flex-start; 
+      justify-content: center; gap: 60px; 
+    }
 
-  body.pc-mode #frame-studio, body.pc-mode #gif-studio { align-items: center; }
-  body.pc-mode .ui, body.pc-mode .ui-gif { width: 350px; margin-top: 0; }
+    #frame-studio, #gif-studio { align-items: center; }
+    .ui, .ui-gif { width: 350px; margin-top: 0; }
 
-  body.pc-mode #font-studio { flex-direction: column; align-items: center; }
-  body.pc-mode #font-results { 
-    display: grid; grid-template-columns: repeat(3, 1fr); 
-    gap: 15px; max-height: 70vh; 
-    overflow-y: scroll; padding-right: 10px;
-  }
-  body.pc-mode .font-input { width: 50%; }
+    #font-studio { flex-direction: column; align-items: center; }
+    #font-results { 
+      display: grid; grid-template-columns: repeat(3, 1fr); 
+      gap: 15px; max-height: 70vh; 
+      overflow-y: scroll; padding-right: 10px;
+    }
+    .font-input { width: 50%; }
 
-  body.pc-mode #sym-studio { flex-direction: column; align-items: center; }
-  body.pc-mode .sym-box-container { width: 50%; }
-  body.pc-mode #sym-container {
-    max-height: 70vh; overflow-y: scroll; 
-    padding-right: 10px; width: 100%;
+    #sym-studio { flex-direction: column; align-items: center; }
+    .sym-box-container { width: 50%; }
+    #sym-container {
+      max-height: 70vh; overflow-y: scroll; 
+      padding-right: 10px; width: 100%;
+    }
+    .sym-btn { flex: 1 0 50px; }
   }
-  body.pc-mode .sym-btn { flex: 1 0 50px; }
 
   /* --- 🖼️ FRAME STUDIO CSS --- */
   #box { 
@@ -146,11 +137,10 @@
     touch-action: pan-y; 
   }
   
-  /* BUTTON GROUP GAP FIX */
   #frame-btn-group {
-    display: flex; /* Ensures gap works */
+    display: flex;
     flex-direction: column;
-    gap: 6px; /* The "little gap" you wanted */
+    gap: 6px;
     width: 100%;
   }
   
@@ -240,8 +230,6 @@
 <body onclick="startAudio()">
 
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
-<button id="view-toggle" onclick="toggleViewMode()">🖥️</button>
-
 <div id="menu-panel">
   <div class="switch-container">
     <button id="switch-btn" onclick="toggleSwitchMenu(event)">SWITCH TO 📂</button>
@@ -372,23 +360,6 @@ let i=new Image(), f=new Image(), cfg={s:1, m:375, x:400, y:400, r:0, lx:0, ly:0
 let player, musicOn=true, audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// --- PC VIEW LOGIC ---
-const viewBtn = document.getElementById('view-toggle');
-let isPC = false;
-
-function detectDevice() {
-    if(window.innerWidth > 1024) { setPCMode(true); } else { setPCMode(false); }
-}
-
-function toggleViewMode() { setPCMode(!isPC); }
-
-function setPCMode(enable) {
-    isPC = enable;
-    if(isPC) { document.body.classList.add('pc-mode'); viewBtn.innerText = "📱"; } 
-    else { document.body.classList.remove('pc-mode'); viewBtn.innerText = "🖥️"; }
-}
-detectDevice();
-
 // --- SIDEBAR MENU LOGIC ---
 function toggleMenu(e) { 
     e.stopPropagation(); 
@@ -425,11 +396,11 @@ function toggleFrameUI() {
     const grp = document.getElementById('frame-btn-group');
     const btn = document.getElementById('ui-toggle-btn');
     
-    // Use getComputedStyle to check visibility accurately
+    // Check computed style to handle the initial state accurately
     const style = window.getComputedStyle(grp);
     
     if (style.display === 'none') {
-        grp.style.display = 'flex'; // MUST be flex to keep the gap!
+        grp.style.display = 'flex'; // MUST be flex to keep the CSS gap!
         btn.innerHTML = "👁️ HIDE MENU BUTTONS";
         btn.style.color = "#ffcc00";
         btn.style.borderColor = "#ffcc00";
@@ -502,7 +473,7 @@ const symData = {
     "Arrows": ["←","→","↓","↑","↖","↗","↘","↙","↔","↕","↚","↛","↜","↝","↞","↟","↠","↡","↢","↣","↤","↥","↦","↧","↨","↩","↪","↫","↬","↭","↮","↯","↰","↱","↲","↳","↴","↶","↷","↸","↹","↺","↻","↼","↽","↾","↿","⇀","⇁","⇂","⇃","⇄","⇅","⇆","⇇","⇈","⇉","⇊","⇋","⇌","⇍","⇎","⇏","⇕","⇖","⇗","⇘","⇙","⇚","⇛","⇜","⇝","⇞","⇟","⇠","⇡","⇢","⇣","⇤","⇥","⇦","⇧","⇨","⇩","⇪","⌅","⌆","⌤","⏎","▶","☇","☈","☊","☋","☌","☍","➔","➘","➙","➚","➛","➜","➝","➞","➟","➠","➡","➢","➣","➤","➥","➦","➧","➨","➩","➪","➫","➬","➭","➮","➯","➱","➲","➳","➴","➵","➶","➷","➸","➹","➺","➻","➼","➽","➾","⤴","⤵","↵","⇰","⇫","⇬","⇭","⇳","⇮","⇯","⇱","⇲","⇴","⇵","⇷","⇸","⇹","⇺","⇑","⇓","⤪","⤨","⤧","⤩","⤭","⤮","⤯","⤰","⤱","⤲","⤫","⤬","⇽","⇾","⇿","⬳","⟿","⤉","⤈","⇻","⇼","⬴","⤀","⬵","⤁","⬹","⤔","⬺","⤕","⬶","⤅","⬻","⤖","⬷","⤐","⬼","⤗","⬽","⤘","⤝","⤞","⤟","⤠","⤡","⤢","⤣","⤤","⤥","⤦","⬐","⬎","⬑","⬏","⤶","⤷","⥂","⥃","⥄","⭀","⥱","⥶","⥸","⭂","⭈","⭊","⥵","⭁","⭇","⭉","⥲","⭋","⭌","⥳","⥴","⥆","⥅","⥹","⥻","⬰","⥈","⬾","⥇","⬲","⟴","⥷","⭃","⥺","⭄","⥉","⥰","⬿","⤳","⥊","⥋","⥌","⥍","⥎","⥏","⥐","⥑","⥒","⥓","⥔","⥕","⥖","⥗","⥤","⥣","⥥","⥦","⥨","⥧","⥩","⥮","⥯","⥪","⥬","⥫","⥭","⤌","⤍","⤎","⤏","⬸","⤑","⟵","⟶","⟷","⬅","⬆","⬇","⬈","⬉","⬊","⬋","⬌","⬍","⬄","⬀","⬁","⬂","⬃","⟻","⟼","⤒","⤓","⤙","⤚","⤛","⤜","⥼","⥽","⥾","⥿","⤼","⤽","⤾","⤿","⤸","⤺","⤹","⤻","⥀","⥁","⟲","⟳","⬱","⟸","⟹","⟺","⤂","⤃","⤄","⤆","⤇","⤊","⤋","⇐","⇒","⇔","⇶","⭅","⭆","⟰","⟱"],
     "Astrological": ["☉","⊕","♁","☽","☿","♀︎","♂︎","♃","♄","♅","⛢","♆","⯓","♇","⯔","⯕","⯖","🌑︎","🌒︎","🌓︎","🌔︎","🌕︎","🌖︎","🌗︎","🌘︎","⚳","⚴","⚵","⚶","⯙","⚕","⯚","⚷","☄︎","⯰","⯘","⯗","⊗","⚸","⯞","☊","☋","☿"],
     "Bracket": ["（","）","[","]","【","】","『","』","「","」","《","》","〈","〉","〔","〕","︹","︺","︷","︸","︵","︶","︻","︼","︽","︾","︿","﹀","﹁","﹂","﹃","﹄","〚","㛛","〘","〙","〖","〗","｛","｝","＜","＞","﹤","﹥","﹙","﹚","﹝","﹞","﹛","﹜","〈","〉","«","»","‹","›"],
-    "Check Marks": ["✓","✔","✔️","✅","✘","✗","☓","∨","√","☐","☒","☑","〤","〥","✇","💯","❌","❎"],
+    "Check Marks": ["✓","✔","✔️","✅","✘","✗","☓","∨","√","☐","☒","☑","㤤","㤥","✇","💯","❌","❎"],
     "Cross": ["ⵜ","𐤕","𐤲","𓏶","†","✝","✞","✟","☨","☦","♱","☥","♰","‡","⊹","☩","✙"],
     "Email": ["✉️","📨","📧","💌","📩","📥","📤","📫","📪","📬","📭","📮","📦"],
     "Flowers": ["❁","❃","❀","✿","🌺","🌼","🍀","🌸","🌻","💮","✿","⚘","✾","⚜","💐","🌷","🌹","☘","✥","✤","✣","❈","❉","❊","❇","❋","✽","✻","✼","ꕤ","ꕥ","🏵️","꧁","꧂","⁕","ꙮ","᪥","֎","🥀","𓇋","𓁙","𓆹","𓇑","𓋇","𓇗","𓇚","𓆸","𓇊","𓇬","𓆱","𓇣","𓆼","𓇕","𓇛","𓇟","𓆭","𓆰","𓁋"],
