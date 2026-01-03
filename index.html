@@ -17,7 +17,6 @@
     -webkit-overflow-scrolling: touch; 
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px; touch-action: pan-y; 
-    padding-top: 70px; /* Space for the new fixed header */
   }
 
   /* --- CUSTOM SCROLLBAR --- */
@@ -26,55 +25,42 @@
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; border: 2px solid #0a0a0c; }
   ::-webkit-scrollbar-thumb:hover { background: #00ffff; }
 
-  /* --- NEW HEADER BAR (Platopedia Style) --- */
-  .app-header {
-    position: fixed; top: 0; left: 0; width: 100%; height: 60px;
-    background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 15px; z-index: 100000; box-sizing: border-box;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-  }
-
-  .header-title {
-      font-weight: 900; font-style: italic; color: #fff; letter-spacing: -1px; font-size: 18px;
-  }
-  .header-title span { color: #ff0000; }
-
-  /* NAVIGATION BUTTONS IN HEADER */
+  /* --- NAVIGATION BUTTONS (ALIGNED) --- */
   .menu-toggle { 
-    background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2); 
+    position: fixed; top: 15px; left: 15px; 
+    /* Retro Transparent Style */
+    background: rgba(20, 20, 20, 0.6); 
+    color: rgba(255, 255, 255, 0.8); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    backdrop-filter: blur(4px);
     padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; 
-    font-size: 12px; transition: 0.2s;
+    z-index: 100000; font-size: 12px; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
+    transition: 0.2s;
+    text-shadow: 0 0 5px rgba(255,255,255,0.2);
   }
-  .menu-toggle:active { background: rgba(255,255,255,0.1); }
+  .menu-toggle:active { background: rgba(255, 255, 255, 0.1); border-color: #fff; }
 
   #view-toggle {
-    background: transparent; color: #fff; border: 1px solid #00ffff; 
+    position: fixed; top: 15px; right: 15px; 
+    background: #1a1a1c; color: #fff; border: 1px solid #00ffff; 
     padding: 8px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; 
-    font-size: 16px; margin-left: 10px;
+    z-index: 100000; font-size: 16px; 
+    box-shadow: 0 0 10px rgba(0,255,255,0.2);
   }
 
-  /* --- SLIDE DOWN MENU (Replaces Sidebar) --- */
+  /* --- SIDEBAR MENU (RESTORED) --- */
   #menu-panel { 
-    position: fixed; top: 60px; left: 0; width: 100%; 
-    background: #1a1a1c; 
-    /* Animation Properties */
-    max-height: 0; overflow: hidden; 
-    transition: max-height 0.4s ease-in-out, padding 0.4s ease;
+    position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
+    background: #1a1a1c; padding-top: 60px; 
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
     z-index: 99999; display: flex; flex-direction: column; gap: 15px; 
-    padding: 0 15px; /* Collapsed padding */
-    box-sizing: border-box; 
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    padding-left: 15px; padding-right: 15px; 
+    box-shadow: 2px 0 15px rgba(0,0,0,0.5); 
+    box-sizing: border-box; padding-bottom: 80px; 
   }
-  
-  #menu-panel.open { 
-      max-height: 85vh; /* Allow it to expand down */
-      overflow-y: auto; /* Scroll inside menu if needed */
-      padding: 20px 15px; /* Open padding */
-  }
+  #menu-panel.open { left: 0; }
 
-  /* --- MENU INTERNALS --- */
   .switch-container { position: relative; width: 100%; }
   #switch-btn { 
     background: rgba(255,255,255,0.05); color: white; border: 2px solid #ff0000; 
@@ -83,10 +69,10 @@
     box-shadow: 0 0 10px rgba(255,0,0,0.5); 
   }
   #switch-menu { 
-    position: relative; top: 5px; right: 0; background: #111; 
-    border: 1px solid #ff0000; border-radius: 8px; width: 100%; 
+    position: absolute; top: 45px; right: 0; background: #1a1a1c; 
+    border: 1px solid #ff0000; border-radius: 8px; width: 210px; 
     display: none; flex-direction: column; overflow: hidden; 
-    box-shadow: none; z-index: 100; margin-bottom: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.8); z-index: 100001;
   }
   #switch-menu button { 
     background: transparent; color: #aaa; border: none; padding: 14px; 
@@ -95,15 +81,15 @@
   }
   #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
 
-  .designed-by { padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; background: transparent; }
+  .designed-by { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; background: #1a1a1c; }
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
 
   .music-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .lnk { display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: white; font-size: 13px; font-weight: bold; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
 
-  /* HEADERS IN BODY */
-  h1 { color: #fff; margin: 20px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); animation: arcadeBounce 1.8s infinite ease-in-out; }
+  /* HEADERS */
+  h1 { color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); animation: arcadeBounce 1.8s infinite ease-in-out; }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
   
@@ -112,7 +98,7 @@
   .active-sec { display: flex; }
 
   /* --- PC MODE STYLES --- */
-  body.pc-mode { justify-content: flex-start; padding-top: 100px; }
+  body.pc-mode { justify-content: flex-start; padding-top: 40px; }
   
   body.pc-mode .studio-sec { 
     width: 90%; max-width: 1100px; 
@@ -191,7 +177,7 @@
   .stage { 
     position: relative; width: 320px; height: 320px; 
     display: flex; align-items: center; justify-content: center; 
-    margin-bottom: 30px; touch-action: pan-y; /* CHANGED FROM NONE TO PAN-Y */
+    margin-bottom: 30px; touch-action: pan-y; 
     flex-shrink: 0; 
   }
   
@@ -203,7 +189,7 @@
       border-radius: 50%; overflow: hidden; background-color: #000; 
       display: flex; justify-content: center; align-items: center; 
       box-shadow: inset 0 0 20px #000; 
-      touch-action: pan-y; /* KEY FIX HERE FOR GIF MAKER */
+      touch-action: pan-y; 
   }
   
   #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; will-change: transform; }
@@ -379,11 +365,10 @@ function setPCMode(enable) {
 }
 detectDevice();
 
-// --- MENU LOGIC (SLIDE DOWN) ---
+// --- SIDEBAR MENU LOGIC ---
 function toggleMenu(e) { 
     e.stopPropagation(); 
     initAudio(); 
-    // This toggles the .open class which triggers the CSS max-height animation
     panel.classList.toggle('open'); 
     playClick(); 
 }
@@ -404,7 +389,7 @@ function changeStudio(mode) {
   playClick(); 
   document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
   swMenu.style.display = 'none'; 
-  panel.classList.remove('open'); // Close the slide-down menu
+  panel.classList.remove('open'); 
   
   if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
   else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; }
@@ -412,7 +397,7 @@ function changeStudio(mode) {
   else if(mode === 'sym') { document.getElementById('sym-studio').classList.add('active-sec'); sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; }
 }
 
-// --- ✍️ FONT & SYMBOL LOGIC ---
+// --- ✍️ FONTS & SYMBOLS ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"},
@@ -467,32 +452,70 @@ function addF(t,b){let d=document.createElement('div');d.className="font-item";d
 
 const symData = {
     "Hearts": ["ֶָ֢","ᵕ̈","❣︎","-'♡'-","ᥫ᭡","。♡","̆̈","♡︎","ᢉ𐭩","ᥫ᭡.","˗ˋˏ ♡ ˎˊ˗","˚₊· ͟͟͞͞➳❥","𖨆♡𖨆","ـــــــــــــــﮩ٨ـ❤️️","♡ ᪲᪲᪲","🖤⃝🦋","𐀶"],
-    "Sparkles": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
-    // ... (Keeping all your symbol categories implicitly. I'm abbreviating here to fit but paste the FULL list if you want, or just trust the logic works for all categories)
-    "Arrows": ["←","→","↓","↑","↖","↗","↘","↙","↔","↕"], // Added sample to keep logic working
+    "Sparkles & Stars": ["✨","★","☆","✡","✦","✧","✩","✪","✫","✬","✭","✮","✯","✰","⁂","⁎","⁑","✢","✣","✤","✥","✱","✲","✳","✴","✵","✶","✷","✸","✹","✺","✻","✼","✽","✾","✿","❀","❁","❂","❃","❄","❅","❆","❇","❈","❉","❊","❋"],
+    "Hanging Stars": ["*̣̥☆·͙̥","‧͙⁺˚*･༓☾","☽༓･*˚⁺‧͙","★*","*★","☆.","¸.·","·.¸","*","**","***"],
+    "Arrows": ["←","→","↓","↑","↖","↗","↘","↙","↔","↕","↚","↛","↜","↝","↞","↟","↠","↡","↢","↣","↤","↥","↦","↧","↨","↩","↪","↫","↬","↭","↮","↯","↰","↱","↲","↳","↴","↶","↷","↸","↹","↺","↻","↼","↽","↾","↿","⇀","⇁","⇂","⇃","⇄","⇅","⇆","⇇","⇈","⇉","⇊","⇋","⇌","⇍","⇎","⇏","⇕","⇖","⇗","⇘","⇙","⇚","⇛","⇜","⇝","⇞","⇟","⇠","⇡","⇢","⇣","⇤","⇥","⇦","⇧","⇨","⇩","⇪","⌅","⌆","⌤","⏎","▶","☇","☈","☊","☋","☌","☍","➔","➘","➙","➚","➛","➜","➝","➞","➟","➠","➡","➢","➣","➤","➥","➦","➧","➨","➩","➪","➫","➬","➭","➮","➯","➱","➲","➳","➴","➵","➶","➷","➸","➹","➺","➻","➼","➽","➾","⤴","⤵","↵","⇰","⇫","⇬","⇭","⇳","⇮","⇯","⇱","⇲","⇴","⇵","⇷","⇸","⇹","⇺","⇑","⇓","⤪","⤨","⤧","⤩","⤭","⤮","⤯","⤰","⤱","⤲","⤫","⤬","⇽","⇾","⇿","⬳","⟿","⤉","⤈","⇻","⇼","⬴","⤀","⬵","⤁","⬹","⤔","⬺","⤕","⬶","⤅","⬻","⤖","⬷","⤐","⬼","⤗","⬽","⤘","⤝","⤞","⤟","⤠","⤡","⤢","⤣","⤤","⤥","⤦","⬐","⬎","⬑","⬏","⤶","⤷","⥂","⥃","⥄","⭀","⥱","⥶","⥸","⭂","⭈","⭊","⥵","⭁","⭇","⭉","⥲","⭋","⭌","⥳","⥴","⥆","⥅","⥹","⥻","⬰","⥈","⬾","⥇","⬲","⟴","⥷","⭃","⥺","⭄","⥉","⥰","⬿","⤳","⥊","⥋","⥌","⥍","⥎","⥏","⥐","⥑","⥒","⥓","⥔","⥕","⥖","⥗","⥤","⥣","⥥","⥦","⥨","⥧","⥩","⥮","⥯","⥪","⥬","⥫","⥭","⤌","⤍","⤎","⤏","⬸","⤑","⟵","⟶","⟷","⬅","⬆","⬇","⬈","⬉","⬊","⬋","⬌","⬍","⬄","⬀","⬁","⬂","⬃","⟻","⟼","⤒","⤓","⤙","⤚","⤛","⤜","⥼","⥽","⥾","⥿","⤼","⤽","⤾","⤿","⤸","⤺","⤹","⤻","⥀","⥁","⟲","⟳","⬱","⟸","⟹","⟺","⤂","⤃","⤄","⤆","⤇","⤊","⤋","⇐","⇒","⇔","⇶","⭅","⭆","⟰","⟱"],
+    "Astrological": ["☉","⊕","♁","☽","☿","♀︎","♂︎","♃","♄","♅","⛢","♆","⯓","♇","⯔","⯕","⯖","🌑︎","🌒︎","🌓︎","🌔︎","🌕︎","🌖︎","🌗︎","🌘︎","⚳","⚴","⚵","⚶","⯙","⚕","⯚","⚷","☄︎","⯰","⯘","⯗","⊗","⚸","⯞","☊","☋","☿"],
+    "Bracket": ["（","）","[","]","【","】","『","』","「","」","《","》","〈","〉","〔","〕","︹","︺","︷","︸","︵","︶","︻","︼","︽","︾","︿","﹀","﹁","﹂","﹃","﹄","〚","㛛","〘","〙","〖","〗","｛","｝","＜","＞","﹤","﹥","﹙","﹚","﹝","﹞","﹛","﹜","〈","〉","«","»","‹","›"],
+    "Check Marks": ["✓","✔","✔️","✅","✘","✗","☓","∨","√","☐","☒","☑","〤","〥","✇","💯","❌","❎"],
+    "Cross": ["ⵜ","𐤕","𐤲","𓏶","†","✝","✞","✟","☨","☦","♱","☥","♰","‡","⊹","☩","✙"],
+    "Email": ["✉️","📨","📧","💌","📩","📥","📤","📫","📪","📬","📭","📮","📦"],
+    "Flowers": ["❁","❃","❀","✿","🌺","🌼","🍀","🌸","🌻","💮","✿","⚘","✾","⚜","💐","🌷","🌹","☘","✥","✤","✣","❈","❉","❊","❇","❋","✽","✻","✼","ꕤ","ꕥ","🏵️","꧁","꧂","⁕","ꙮ","᪥","֎","🥀","𓇋","𓁙","𓆹","𓇑","𓋇","𓇗","𓇚","𓆸","𓇊","𓇬","𓆱","𓇣","𓆼","𓇕","𓇛","𓇟","𓆭","𓆰","𓁋"],
+    "Lines": ["┃","╽","╿","╏","║","╎","┇","︱","┊","︳","┋","┆","╵","〡","╹","╻","╷","〢","〣","☴","☵","☶","☷","☰","☱","☲","☳","﹉","﹍","﹊","﹎","≡","═","━","─","┄","┈","╌","╍","┅","┉","╴","╶","╸","╺","╼","╾","︲","⑆","⑇","⑈","⑉","⑊","⑄","⑀","︴","﹏","﹌","﹋","╲","╱","︶","︵","〵","〴","〆","`","ᐟ","‐","⁃","⎯"],
+    "Music": ["♩","♪","♬","♫","♭","♮","♯","°","ø","؂","≠","≭","🎶","🎵","🎼","🎤","🎧","📻","🎸","🎷","🎹","🎻","🎺","📣","📢","🔊"],
+    "Peace": ["✌","✙","✚","✛","✜","✝","✞","✟","†","⊹","‡","☮","☸","☨","☩","☫","☬","☭","☯","☽","☾","♁","⚔","❖","❆","♅","✠","✡","✢","卍","卐","〷","☠","☢","☣","☦","⚖"],
+    "Punctuation": ["‒","–","—","―","·","‑","‖","†","‡","‰","‱","ʰ","ʱ","ʲ","ʳ","ʴ","ʵ","ʶ","ʷ","ʸ","‗","‘","’","‚","‛","“","”","„","‟","•","‣","․","‥","…","‧","′","″","‴","‵","‶","‷","❛","❜","❝","❞","ʹ","ʺ","ʻ","ʼ","ʽ","ʾ","ʿ","ˀ","ˁ","˂","˃","˄","˅","ˆ","ˇ","ː","ˑ","˒","˓","˔","˕","˖","˗","˘","˙","ˈ","ˉ","ˊ","ˋ","ˌ","ˍ","ˎ","ˏ","˚","˛","˜","˝","ˠ","～","¿","〃","〝","〞","︰","！","﹐","﹒","﹔","﹕","，","．","：","；","、","。"],
+    "Rectangle": ["▁","▂","▃","▄","▀","▅","▆","▇","▉","▊","▋","█","▌","▐","▍","▎","▏","▕","❘","❙","❚","▔","▬","▭","▮","▯","░","▒","▓"],
+    "Time & Calendar": ["⏰","🕐","🕑","🕒","🕓","🕔","🕕","🕟","🕠","🕡","🕢","🕣","🕤","🕥","🕦","🕖","🕗","🕘","🕙","🕚","🕛","🕜","🕝","🕞","⏳","⧖","⧗","⋈","⧑","⧒","⧓","⧔","⧕","⌛","📅","📆","🗓","⌚","⏱","𝍄"],
+    "Degree & Weather": ["⛅","☀","☁","🌀","🌈","☂","🌂","☔","⛄","🔥","💧","💦","🌊","🌑","🌓","🌔","🌕","🌙","🌛","🌌","°","℃","℉","ϟ","⚡","☃","☉","☼","☽","☾","♁","♨","❄","❅","❆","☇","☈","☄"],
+    "Zodiac": ["♈︎","♉︎","♊︎","♋︎","♌︎","♍︎","♎︎","♏︎","♐︎","♑︎","♒︎","♓︎"],
+    "Writing": ["✐","✎","✍︎","✏","📝","✒","✑","✒️","✉","🔏"],
+    "Dividers": ["〰","﹏","—","─","━","│","┃","┄","┅","┆","┇","┈","┉","┊","┋","╌","╍","╎","╏","═","║","╒","╓","╔","╕","╖","╗","╘","╙","╚","╛","╜","╝","╞","╟","╠","╡","╢","╣","╤","╥","╦","╧","╨","╩","╪","╫","╬"],
+    "Borders": ["╔","╗","╚","╝","╠","╣","═","║","╬","╭","╮","╯","╰","╱","╲","╳","▏","▕","▖","▗","▘","▙","▚","▛","▜","▝","▞","▟"],
+    "Triangles": ["▲","△","▴","▵","▶","▷","▸","▹","►","▻","▼","▽","▾","▿","◀","◁","◂","◃","◄","◅","◢","◣","◤","◥","◬","◭","◮"],
+    "Circles & Dots": ["•","○","◌","◍","◎","●","◐","◑","◒","◓","◔","◕","◖","◗","◘","◙","◚","◛","◜","◝","◞","◟","◠","◡","◦","◧","◨","◩","◪","◫","◯","◰","◱","◲","◳","◴","◵","◶","◷"],
+    "Dice": ["⚀","⚁","⚂","⚃","⚄","⚅"],
+    "Dominos": ["🀰","🀱","🀲","🀳","🀴","🀵","🀶","🀷","🀸","🀹","🀺","🀻","🀼","🀽","🀾","🀿","🁀","🁁","🁂","🁃","🁄","🁅","🁆","🁇","🁈","🁉","🁊","🁋","🁌","🁍","🁎","🁏","🁐","🁑","🁒","🁓","🁔","🁕","🁖","🁗","🁘","🁙","🁚","🁛","🁜","🁝","🁞","🁟","🁠","🁡","🁢","🁣","🁤","🁥","🁦","🁧","🁨","🁩","🁪","🁫","🁬","🁭","🁮","🁯","🁰","🁱","🁲","🁳"],
+    "Chess & Cards": ["♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧"]
 };
 
 function renderSymbols(){
     const box = document.getElementById('sym-container');
-    // Simplified rendering for existing symbol data
-    // (Assuming full symData is present in your original code, if not I can paste the full block again)
-    // To save space in this response, I am re-using your existing render logic below:
-    
-    // RE-INJECTING FULL SYMBOL DATA TO BE SAFE:
-    // (See Part 3 Previous messages for full list if needed, or I can provide just the render function)
-    
-    // FOR THIS RESPONSE, I WILL ASSUME YOU HAVE THE SYM DATA. 
-    // IF NOT, I WILL PASTE THE RENDER FUNCTION ONLY:
-    
     box.innerHTML = "";
-    // Re-render
-    const fullSymData = {
-        "Hearts": ["ֶָ֢","ᵕ̈","❣︎","-'♡'-","ᥫ᭡","。♡","̆̈","♡︎","ᢉ𐭩","ᥫ᭡.","˗ˋˏ ♡ ˎˊ˗","˚₊· ͟͟͞͞➳❥","𖨆♡𖨆","ـــــــــــــــﮩ٨ـ❤️️","♡ ᪲᪲᪲","🖤⃝🦋","𐀶"],
-        "Stars": ["✨","★","☆","✡","✦"] // truncated for brevity
-    }; 
-    // NOTE: In your real code, keep the big object.
+    
+    for (const [category, symbols] of Object.entries(symData)) {
+        let title = document.createElement('div');
+        title.className = "cat-title";
+        title.innerText = category;
+        box.appendChild(title);
+        
+        let grid = document.createElement('div');
+        grid.className = "sym-grid";
+        
+        symbols.forEach(s => {
+            let btn = document.createElement('div');
+            btn.className = "sym-btn";
+            btn.innerText = s;
+            
+            btn.onclick = () => { 
+                const tb = document.getElementById('sym-box');
+                const start = tb.selectionStart;
+                const end = tb.selectionEnd;
+                const text = tb.value;
+                const before = text.substring(0, start);
+                const after  = text.substring(end, text.length);
+                tb.value = before + s + after;
+                tb.selectionStart = tb.selectionEnd = start + s.length;
+                tb.focus();
+                playClick(); 
+            };
+            grid.appendChild(btn);
+        });
+        
+        box.appendChild(grid);
+    }
 }
-// CALLING RENDER (You already have this in your code, so I'm skipping the full data dump to focus on the FIX)
+renderSymbols();
 
 // --- ⚡ NEON GIF ENGINE (TURBO FAST) ---
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
