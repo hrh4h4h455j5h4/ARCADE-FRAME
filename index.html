@@ -590,12 +590,12 @@ function playShutter() {
     o.stop(audioCtx.currentTime + 0.1);
 }
 
-// --- FONTS (UPDATED: 29 STYLES) ---
+// --- FONTS (29 STYLES) ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
     { m: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" },
     { m: "𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗" },
-    { m: "𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789" }, // NEW: Italic Serif
+    { m: "𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝑗𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧0123456789" },
     { m: "ᗩᗷᑕᗪEᖴGᕼIᒍKᒪᗰᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭Yᘔαᖿ𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓0123456789" },
     { m: "𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789" },
     { m: "𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ⒩⒪⒫⒬ℛ𝒮𝒯𝒰⒱⒲⒳⒴⒵𝒶Ⓑ𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝒖Ⓥ𝓌𝓍𝓎𝓏0123456789" },
@@ -706,35 +706,56 @@ function renderSymbols() {
     }
 }
 renderSymbols();
-</script>
-<script>
-// --- 🖼️ FRAME STUDIO LOGIC (Canvas) ---
-// This handles the first studio (Static Image)
-function d() {
-    x.clearRect(0, 0, 800, 800);
-    
-    // Draw User Image
-    if (i.src) {
-        if(isBoundaryLocked) {
-             // Logic to keep image inside circle if locked
+
+// --- 🖼️ FRAME STUDIO LOGIC ---
+let isBoundaryLocked = true;
+function toggleBoundaryLock() {
+    isBoundaryLocked = !isBoundaryLocked;
+    const btn = document.getElementById('lock-btn');
+    if (isBoundaryLocked) {
+        btn.innerHTML = "BOUNDARY LOCK: ON 🔒";
+        btn.style.borderColor = "#00ff00";
+        btn.style.color = "#00ff00";
+        if (i.src) {
             const rad = cfg.r * Math.PI / 180;
             const cos = Math.abs(Math.cos(rad));
             const sin = Math.abs(Math.sin(rad));
             const reqW = (cfg.m * 2 * cos + cfg.m * 2 * sin);
             const reqH = (cfg.m * 2 * sin + cfg.m * 2 * cos);
             const minS = Math.max(reqW / i.width, reqH / i.height);
+            zSl.min = minS;
             if (cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText = Math.round((minS / zSl.min) * 100) + "%"; }
-            const rangeX = (i.width * cfg.s - reqW) / 2;
-            const rangeY = (i.height * cfg.s - reqH) / 2;
-            cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
-            cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
         }
-        
-        x.save();
-        x.beginPath();
-        x.arc(400, 400, cfg.m, 0, 6.28);
-        x.clip();
-        
+    } else {
+        btn.innerHTML = "BOUNDARY LOCK: OFF 🔓";
+        btn.style.borderColor = "#ff0000";
+        btn.style.color = "#ff0000";
+        zSl.min = 0.1;
+    }
+    d();
+    playClick();
+}
+
+function d() {
+    x.clearRect(0, 0, 800, 800);
+    if (i.src && isBoundaryLocked) {
+        const rad = cfg.r * Math.PI / 180;
+        const cos = Math.abs(Math.cos(rad));
+        const sin = Math.abs(Math.sin(rad));
+        const reqW = (cfg.m * 2 * cos + cfg.m * 2 * sin);
+        const reqH = (cfg.m * 2 * sin + cfg.m * 2 * cos);
+        const minS = Math.max(reqW / i.width, reqH / i.height);
+        if (cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText = Math.round((minS / zSl.min) * 100) + "%"; }
+        const rangeX = (i.width * cfg.s - reqW) / 2;
+        const rangeY = (i.height * cfg.s - reqH) / 2;
+        cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
+        cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
+    }
+    x.save();
+    x.beginPath();
+    x.arc(400, 400, cfg.m, 0, 6.28);
+    x.clip();
+    if (i.src) {
         let w = i.width * cfg.s;
         let h = i.height * cfg.s;
         x.save();
@@ -742,14 +763,11 @@ function d() {
         x.rotate(cfg.r * Math.PI / 180);
         x.drawImage(i, -w / 2, -h / 2, w, h);
         x.restore();
-        x.restore();
     }
-    
-    // Draw Frame Overlay
+    x.restore();
     if (f.src) x.drawImage(f, 0, 0, 800, 800);
 }
 
-// Frame Studio Utils
 function handleFile(e) {
     let r = new FileReader();
     r.onload = v => {
@@ -758,7 +776,7 @@ function handleFile(e) {
             i = n;
             let minScale = Math.max(800 / i.width, 800 / i.height);
             cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
-            zSl.min = isBoundaryLocked ? minScale : 0.1;
+            if (isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
             zSl.max = minScale * 2.5; zSl.value = cfg.s;
             d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
         };
@@ -787,6 +805,7 @@ function resetProject() {
     zSl.value = 1; rSl.value = 0; mSl.value = 375;
     d(); playShutter(); document.getElementById('save').disabled = true;
 }
+
 function downloadPic() {
     if (!i.src) return;
     d();
@@ -796,6 +815,7 @@ function downloadPic() {
     a.click();
     playShutter();
 }
+
 function updS(el) {
     if (el.parentElement.classList.contains('ui-gif')) return;
     el.style.setProperty('--v', ((el.value - el.min) / (el.max - el.min) * 100) + '%');
@@ -805,7 +825,7 @@ document.querySelectorAll('input[type=range]').forEach(el => {
     updS(el);
 });
 
-// Frame Studio Dragging
+// --- FRAME STUDIO DRAG LOGIC ---
 let isP = false;
 let tStart = { x: 0, y: 0 };
 let initialDist = 0;
@@ -813,9 +833,14 @@ let initialScale = 1;
 let initialAngle = 0;
 let initialRot = 0;
 
-c.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+c.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+});
+
 c.addEventListener('drop', (e) => {
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
         const file = e.dataTransfer.files[0];
         if (file.type.startsWith('image/')) {
@@ -826,7 +851,7 @@ c.addEventListener('drop', (e) => {
                     i = n;
                     let minScale = Math.max(800 / i.width, 800 / i.height);
                     cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
-                    zSl.min = isBoundaryLocked ? minScale : 0.1;
+                    if (isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
                     zSl.max = minScale * 2.5; zSl.value = minScale;
                     d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
                 };
@@ -836,7 +861,12 @@ c.addEventListener('drop', (e) => {
         }
     }
 });
-c.onmousedown = e => { isP = true; tStart = { x: e.offsetX, y: e.offsetY }; };
+
+c.onmousedown = e => {
+    isP = true;
+    tStart = { x: e.offsetX, y: e.offsetY };
+};
+
 c.onmousemove = e => {
     if (!isP) return;
     let scale = 800 / c.offsetWidth;
@@ -845,26 +875,33 @@ c.onmousemove = e => {
     tStart = { x: e.offsetX, y: e.offsetY };
     d();
 };
+
 window.onmouseup = () => { isP = false; };
+
 c.ontouchstart = e => {
     if (i.src) { e.preventDefault(); }
     if (e.touches.length === 1) {
-        isP = true; tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        isP = true;
+        tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
     } else if (e.touches.length === 2) {
         isP = false;
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         initialDist = Math.sqrt(dx * dx + dy * dy);
-        initialScale = cfg.s; initialAngle = Math.atan2(dy, dx); initialRot = cfg.r;
+        initialScale = cfg.s;
+        initialAngle = Math.atan2(dy, dx);
+        initialRot = cfg.r;
     }
 };
+
 c.ontouchmove = e => {
     if (i.src) { e.preventDefault(); }
     if (e.touches.length === 1 && isP) {
         let scale = 800 / c.offsetWidth;
         let dx = e.touches[0].clientX - tStart.x;
         let dy = e.touches[0].clientY - tStart.y;
-        cfg.x += dx * scale; cfg.y += dy * scale;
+        cfg.x += dx * scale;
+        cfg.y += dy * scale;
         tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         d();
     } else if (e.touches.length === 2) {
@@ -874,16 +911,24 @@ c.ontouchmove = e => {
         const scaleFactor = dist / initialDist;
         let newScale = initialScale * scaleFactor;
         newScale = Math.max(zSl.min, Math.min(zSl.max, newScale));
-        cfg.s = newScale; zSl.value = newScale; zVal.innerText = Math.round((newScale / zSl.min) * 100) + "%"; updS(zSl);
+        cfg.s = newScale;
+        zSl.value = newScale;
+        zVal.innerText = Math.round((newScale / zSl.min) * 100) + "%";
+        updS(zSl);
+
         const angle = Math.atan2(dy, dx);
         let rotationDiff = (angle - initialAngle) * (180 / Math.PI);
-        cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; rVal.innerText = Math.round(cfg.r) + "°"; updS(rSl); d();
+        cfg.r = (initialRot + rotationDiff) % 360;
+        rSl.value = (cfg.r % 360 + 360) % 360;
+        rVal.innerText = Math.round(cfg.r) + "°";
+        updS(rSl);
+        d();
     }
 };
 window.ontouchend = () => { isP = false; };
-
-
-// --- ⚡ NEON GIF ENGINE (FIXED DRAG & FRAME SIZE) ---
+</script>
+<script>
+// --- ⚡ NEON GIF ENGINE (AUTO-LOCK & OPTIMIZED) ---
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -922,6 +967,7 @@ function resetGifProject() {
     if (upBtn) upBtn.disabled = false;
     if (document.getElementById('upFrameBtn')) document.getElementById('upFrameBtn').disabled = false;
 
+    // Reset Sliders
     if (zoom) { zoom.disabled = false; zoom.value = 100; zoom.min = 10; }
     if (fZoomSl) { fZoomSl.disabled = false; fZoomSl.value = 100; }
     if (speed) speed.disabled = false;
@@ -937,7 +983,8 @@ function resetGifProject() {
     if (gfFrameInput) gfFrameInput.value = '';
     gifX = 0; gifY = 0;
 
-    if (upBtn) upBtn.closest('.neon-wrap').style.display = 'block';
+    // Restore Buttons
+    if (upBtn) upBtn.closest('.neon-wrap').style.display = 'block'; 
     if (document.getElementById('upFrameBtn')) document.getElementById('upFrameBtn').closest('.neon-wrap').style.display = 'block';
 }
 
@@ -963,10 +1010,8 @@ function handleGifFrame(e) {
     reader.readAsDataURL(file);
 }
 
-if (fZoomSl) fZoomSl.oninput = () => {
-    updateFrameZoom();
-};
-
+// Frame Zoom
+if (fZoomSl) fZoomSl.oninput = () => { updateFrameZoom(); };
 function updateFrameZoom() {
     if (!fZoomSl || !gifOverlay) return;
     const val = fZoomSl.value;
@@ -975,6 +1020,7 @@ function updateFrameZoom() {
     gifOverlay.style.transform = `scale(${scale})`;
 }
 
+// Circle Size
 if (mGifSl) mGifSl.oninput = () => {
     const size = mGifSl.value + 'px';
     if (vp) { vp.style.width = size; vp.style.height = size; }
@@ -982,26 +1028,51 @@ if (mGifSl) mGifSl.oninput = () => {
     setCoverSize();
 };
 
+// AUTO-LOCK CALCULATIONS
 function setCoverSize() {
     if (!mGifSl || !v) return;
     const boxSize = parseInt(mGifSl.value);
     const aspect = vidW / vidH;
-    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } else { renderW = boxSize; renderH = boxSize / aspect; }
-    v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
+    
+    // Calculate base size to perfectly cover the circle
+    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } 
+    else { renderW = boxSize; renderH = boxSize / aspect; }
+    
+    v.style.width = renderW + 'px'; 
+    v.style.height = renderH + 'px';
+    
+    // Set Min Zoom to ensure 100% fill (never show black bars)
+    // Actually, since we set renderW/H to cover, 100% (or 1.0) is the base minimum.
+    // We allow shrinking slightly only if user really wants, but for auto-lock, 100 is safe min.
+    if(zoom) zoom.min = 100; 
+    
     updateGifTransform();
 }
 
 function updateGifTransform() {
     if (!v.src) return;
     const z = parseInt(zoom.value) / 100;
-    // Apply 1:1 translation offset based on dragging
+    const boxSize = parseInt(mGifSl.value);
+    
+    // Current Dimensions
+    const currentW = renderW * z;
+    const currentH = renderH * z;
+    
+    // Calculate Constraints (How much can we drag before edge hits circle)
+    const maxX = Math.max(0, (currentW - boxSize) / 2);
+    const maxY = Math.max(0, (currentH - boxSize) / 2);
+    
+    // Clamp values (Automatic Boundary Lock)
+    gifX = Math.max(-maxX, Math.min(maxX, gifX));
+    gifY = Math.max(-maxY, Math.min(maxY, gifY));
+    
     v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
 }
 
 if (zoom) zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
 if (speed) speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
 
-// --- ⚡ GIF DRAGGING LOGIC (1:1 Movement) ---
+// --- OPTIMIZED DRAGGING (AUTO-LOCK COMPATIBLE) ---
 let isGifDrag = false;
 let startX, startY, initX, initY;
 
@@ -1019,12 +1090,15 @@ if (vp) {
         if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
         if (!isGifDrag) return;
         e.preventDefault();
-        // Calculate 1:1 drag distance
+        
         const dx = e.touches[0].clientX - startX;
         const dy = e.touches[0].clientY - startY;
+        
+        // Update raw position, clamping happens in updateGifTransform
         gifX = initX + dx;
         gifY = initY + dy;
-        updateGifTransform();
+        
+        requestAnimationFrame(updateGifTransform); 
     }, { passive: false });
 
     vp.addEventListener('mousedown', e => {
@@ -1042,12 +1116,12 @@ window.addEventListener('mousemove', e => {
     const dy = e.clientY - startY;
     gifX = initX + dx;
     gifY = initY + dy;
-    updateGifTransform();
+    requestAnimationFrame(updateGifTransform);
 });
 window.addEventListener('mouseup', () => isGifDrag = false);
 window.addEventListener('touchend', () => isGifDrag = false);
 
-// --- ⚡ GIF GENERATION ---
+// --- GIF GENERATION ---
 if (go) go.onclick = () => {
     if (!v.src) return;
     go.disabled = true; upBtn.disabled = true; document.getElementById('upFrameBtn').disabled = true;
@@ -1070,28 +1144,19 @@ if (go) go.onclick = () => {
     capVid.onloadeddata = () => {
         let cTime = 0;
         const currentVpSize = parseInt(mGifSl.value);
-        const outputScale = OUT_SIZE / currentVpSize; // Scale from screen to 480px canvas
-        const z = parseInt(zoom.value) / 100;
+        const outputScale = OUT_SIZE / currentVpSize;
+        const scale = parseInt(zoom.value) / 100;
         const aspect = capVid.videoWidth / capVid.videoHeight;
 
-        // Calculate Video Size relative to viewport
-        let baseW, baseH;
-        if (aspect > 1) { baseH = currentVpSize; baseW = currentVpSize * aspect; }
-        else { baseW = currentVpSize; baseH = currentVpSize / aspect; }
+        let drawW, drawH;
+        if (aspect > 1) { drawH = currentVpSize; drawW = currentVpSize * aspect; }
+        else { drawW = currentVpSize; drawH = currentVpSize / aspect; }
 
-        // Final Video Draw Size (Zoomed + Scaled to Output)
-        const drawW = baseW * z * outputScale;
-        const drawH = baseH * z * outputScale;
-        
-        // Final Drag Offset (Scaled to Output)
-        const finalX = gifX * outputScale;
-        const finalY = gifY * outputScale;
+        drawW *= scale * outputScale; drawH *= scale * outputScale;
+        const finalX = gifX * outputScale; const finalY = gifY * outputScale;
+        let dx = (OUT_SIZE - drawW) / 2 + finalX; let dy = (OUT_SIZE - drawH) / 2 + finalY;
 
-        // Center Point Calculation
-        let dx = (OUT_SIZE - drawW) / 2 + finalX;
-        let dy = (OUT_SIZE - drawH) / 2 + finalY;
-
-        // Frame Size Logic
+        // Scale Overlay
         const fScale = fZoomSl ? parseInt(fZoomSl.value) / 100 : 1;
         const fDrawW = OUT_SIZE * fScale;
         const fDrawH = OUT_SIZE * fScale;
@@ -1108,13 +1173,8 @@ if (go) go.onclick = () => {
             ctx.arc(OUT_SIZE / 2, OUT_SIZE / 2, OUT_SIZE / 2, 0, Math.PI * 2);
             ctx.clip();
             ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
-            
-            // Draw Video
             ctx.drawImage(capVid, dx, dy, drawW, drawH);
-            
-            // Draw Frame (Scaled)
             if (frameImg) { ctx.drawImage(frameImg, fDx, fDy, fDrawW, fDrawH); }
-            
             ctx.restore();
             gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed });
             cTime += (1 / fps); setTimeout(captureFrame, 10);
@@ -1134,10 +1194,9 @@ if (go) go.onclick = () => {
         if (upBtn) upBtn.closest('.neon-wrap').style.display = 'none';
         if (document.getElementById('upFrameBtn')) document.getElementById('upFrameBtn').closest('.neon-wrap').style.display = 'none';
 
-        vp.style.pointerEvents = 'auto';
+        vp.style.pointerEvents = 'auto'; 
     });
 };
 </script>
 </body>
 </html>
-
