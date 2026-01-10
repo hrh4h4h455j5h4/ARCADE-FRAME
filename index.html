@@ -879,13 +879,12 @@ go.onclick=()=>{
     go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
     vp.style.pointerEvents = 'none'; msg.innerText="Processing..."; msg.classList.add('active');
     
-    // Uses the Inlined Worker with 30 Workers
-    // Quality changed from 20 to 30 (Higher number = faster processing)
-    const gif=new GIF({workers:30, quality:30, width:480, height:480, workerScript:localWorkerUrl, dither: false});
+    // SAFE MODE: 5 WORKERS
+    const gif=new GIF({workers:5, quality:30, width:480, height:480, workerScript:localWorkerUrl, dither: false});
     const canvas=document.createElement('canvas'); canvas.width=480; canvas.height=480; const ctx=canvas.getContext('2d');
     const fps=15, duration=v.duration, playbackSpeed=parseFloat(speed.value), capVid=document.createElement('video');
     
-    // NEW: ADD PROGRESS LISTENER
+    // PROGRESS LISTENER
     gif.on('progress', function(p) {
         msg.innerText = "Encoding: " + Math.round(p * 100) + "%";
     });
