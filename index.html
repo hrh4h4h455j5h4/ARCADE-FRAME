@@ -790,19 +790,24 @@ c.ontouchmove=e=>{
 }
 window.ontouchend=()=>{isP=false;}
 
-// --- ⚡ FIXED GIF ENGINE ---
-// FIX: Force download worker script to bypass Mobile Security blocks
-let finalWorkerUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js';
+// --- ⚡ FIXED GIF ENGINE (INLINE FETCH METHOD) ---
+// 1. Define the CDN URL
+const cdnUrl = 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js';
+// 2. Create a variable to hold the local blob URL
+let localWorkerUrl = cdnUrl; 
 
-// Try to fetch the worker code and create a local blob
-fetch(finalWorkerUrl)
-    .then(response => response.text())
-    .then(code => {
-        const blob = new Blob([code], { type: 'application/javascript' });
-        finalWorkerUrl = URL.createObjectURL(blob);
-        console.log("Worker loaded locally");
-    })
-    .catch(err => console.log("Worker fetch failed, reverting to CDN", err));
+// 3. Force-download the code and create a local blob
+// This bypasses the CORS block because the worker will load from "blob:..." (local) instead of "https:..." (remote)
+fetch(cdnUrl)
+  .then(resp => resp.text())
+  .then(code => {
+      const blob = new Blob([code], { type: 'application/javascript' });
+      localWorkerUrl = URL.createObjectURL(blob);
+      console.log("GIF Engine loaded locally:", localWorkerUrl);
+  })
+  .catch(err => {
+      console.log("Could not load local worker, falling back to CDN.", err);
+  });
 
 const gfInput=document.getElementById('gfInput'), upBtn=document.getElementById('upBtn'), v=document.getElementById('v'), o=document.getElementById('o'), vp=document.getElementById('vp');
 const speed=document.getElementById('speed'), sv=document.getElementById('sv'), zoom=document.getElementById('zoom'), zv=document.getElementById('zv'), go=document.getElementById('go'), msg=document.getElementById('msg');
@@ -880,8 +885,8 @@ go.onclick=()=>{
     go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
     vp.style.pointerEvents = 'none'; msg.innerText="Processing..."; msg.classList.add('active');
     
-    // Uses the pre-fetched local worker URL to bypass CORS
-    const gif=new GIF({workers:30, quality:20, width:480, height:480, workerScript:finalWorkerUrl, dither: false});
+    // Uses the "localWorkerUrl" created by the fetch at the top
+    const gif=new GIF({workers:30, quality:20, width:480, height:480, workerScript:localWorkerUrl, dither: false});
     const canvas=document.createElement('canvas'); canvas.width=480; canvas.height=480; const ctx=canvas.getContext('2d');
     const fps=15, duration=v.duration, playbackSpeed=parseFloat(speed.value), capVid=document.createElement('video');
     
