@@ -696,26 +696,26 @@ function d(){
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); }
   x.restore();
 
-  // 3. Draw Plain Frame (Updated for THIN WHITE CORE & HEAVY OUTER SHADOW)
+  // 3. Draw Plain Frame (Updated for THIN RING / HEAVY SHADOW)
   if (cfg.pColor) {
       x.save();
 
       if (cfg.pType === 'neon') {
           // NEON LAYER 1: The Glow/Shadow Caster
-          // We use a medium width just to cast the shadow, not to look like a thick border.
+          // We set the line width moderate (15) so it doesn't look like a thick tire,
+          // but we set the Blur extremely high (60) to throw the shadow far out.
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2);
-          x.lineWidth = 12; // Slightly thicker than core to cast shadow
-          x.strokeStyle = cfg.pColor; // Color of the shadow (e.g., Black)
-          x.shadowBlur = 60; // MASSIVE blur for heavy outer reflection
+          x.lineWidth = 15;
+          x.strokeStyle = cfg.pColor; // Black (or color)
+          x.shadowBlur = 60; // MASSIVE BLUR for heavy shadow effect
           x.shadowColor = cfg.pColor;
           x.stroke();
 
-          // NEON LAYER 2: The Core (Thin White Glass Tube)
-          // This sits on top and remains thin and sharp.
+          // NEON LAYER 2: The Core (Thin White Tube)
+          // We keep this THIN (6px) to match the reference style.
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2);
-          x.lineWidth = 6; // VERY THIN core (like the reference picture)
-          x.strokeStyle = '#FFFFFF'; // Always white center
-          // No shadow blur here, to keep it sharp.
+          x.lineWidth = 6; // Thin and sharp
+          x.strokeStyle = '#FFFFFF';
           x.stroke();
       }
       else {
