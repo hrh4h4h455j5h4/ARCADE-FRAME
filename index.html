@@ -92,11 +92,11 @@
   }
   .lnk:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
-
   /* HEADERS */
   h1 { color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); animation: arcadeBounce 1.8s infinite ease-in-out; }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   .sub { color: #fff; font-weight: bold; margin: 2px 0 15px 0; text-transform: uppercase; font-size: 11px; letter-spacing: 2px; text-align: center; }
+  
   /* --- LAYOUT LOGIC --- */
   .studio-sec { display: none; width: 320px; flex-direction: column; align-items: center; }
   .active-sec { display: flex; }
@@ -160,8 +160,7 @@
       box-shadow: 0 0 10px #ff0000; 
       pointer-events: auto; /* Re-enables dragging ONLY the circle */
   }
-
-  /* --- 🎨 NEW ADVANCED PALETTE CSS --- */
+  /* --- 🎨 PALETTE CSS --- */
   #palette-wrapper { display: none; flex-direction: column; width: 100%; margin-top: 5px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 8px; box-sizing: border-box; }
   #palette-wrapper.active { display: flex; }
   
@@ -185,6 +184,7 @@
   .c-sq.is-metal { border: 1px solid #fff; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
   /* --- ✍️ FONT STUDIO CSS --- */
   .font-input { width: 100%; background: #111; border: 2px solid #00ffff; color: #fff; padding: 15px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 16px; outline: none; box-sizing: border-box; }
   .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
@@ -233,7 +233,6 @@
 </style>
 </head>
 <body onclick="initAudio()">
-
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
 <div id="menu-panel">
@@ -284,6 +283,7 @@
         <div id="palette-wrapper">
             <div class="cat-scroll">
                 <button class="cat-btn" onclick="renderCat('Neon')">NEON</button>
+                <button class="cat-btn" onclick="renderCat('Gradients')" style="background: linear-gradient(135deg, #FF00CC, #3333FF); border:none; color:white; text-shadow: 0 1px 2px black;">GRADIENTS</button>
                 <button class="cat-btn" onclick="renderCat('Basic')">BASIC</button>
                 <button class="cat-btn" onclick="renderCat('Metallics')">METALLICS</button>
                 <button class="cat-btn" onclick="renderCat('Grays')">GRAYS</button>
@@ -314,7 +314,6 @@
     <button id="save" class="btn" onclick="downloadPic()" disabled>DOWNLOAD PICTURE</button>
   </div>
 </div>
-
 <div id="font-studio" class="studio-sec">
   <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
   <div class="lbl">TAP TO COPY <span class="val-tag" id="font-count">0 STYLES</span></div>
@@ -408,7 +407,6 @@ function toggleFrameUI() {
     else { grp.style.display = 'none'; btn.innerHTML = "👁️ SHOW MENU BUTTONS"; btn.style.color = "#555"; btn.style.borderColor = "#555"; }
     playClick();
 }
-
 // --- ✍️ FONTS LOGIC ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
@@ -501,95 +499,86 @@ function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
 function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
 function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
 function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+// --- 🌈 GRADIENT DEFINITIONS (The Master List) ---
+const gradientDefs = {
+    'grad-ruby': ['#FF512F', '#DD2476'],
+    'grad-red': ['#FF4B4B', '#C00000'],
+    'grad-crimson': ['#DC143C', '#8B0000'],
+    'grad-rose': ['#FF80AB', '#C51162'],
+    'grad-hotpink': ['#FF69B4', '#C71585'],
+    'grad-magenta': ['#FF00FF', '#800080'],
+    'grad-purple': ['#D080FF', '#7000A0'],
+    'grad-violet': ['#E040FB', '#7B1FA2'],
+    'grad-indigo': ['#7C4DFF', '#311B92'],
+    'grad-midnight': ['#536DFE', '#1A237E'],
+    'grad-blue': ['#60C0FF', '#0050A0'],
+    'grad-azure': ['#448AFF', '#0D47A1'],
+    'grad-sky': ['#40C4FF', '#01579B'],
+    'grad-cyan': ['#18FFFF', '#006064'],
+    'grad-teal': ['#64FFDA', '#004D40'],
+    'grad-emerald': ['#69F0AE', '#1B5E20'],
+    'grad-green': ['#80E080', '#008000'],
+    'grad-lime': ['#EEFF41', '#827717'],
+    'grad-yellow': ['#FFF080', '#DDAA00'],
+    'grad-amber': ['#FFD740', '#FF6F00'],
+    'grad-orange': ['#FFC060', '#D06000'],
+    'grad-sunset': ['#FF512F', '#F09819'],
+    'grad-brown': ['#D7CCC8', '#5D4037'],
+    'grad-silver': ['#E0E0E0', '#606060'],
+    'grad-slate': ['#90A4AE', '#37474F'],
+    'grad-charcoal': ['#616161', '#212121'],
+    'grad-black': ['#434343', '#000000']
+};
 
-// --- 🎨 ADVANCED COLOR PALETTE DATA & LOGIC ---
+// --- 🎨 ADVANCED COLOR PALETTE DATA ---
 const colorData = {
     'Neon': [
-        // ✨ SPECIAL NEON COLLECTION
         {c:'#FFFFFF', t:'neon'}, // Thick White
-        {c:'#FEFEFE', t:'neon'}, // Thin White (New)
+        {c:'#FEFEFE', t:'neon'}, // Thin White
         {c:'#808080', t:'neon'}, // Gray (Batman)
         {c:'#000000', t:'neon'}, // Black (Batman)
-        // 🔴 REDS
         {c:'#FF0000', t:'neon'}, {c:'#dc143c', t:'neon'}, {c:'#ff4d4d', t:'neon'}, {c:'#ff6666', t:'neon'}, 
         {c:'#b22222', t:'neon'}, {c:'#800000', t:'neon'}, {c:'#5b0000', t:'neon'}, {c:'#fa8072', t:'neon'},
-        // 🟠 ORANGES
         {c:'#FFA500', t:'neon'}, {c:'#FF4500', t:'neon'}, {c:'#FF8C00', t:'neon'}, {c:'#f4a460', t:'neon'},
         {c:'#d2691e', t:'neon'}, {c:'#a0522d', t:'neon'}, {c:'#8b4500', t:'neon'},
-        // 🟡 YELLOWS
         {c:'#FFD700', t:'neon'}, {c:'#ffff33', t:'neon'}, {c:'#f0e68c', t:'neon'},
         {c:'#b8860b', t:'neon'}, {c:'#daa520', t:'neon'},
-        // 🟢 GREENS
         {c:'#00FF00', t:'neon'}, {c:'#32cd32', t:'neon'}, {c:'#00FA9A', t:'neon'}, {c:'#7FFF00', t:'neon'}, 
         {c:'#ADFF2F', t:'neon'}, {c:'#90ee90', t:'neon'}, {c:'#2e8b57', t:'neon'}, {c:'#008000', t:'neon'},
         {c:'#006400', t:'neon'}, {c:'#228b22', t:'neon'},
-        // 🔵 CYANS
         {c:'#00FFFF', t:'neon'}, {c:'#00CED1', t:'neon'}, {c:'#40e0d0', t:'neon'}, {c:'#7fffd4', t:'neon'},
         {c:'#afeeee', t:'neon'}, {c:'#008b8b', t:'neon'}, {c:'#008080', t:'neon'},
-        // 🔵 BLUES
         {c:'#0000FF', t:'neon'}, {c:'#1E90FF', t:'neon'}, {c:'#4169E1', t:'neon'}, {c:'#0000CD', t:'neon'},
         {c:'#00008B', t:'neon'}, {c:'#000080', t:'neon'}, {c:'#87cefa', t:'neon'}, {c:'#b0c4de', t:'neon'},
-        // 🟣 PURPLES
         {c:'#FF00FF', t:'neon'}, {c:'#800080', t:'neon'}, {c:'#9400D3', t:'neon'}, {c:'#BA55D3', t:'neon'},
         {c:'#8b008b', t:'neon'}, {c:'#4b0082', t:'neon'}, {c:'#9932cc', t:'neon'}, {c:'#dda0dd', t:'neon'},
-        // 🌸 PINKS
         {c:'#FF1493', t:'neon'}, {c:'#FF69B4', t:'neon'}, {c:'#db7093', t:'neon'}, {c:'#ffb6c1', t:'neon'},
         {c:'#c71585', t:'neon'}, {c:'#8b0000', t:'neon'},
-        // 🪨 GRAYS & METALS
         {c:'#C0C0C0', t:'neon'}, {c:'#A52A2A', t:'neon'}, {c:'#808080', t:'neon'}, {c:'#333333', t:'neon'}
     ],
-    'Basic': [
-        {c:'#000000'}, {c:'#FFFFFF'}, {c:'#FF0000'}, {c:'#00FF00'}, {c:'#0000FF'}, 
-        {c:'#FFFF00'}, {c:'#00FFFF'}, {c:'#FF00FF'}, {c:'#FFA500'}, {c:'#800080'}, 
-        {c:'#A52A2A'}, {c:'#808080'}
+    // 🌈 EXPANDED GRADIENTS FOLDER
+    'Gradients': [
+        {c:'#FF512F', t:'grad-ruby'}, {c:'#FF4B4B', t:'grad-red'}, {c:'#DC143C', t:'grad-crimson'},
+        {c:'#FF80AB', t:'grad-rose'}, {c:'#FF69B4', t:'grad-hotpink'}, {c:'#FF00FF', t:'grad-magenta'},
+        {c:'#D080FF', t:'grad-purple'}, {c:'#E040FB', t:'grad-violet'}, {c:'#7C4DFF', t:'grad-indigo'},
+        {c:'#536DFE', t:'grad-midnight'}, {c:'#60C0FF', t:'grad-blue'}, {c:'#448AFF', t:'grad-azure'},
+        {c:'#40C4FF', t:'grad-sky'}, {c:'#18FFFF', t:'grad-cyan'}, {c:'#64FFDA', t:'grad-teal'},
+        {c:'#69F0AE', t:'grad-emerald'}, {c:'#80E080', t:'grad-green'}, {c:'#EEFF41', t:'grad-lime'},
+        {c:'#FFF080', t:'grad-yellow'}, {c:'#FFD740', t:'grad-amber'}, {c:'#FFC060', t:'grad-orange'},
+        {c:'#FF512F', t:'grad-sunset'}, {c:'#D7CCC8', t:'grad-brown'}, {c:'#E0E0E0', t:'grad-silver'},
+        {c:'#90A4AE', t:'grad-slate'}, {c:'#616161', t:'grad-charcoal'}, {c:'#000000', t:'grad-black'}
     ],
-    'Metallics': [
-        {c:'#FFD700', t:'gold'}, {c:'#C0C0C0', t:'silver'}, {c:'#CD7F32', t:'bronze'},
-        {c:'#D4AF37', t:'gold'}, {c:'#B8860B', t:'gold'}, {c:'#E5E4E2', t:'silver'}
-    ],
-    'Grays': [
-        {c:'#000000'}, {c:'#1a1a1a'}, {c:'#333333'}, {c:'#4d4d4d'}, {c:'#666666'}, 
-        {c:'#808080'}, {c:'#999999'}, {c:'#b3b3b3'}, {c:'#cccccc'}, {c:'#e6e6e6'}, 
-        {c:'#ffffff'}
-    ],
-    'Reds': [
-        {c:'#5b0000'}, {c:'#800000'}, {c:'#a52a2a'}, {c:'#b22222'}, {c:'#dc143c'}, 
-        {c:'#ff0000'}, {c:'#ff4d4d'}, {c:'#ff6666'}, {c:'#fa8072'}, {c:'#e9967a'}, 
-        {c:'#ff6347'}, {c:'#cd5c5c'}
-    ],
-    'Oranges': [
-        {c:'#8b4500'}, {c:'#a0522d'}, {c:'#d2691e'}, {c:'#cd853f'}, {c:'#f4a460'}, 
-        {c:'#ff8c00'}, {c:'#ffa500'}, {c:'#ffb347'}, {c:'#ffcc80'}, {c:'#ffe5b4'}
-    ],
-    'Yellows': [
-        {c:'#ffd700'}, {c:'#daa520'}, {c:'#b8860b'}, {c:'#bdb76b'}, {c:'#f0e68c'}, 
-        {c:'#khaki'}, {c:'#ffff00'}, {c:'#ffff33'}, {c:'#ffff66'}, {c:'#ffff99'}, 
-        {c:'#lightyellow'}, {c:'#ffffe0'}
-    ],
-    'Greens': [
-        {c:'#006400'}, {c:'#008000'}, {c:'#228b22'}, {c:'#2e8b57'}, {c:'#3cb371'}, 
-        {c:'#32cd32'}, {c:'#00ff00'}, {c:'#7cfc00'}, {c:'#7fff00'}, {c:'#adff2f'}, 
-        {c:'#90ee90'}, {c:'#98fb98'}, {c:'#00fa9a'}, {c:'#00ff7f'}, {c:'#66cdaa'}
-    ],
-    'Cyans': [
-        {c:'#008080'}, {c:'#008b8b'}, {c:'#20b2aa'}, {c:'#48d1cc'}, {c:'#00ced1'}, 
-        {c:'#40e0d0'}, {c:'#00ffff'}, {c:'#00ffff'}, {c:'#7fffd4'}, {c:'#afeeee'}, 
-        {c:'#e0ffff'}
-    ],
-    'Blues': [
-        {c:'#000080'}, {c:'#00008b'}, {c:'#0000cd'}, {c:'#0000ff'}, {c:'#1e90ff'}, 
-        {c:'#4169e1'}, {c:'#6495ed'}, {c:'#87cefa'}, {c:'#87ceeb'}, {c:'#add8e6'}, 
-        {c:'#b0c4de'}, {c:'#f0f8ff'}
-    ],
-    'Purples': [
-        {c:'#4b0082'}, {c:'#483d8b'}, {c:'#6a5acd'}, {c:'#7b68ee'}, {c:'#800080'}, 
-        {c:'#8b008b'}, {c:'#9400d3'}, {c:'#9932cc'}, {c:'#ba55d3'}, {c:'#dda0dd'}, 
-        {c:'#e6e6fa'}
-    ],
-    'Pinks': [
-        {c:'#8b0000'}, {c:'#c71585'}, {c:'#db7093'}, {c:'#ff1493'}, {c:'#ff69b4'}, 
-        {c:'#ffb6c1'}, {c:'#ffc0cb'}, {c:'#fff0f5'}
-    ]
+    'Basic': [ {c:'#000000'}, {c:'#FFFFFF'}, {c:'#FF0000'}, {c:'#00FF00'}, {c:'#0000FF'}, {c:'#FFFF00'}, {c:'#00FFFF'}, {c:'#FF00FF'}, {c:'#FFA500'}, {c:'#800080'}, {c:'#A52A2A'}, {c:'#808080'} ],
+    'Metallics': [ {c:'#FFD700', t:'gold'}, {c:'#C0C0C0', t:'silver'}, {c:'#CD7F32', t:'bronze'}, {c:'#D4AF37', t:'gold'}, {c:'#B8860B', t:'gold'}, {c:'#E5E4E2', t:'silver'} ],
+    'Grays': [ {c:'#000000'}, {c:'#1a1a1a'}, {c:'#333333'}, {c:'#4d4d4d'}, {c:'#666666'}, {c:'#808080'}, {c:'#999999'}, {c:'#b3b3b3'}, {c:'#cccccc'}, {c:'#e6e6e6'}, {c:'#ffffff'} ],
+    'Reds': [ {c:'#5b0000'}, {c:'#800000'}, {c:'#a52a2a'}, {c:'#b22222'}, {c:'#dc143c'}, {c:'#ff0000'}, {c:'#ff4d4d'}, {c:'#ff6666'}, {c:'#fa8072'}, {c:'#e9967a'}, {c:'#ff6347'}, {c:'#cd5c5c'} ],
+    'Oranges': [ {c:'#8b4500'}, {c:'#a0522d'}, {c:'#d2691e'}, {c:'#cd853f'}, {c:'#f4a460'}, {c:'#ff8c00'}, {c:'#ffa500'}, {c:'#ffb347'}, {c:'#ffcc80'}, {c:'#ffe5b4'} ],
+    'Yellows': [ {c:'#ffd700'}, {c:'#daa520'}, {c:'#b8860b'}, {c:'#bdb76b'}, {c:'#f0e68c'}, {c:'#khaki'}, {c:'#ffff00'}, {c:'#ffff33'}, {c:'#ffff66'}, {c:'#ffff99'}, {c:'#lightyellow'}, {c:'#ffffe0'} ],
+    'Greens': [ {c:'#006400'}, {c:'#008000'}, {c:'#228b22'}, {c:'#2e8b57'}, {c:'#3cb371'}, {c:'#32cd32'}, {c:'#00ff00'}, {c:'#7cfc00'}, {c:'#7fff00'}, {c:'#adff2f'}, {c:'#90ee90'}, {c:'#98fb98'}, {c:'#00fa9a'}, {c:'#00ff7f'}, {c:'#66cdaa'} ],
+    'Cyans': [ {c:'#008080'}, {c:'#008b8b'}, {c:'#20b2aa'}, {c:'#48d1cc'}, {c:'#00ced1'}, {c:'#40e0d0'}, {c:'#00ffff'}, {c:'#00ffff'}, {c:'#7fffd4'}, {c:'#afeeee'}, {c:'#e0ffff'} ],
+    'Blues': [ {c:'#000080'}, {c:'#00008b'}, {c:'#0000cd'}, {c:'#0000ff'}, {c:'#1e90ff'}, {c:'#4169e1'}, {c:'#6495ed'}, {c:'#87cefa'}, {c:'#87ceeb'}, {c:'#add8e6'}, {c:'#b0c4de'}, {c:'#f0f8ff'} ],
+    'Purples': [ {c:'#4b0082'}, {c:'#483d8b'}, {c:'#6a5acd'}, {c:'#7b68ee'}, {c:'#800080'}, {c:'#8b008b'}, {c:'#9400d3'}, {c:'#9932cc'}, {c:'#ba55d3'}, {c:'#dda0dd'}, {c:'#e6e6fa'} ],
+    'Pinks': [ {c:'#8b0000'}, {c:'#c71585'}, {c:'#db7093'}, {c:'#ff1493'}, {c:'#ff69b4'}, {c:'#ffb6c1'}, {c:'#ffc0cb'}, {c:'#fff0f5'} ]
 };
 
 function togglePaletteUI() {
@@ -604,7 +593,6 @@ function togglePaletteUI() {
         el.classList.add('active');
         btn.innerHTML = "CLOSE PALETTE ✖";
         btn.style.color = "#ffcc00"; btn.style.borderColor = "#ffcc00";
-        // Default to loading the NEON category first
         renderCat('Neon'); 
     }
     playClick();
@@ -612,29 +600,30 @@ function togglePaletteUI() {
 
 function renderCat(cat) {
     playClick();
-    
-    // Highlight active category button
     document.querySelectorAll('.cat-btn').forEach(b => {
         b.classList.remove('active-cat');
         if(b.innerText === cat.toUpperCase()) b.classList.add('active-cat');
     });
 
     const grid = document.getElementById('color-grid');
-    grid.innerHTML = ''; // Clear existing
+    grid.innerHTML = ''; 
     grid.classList.remove('show');
     
-    // Slight delay for animation effect
     setTimeout(() => {
         const list = colorData[cat];
         list.forEach(item => {
             const d = document.createElement('div');
             d.className = 'c-sq';
             
-            // Handle Special Displays
             if(item.t === 'neon') {
                 d.style.backgroundColor = item.c;
                 d.style.boxShadow = `0 0 10px ${item.c}`;
                 d.style.border = '2px solid white';
+            } else if (item.t && gradientDefs[item.t]) {
+                // RENDER GRADIENT BUTTON
+                d.classList.add('is-metal'); 
+                const cols = gradientDefs[item.t];
+                d.style.background = `linear-gradient(135deg, ${cols[0]}, ${cols[1]})`;
             } else if(item.t) {
                 d.classList.add('is-metal');
                 if(item.t==='gold') d.style.background = 'linear-gradient(135deg, #FFD700, #FDB931)';
@@ -644,9 +633,7 @@ function renderCat(cat) {
                 d.style.backgroundColor = item.c;
             }
 
-            d.onclick = () => {
-                setPlainFrame(item.c, item.t || null);
-            };
+            d.onclick = () => { setPlainFrame(item.c, item.t || null); };
             grid.appendChild(d);
         });
         grid.classList.add('show');
@@ -654,7 +641,7 @@ function renderCat(cat) {
 }
 
 function setPlainFrame(color, type=null) {
-    f = new Image(); // Clear custom frame
+    f = new Image(); 
     document.getElementById('u2').value = ''; 
     cfg.pColor = color; 
     cfg.pType = type; 
@@ -681,8 +668,6 @@ function toggleBoundaryLock() {
 
 function d(){ 
   x.clearRect(0,0,800,800); 
-  
-  // 1. Calculate Constraints
   if(i.src){
       if (isBoundaryLocked) {
           const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
@@ -694,16 +679,12 @@ function d(){
       } 
   }
 
-  // 2. Draw Image (Clipped)
   x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
   x.restore(); 
 
-  // 3. Draw Plain Frame
   if (cfg.pColor) {
       x.save(); 
-      
-      // --- SPECIAL "HEAVY SHADOW" STYLE (BLACK OR GRAY NEON) ---
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const shadowCol = cfg.pColor;
           const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
@@ -718,28 +699,31 @@ function d(){
           x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke();
           x.restore();
       } 
-      // --- NEW: SPECIAL "THIN WHITE" NEON ---
       else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 15; x.strokeStyle = '#FFFFFF';
-          x.shadowBlur = 60; x.shadowColor = '#FFFFFF';
-          x.stroke();
+          x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke(); // Thin Core
+          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
       }
-      // --- STANDARD COLORED NEON & THICK WHITE (Original Thick Style) ---
       else if (cfg.pType === 'neon') {
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 25; x.strokeStyle = cfg.pColor;
-          x.shadowBlur = 30; x.shadowColor = cfg.pColor;
-          x.stroke();
+          x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
           x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
       }
-      // --- STANDARD/METALLIC ---
       else {
+          // --- ✨ GRADIENT & METALLIC RENDERING ---
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
-          if (cfg.pType && cfg.pType !== 'neon') {
+          
+          if (cfg.pType && gradientDefs[cfg.pType]) {
+             // NEW GRADIENT LOGIC
+             const cols = gradientDefs[cfg.pType];
+             let g = x.createLinearGradient(0, 0, 800, 800);
+             g.addColorStop(0, cols[0]);
+             g.addColorStop(1, cols[1]);
+             x.strokeStyle = g;
+          } 
+          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
               let g = x.createLinearGradient(0, 0, 800, 800);
               if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
               else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
@@ -752,8 +736,6 @@ function d(){
       }
       x.restore();
   }
-
-  // 4. Draw Custom PNG Frame
   if(f.src) x.drawImage(f,0,0,800,800); 
 }
 
@@ -769,32 +751,15 @@ function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-
-// ** BUG FIX: Reset Project (Clears inputs and resets sliders) **
 function resetProject(){ 
-    i=new Image(); f=new Image(); 
-    cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null}; 
-    zSl.value=1; rSl.value=0; mSl.value=375; 
-    
-    // Clear file inputs so onchange triggers again
-    document.getElementById('u1').value = '';
-    document.getElementById('u2').value = '';
-    
-    d(); playShutter(); 
-    updS(zSl); updS(rSl); updS(mSl); // Reset slider colors
-    document.getElementById('save').disabled = true;
+    i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null}; 
+    zSl.value=1; rSl.value=0; mSl.value=375; document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+    d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true;
 }
-
 function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
-
-// ** SLIDER VISUALS FIX **
-// This updates the CSS variable --v so the red/cyan gradient moves with the thumb
-function updS(el){ 
-    if(el.parentElement.classList.contains('ui-gif')) return; 
-    const val = (el.value-el.min)/(el.max-el.min)*100;
-    el.style.setProperty('--v', val + '%'); 
-}
+function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
+
 // --- 🕹️ FRAME STUDIO DRAG LOGIC ---
 let isP=false, tStart={x:0,y:0};
 let initialDist = 0, initialScale = 1, initialAngle = 0, initialRot = 0;
@@ -872,7 +837,6 @@ c.ontouchmove=e=>{
 window.ontouchend=()=>{isP=false;}
 
 // --- ⚡ NEON GIF ENGINE (The Masterpiece Version) ---
-// This uses the Hybrid Blob Import method that bypasses the security block
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -1066,5 +1030,3 @@ go.onclick = () => {
 </script>
 </body>
 </html>
-
-
