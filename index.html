@@ -513,7 +513,7 @@ const colorData = {
         // 🟠 ORANGES
         {c:'#FFA500', t:'neon'}, {c:'#FF4500', t:'neon'}, {c:'#FF8C00', t:'neon'}, {c:'#f4a460', t:'neon'},
         {c:'#d2691e', t:'neon'}, {c:'#a0522d', t:'neon'}, {c:'#8b4500', t:'neon'},
-        // 🟡 YELLOWS (Removed duplicate #FFFF00)
+        // 🟡 YELLOWS
         {c:'#FFD700', t:'neon'}, {c:'#ffff33', t:'neon'}, {c:'#f0e68c', t:'neon'},
         {c:'#b8860b', t:'neon'}, {c:'#daa520', t:'neon'},
         // 🟢 GREENS
@@ -696,16 +696,16 @@ function d(){
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
   x.restore(); 
 
-  // 3. Draw Plain Frame (Updated for NEON)
+  // 3. Draw Plain Frame (Updated for THICKER NEON)
   if (cfg.pColor) {
       x.save(); 
       
       if (cfg.pType === 'neon') {
           // NEON LAYER 1: The Glow
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 25; 
+          x.lineWidth = 40; // THICKER BASE
           x.strokeStyle = cfg.pColor;
-          x.shadowBlur = 30; // Heavy glow
+          x.shadowBlur = 50; // WIDER GLOW
           x.shadowColor = cfg.pColor;
           x.stroke();
           
