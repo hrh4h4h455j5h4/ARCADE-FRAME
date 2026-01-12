@@ -696,20 +696,20 @@ function d(){
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
   x.restore(); 
 
-  // 3. Draw Plain Frame (Updated for THICKER NEON)
+  // 3. Draw Plain Frame (Updated for THICKER NEON SHADOW)
   if (cfg.pColor) {
       x.save(); 
       
       if (cfg.pType === 'neon') {
-          // NEON LAYER 1: The Glow
+          // NEON LAYER 1: The Glow (Thicker and Wider)
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 40; // THICKER BASE
+          x.lineWidth = 40; // Thicker base line
           x.strokeStyle = cfg.pColor;
-          x.shadowBlur = 50; // WIDER GLOW
+          x.shadowBlur = 50; // Wider shadow for more glow
           x.shadowColor = cfg.pColor;
           x.stroke();
           
-          // NEON LAYER 2: The Core (Glass Tube)
+          // NEON LAYER 2: The Core (Glass Tube - Remains Thin)
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
           x.lineWidth = 8; // Thinner core
           x.strokeStyle = '#FFFFFF'; // White center
