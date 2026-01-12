@@ -283,6 +283,7 @@
         
         <div id="palette-wrapper">
             <div class="cat-scroll">
+                <button class="cat-btn" onclick="renderCat('Neon')">NEON</button>
                 <button class="cat-btn" onclick="renderCat('Basic')">BASIC</button>
                 <button class="cat-btn" onclick="renderCat('Metallics')">METALLICS</button>
                 <button class="cat-btn" onclick="renderCat('Grays')">GRAYS</button>
@@ -437,7 +438,7 @@ const alphas = [
   {m:"ﾑ乃cd乇fGんﾉjズlm刀oｱq尺sｲu√wﾒﾘzﾑ乃cd乇fGんﾉjズlm刀oｱq尺sｲu√wﾒﾘz0123456789"},
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙abcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁abcdefghijklmnopqrstuvwxyz0123456789"},
-  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵abcdefghijklmnopqrstuvwxyz0123456789"},
+  {m:"𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ⒩⒪⒫⒬ℛ𝒮𝒯𝒰⒱⒲⒳⒴⒵abcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩abcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝖠𝖡𝖢𝖣𝖤𝖥𝖦𝖧𝖨𝖩𝖪𝖫𝖬𝖭𝖮𝖯𝖰𝖱𝖲𝖳𝖴𝖵𝖶𝖷𝖸𝖹abcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝗔𝗕Ｃ𝗗𝗘𝗙𝗚ＨＩＪＫＬＭＮＯＰ𝗤𝗥𝗦Ｔ𝗨𝗩𝗪𝗫𝗬𝗭abcdefghijklmnopqrstuvwxyz0123456789"},
@@ -450,7 +451,7 @@ const alphas = [
   {m:"ᗩᗷᑕᗪEᖴGᕼIᒍKᒪᗰᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭Yᘔabcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"ΛBCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"ȺƁƇƊɆƑƓĦɪʝҠŁⱮȠØⱣꝖɌŞŦɄVŴӾɎƵabcdefghijklmnopqrstuvwxyz0123456789"},
-  {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
+  {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝘵𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
   {m:"ᴬʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘqʀsᴛᴜᴠᴡxʏᴢabcdefghijklmnopqrstuvwxyz0123456789"}
 ];
 function genFonts(){
@@ -503,6 +504,20 @@ function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o
 
 // --- 🎨 ADVANCED COLOR PALETTE DATA & LOGIC ---
 const colorData = {
+    'Neon': [
+        // ✨ THE ULTIMATE NEON COLLECTION (Includes Gray & Black)
+        {c:'#FF0000', t:'neon'}, {c:'#00FF00', t:'neon'}, {c:'#0000FF', t:'neon'}, 
+        {c:'#FFFF00', t:'neon'}, {c:'#00FFFF', t:'neon'}, {c:'#FF00FF', t:'neon'},
+        {c:'#FFA500', t:'neon'}, {c:'#800080', t:'neon'}, {c:'#FF1493', t:'neon'},
+        {c:'#00FA9A', t:'neon'}, {c:'#1E90FF', t:'neon'}, {c:'#FFD700', t:'neon'},
+        {c:'#DC143C', t:'neon'}, {c:'#7FFF00', t:'neon'}, {c:'#9400D3', t:'neon'},
+        {c:'#FF4500', t:'neon'}, {c:'#00CED1', t:'neon'}, {c:'#FF69B4', t:'neon'},
+        {c:'#ADFF2F', t:'neon'}, {c:'#4169E1', t:'neon'}, {c:'#BA55D3', t:'neon'},
+        {c:'#FFFFFF', t:'neon'}, 
+        // 👇 NEW ADDITIONS 👇
+        {c:'#808080', t:'neon'}, // NEON GRAY
+        {c:'#000000', t:'neon'}  // NEON BLACK
+    ],
     'Basic': [
         {c:'#000000'}, {c:'#FFFFFF'}, {c:'#FF0000'}, {c:'#00FF00'}, {c:'#0000FF'}, 
         {c:'#FFFF00'}, {c:'#00FFFF'}, {c:'#FF00FF'}, {c:'#FFA500'}, {c:'#800080'}, 
@@ -569,7 +584,8 @@ function togglePaletteUI() {
         el.classList.add('active');
         btn.innerHTML = "CLOSE PALETTE ✖";
         btn.style.color = "#ffcc00"; btn.style.borderColor = "#ffcc00";
-        renderCat('Basic'); // Load Basic by default
+        // Default to loading the NEON category first
+        renderCat('Neon'); 
     }
     playClick();
 }
@@ -594,8 +610,12 @@ function renderCat(cat) {
             const d = document.createElement('div');
             d.className = 'c-sq';
             
-            // Handle Metallics display
-            if(item.t) {
+            // Handle Special Displays
+            if(item.t === 'neon') {
+                d.style.backgroundColor = item.c;
+                d.style.boxShadow = `0 0 10px ${item.c}`;
+                d.style.border = '2px solid white';
+            } else if(item.t) {
                 d.classList.add('is-metal');
                 if(item.t==='gold') d.style.background = 'linear-gradient(135deg, #FFD700, #FDB931)';
                 if(item.t==='silver') d.style.background = 'linear-gradient(135deg, #E0E0E0, #B0B0B0)';
@@ -659,21 +679,44 @@ function d(){
   if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
   x.restore(); 
 
-  // 3. Draw Plain Frame (From New Palette)
+  // 3. Draw Plain Frame (Updated for NEON)
   if (cfg.pColor) {
-      x.save(); x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
-      if (cfg.pType) {
-          // Metadata for Metallics
-          let g = x.createLinearGradient(0, 0, 800, 800);
-          if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
-          else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
-          else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
-          x.strokeStyle = g;
-      } else { 
-          // Standard Colors (including Black/Gray/Red etc)
-          x.strokeStyle = cfg.pColor; 
+      x.save(); 
+      
+      if (cfg.pType === 'neon') {
+          // NEON LAYER 1: The Glow
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 25; 
+          x.strokeStyle = cfg.pColor;
+          x.shadowBlur = 30; // Heavy glow
+          x.shadowColor = cfg.pColor;
+          x.stroke();
+          
+          // NEON LAYER 2: The Core (Glass Tube)
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 8; // Thinner core
+          x.strokeStyle = '#FFFFFF'; // White center
+          x.shadowBlur = 5; // Slight white glow
+          x.shadowColor = '#FFFFFF';
+          x.stroke();
+      } 
+      else {
+          // STANDARD OR METALLIC DRAWING
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
+          if (cfg.pType && cfg.pType !== 'neon') {
+              // Metadata for Metallics
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
+              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
+              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
+              x.strokeStyle = g;
+          } else { 
+              // Standard Colors
+              x.strokeStyle = cfg.pColor; 
+          }
+          x.stroke(); 
       }
-      x.stroke(); x.restore();
+      x.restore();
   }
 
   // 4. Draw Custom PNG Frame
