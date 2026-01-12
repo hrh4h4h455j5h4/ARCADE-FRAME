@@ -505,18 +505,35 @@ function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o
 // --- 🎨 ADVANCED COLOR PALETTE DATA & LOGIC ---
 const colorData = {
     'Neon': [
-        // ✨ THE ULTIMATE NEON COLLECTION (Includes Gray & Black)
-        {c:'#FF0000', t:'neon'}, {c:'#00FF00', t:'neon'}, {c:'#0000FF', t:'neon'}, 
-        {c:'#FFFF00', t:'neon'}, {c:'#00FFFF', t:'neon'}, {c:'#FF00FF', t:'neon'},
-        {c:'#FFA500', t:'neon'}, {c:'#800080', t:'neon'}, {c:'#FF1493', t:'neon'},
-        {c:'#00FA9A', t:'neon'}, {c:'#1E90FF', t:'neon'}, {c:'#FFD700', t:'neon'},
-        {c:'#DC143C', t:'neon'}, {c:'#7FFF00', t:'neon'}, {c:'#9400D3', t:'neon'},
-        {c:'#FF4500', t:'neon'}, {c:'#00CED1', t:'neon'}, {c:'#FF69B4', t:'neon'},
-        {c:'#ADFF2F', t:'neon'}, {c:'#4169E1', t:'neon'}, {c:'#BA55D3', t:'neon'},
-        {c:'#FFFFFF', t:'neon'}, 
-        // 👇 NEW ADDITIONS 👇
-        {c:'#808080', t:'neon'}, // NEON GRAY
-        {c:'#000000', t:'neon'}  // NEON BLACK
+        // ✨ SPECIAL NEON COLLECTION (High Contrast)
+        {c:'#FFFFFF', t:'neon'}, {c:'#808080', t:'neon'}, {c:'#000000', t:'neon'},
+        // 🔴 REDS
+        {c:'#FF0000', t:'neon'}, {c:'#dc143c', t:'neon'}, {c:'#ff4d4d', t:'neon'}, {c:'#ff6666', t:'neon'}, 
+        {c:'#b22222', t:'neon'}, {c:'#800000', t:'neon'}, {c:'#5b0000', t:'neon'}, {c:'#fa8072', t:'neon'},
+        // 🟠 ORANGES
+        {c:'#FFA500', t:'neon'}, {c:'#FF4500', t:'neon'}, {c:'#FF8C00', t:'neon'}, {c:'#f4a460', t:'neon'},
+        {c:'#d2691e', t:'neon'}, {c:'#a0522d', t:'neon'}, {c:'#8b4500', t:'neon'},
+        // 🟡 YELLOWS
+        {c:'#FFFF00', t:'neon'}, {c:'#FFD700', t:'neon'}, {c:'#ffff33', t:'neon'}, {c:'#f0e68c', t:'neon'},
+        {c:'#b8860b', t:'neon'}, {c:'#daa520', t:'neon'},
+        // 🟢 GREENS
+        {c:'#00FF00', t:'neon'}, {c:'#32cd32', t:'neon'}, {c:'#00FA9A', t:'neon'}, {c:'#7FFF00', t:'neon'}, 
+        {c:'#ADFF2F', t:'neon'}, {c:'#90ee90', t:'neon'}, {c:'#2e8b57', t:'neon'}, {c:'#008000', t:'neon'},
+        {c:'#006400', t:'neon'}, {c:'#228b22', t:'neon'},
+        // 🔵 CYANS
+        {c:'#00FFFF', t:'neon'}, {c:'#00CED1', t:'neon'}, {c:'#40e0d0', t:'neon'}, {c:'#7fffd4', t:'neon'},
+        {c:'#afeeee', t:'neon'}, {c:'#008b8b', t:'neon'}, {c:'#008080', t:'neon'},
+        // 🔵 BLUES
+        {c:'#0000FF', t:'neon'}, {c:'#1E90FF', t:'neon'}, {c:'#4169E1', t:'neon'}, {c:'#0000CD', t:'neon'},
+        {c:'#00008B', t:'neon'}, {c:'#000080', t:'neon'}, {c:'#87cefa', t:'neon'}, {c:'#b0c4de', t:'neon'},
+        // 🟣 PURPLES
+        {c:'#FF00FF', t:'neon'}, {c:'#800080', t:'neon'}, {c:'#9400D3', t:'neon'}, {c:'#BA55D3', t:'neon'},
+        {c:'#8b008b', t:'neon'}, {c:'#4b0082', t:'neon'}, {c:'#9932cc', t:'neon'}, {c:'#dda0dd', t:'neon'},
+        // 🌸 PINKS
+        {c:'#FF1493', t:'neon'}, {c:'#FF69B4', t:'neon'}, {c:'#db7093', t:'neon'}, {c:'#ffb6c1', t:'neon'},
+        {c:'#c71585', t:'neon'}, {c:'#8b0000', t:'neon'},
+        // 🪨 GRAYS & METALS (As Neon)
+        {c:'#C0C0C0', t:'neon'}, {c:'#A52A2A', t:'neon'}, {c:'#808080', t:'neon'}, {c:'#333333', t:'neon'}
     ],
     'Basic': [
         {c:'#000000'}, {c:'#FFFFFF'}, {c:'#FF0000'}, {c:'#00FF00'}, {c:'#0000FF'}, 
