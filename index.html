@@ -274,13 +274,19 @@
     <button id="ui-toggle-btn" class="btn" style="border-color:#ffcc00; color:#ffcc00; margin-bottom:10px;" onclick="toggleFrameUI()">👁️ HIDE MENU BUTTONS</button>
     
     <div id="frame-btn-group">
-        <button class="btn" onclick="playClick(); document.getElementById('u1').click()">CHOOSE IMAGE</button>
-        <input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none">
+        <div style="position:relative; width:100%; height:auto;">
+            <button class="btn" style="pointer-events:none;">CHOOSE IMAGE</button>
+            <input type="file" id="u1" accept="image/*" onchange="handleFile(event)" onclick="playClick()" 
+                   style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; z-index:100; cursor:pointer;">
+        </div>
+
+        <div style="position:relative; width:100%; height:auto; margin-top:6px;">
+            <button class="btn btn-r" style="pointer-events:none;">APPLY FRAME</button>
+            <input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" onclick="playClick()" 
+                   style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; z-index:100; cursor:pointer;">
+        </div>
         
-        <button class="btn btn-r" onclick="playClick(); document.getElementById('u2').click()">APPLY FRAME</button>
-        <input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none">
-        
-        <button class="btn" style="border-color:#ffffff; color:#ffffff;" onclick="togglePaletteUI()">COLOR PALETTE 🎨</button>
+        <button class="btn" style="border-color:#ffffff; color:#ffffff; margin-top:6px;" onclick="togglePaletteUI()">COLOR PALETTE 🎨</button>
         
         <div id="palette-wrapper">
             <div class="cat-scroll">
@@ -332,10 +338,11 @@
     </div>
 
     <div class="ui-gif" id="uiPanel">
-        <div id="upWrapper" class="neon-wrap blue">
-            <button class="btn-inner" id="upBtn" onclick="document.getElementById('gfInput').click()">UPLOAD YOUR VIDEO</button>
+        <div id="upWrapper" class="neon-wrap blue" style="position:relative;">
+            <button class="btn-inner" id="upBtn" style="pointer-events:none;">UPLOAD YOUR VIDEO</button>
+            <input type="file" id="gfInput" accept="video/*" onclick="playClick()" 
+                   style="position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; z-index:100; cursor:pointer;">
         </div>
-        <input type="file" id="gfInput" accept="video/*" style="display:none">
 
         <div class="label-row" style="margin-top:20px;"><span>ZOOM / SCALE</span><span id="zv">100%</span></div>
         <input type="range" id="zoom" min="100" max="300" step="1" value="100">
@@ -1025,3 +1032,4 @@ go.onclick = () => {
 </script>
 </body>
 </html>
+
