@@ -673,20 +673,7 @@ window.ontouchend = () => { isP = false; }
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
-const gfInput = document.getElementById('gfInput');
-const upBtn = document.getElementById('upBtn');
-const v = document.getElementById('v');
-const o = document.getElementById('o');
-const vp = document.getElementById('vp');
-const speed = document.getElementById('speed');
-const sv = document.getElementById('sv');
-const zoom = document.getElementById('zoom');
-const zv = document.getElementById('zv');
-const go = document.getElementById('go');
-const msg = document.getElementById('msg');
-const dlBox = document.getElementById('dlBox');
-const dl = document.getElementById('dl');
-const resetBox = document.getElementById('resetBox');
+const gfInput = document.getElementById('gfInput'), upBtn = document.getElementById('upBtn'), v = document.getElementById('v'), o = document.getElementById('o'), vp = document.getElementById('vp'), speed = document.getElementById('speed'), sv = document.getElementById('sv'), zoom = document.getElementById('zoom'), zv = document.getElementById('zv'), go = document.getElementById('go'), msg = document.getElementById('msg'), dlBox = document.getElementById('dlBox'), dl = document.getElementById('dl'), resetBox = document.getElementById('resetBox');
 
 let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH;
 
@@ -709,7 +696,9 @@ gfInput.onchange = (e) => {
 
 function setCoverSize() {
     const boxSize = 320; const aspect = vidW / vidH;
-    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; }
+    const minScale = (aspect > 1) ? 1 : (1 / aspect);
+    zoom.min = 100 * minScale; 
+    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } 
     else { renderW = boxSize; renderH = boxSize / aspect; }
     v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
     updateGifTransform();
@@ -718,15 +707,22 @@ function setCoverSize() {
 function updateGifTransform() {
     if (!v.src) return;
     const z = parseInt(zoom.value) / 100;
+    const boxSize = 320;
+    
+    // Boundary Math to prevent black edges (360° Lock)
+    const maxX = Math.max(0, (renderW * z - boxSize) / 2);
+    const maxY = Math.max(0, (renderH * z - boxSize) / 2);
+    
+    gifX = Math.max(-maxX, Math.min(maxX, gifX));
+    gifY = Math.max(-maxY, Math.min(maxY, gifY));
+    
     v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
 }
 
 zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
 speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
 
-// Integrated Drag Logic for GIF Preview
 let isGifDrag = false, gStartX, gStartY, gInitX, gInitY;
-
 vp.onmousedown = e => { if (!v.src) return; isGifDrag = true; gStartX = e.clientX; gStartY = e.clientY; gInitX = gifX; gInitY = gifY; };
 window.addEventListener('mousemove', e => { if (!isGifDrag) return; gifX = gInitX + (e.clientX - gStartX); gifY = gInitY + (e.clientY - gStartY); updateGifTransform(); });
 
@@ -738,7 +734,6 @@ vp.addEventListener('touchmove', e => {
     gifX = gInitX + (e.touches[0].clientX - gStartX); gifY = gInitY + (e.touches[0].clientY - gStartY); updateGifTransform();
 }, { passive: false });
 
-// Render Masterpiece GIF
 go.onclick = () => {
     if (!v.src) return;
     go.disabled = true; upBtn.disabled = true; msg.innerText = "Processing..."; msg.classList.add('active');
@@ -748,7 +743,8 @@ go.onclick = () => {
     const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
     capVid.src = v.src; capVid.muted = true; capVid.playsInline = true;
     capVid.onloadeddata = () => {
-        let cTime = 0; const outputScale = OUT_SIZE / 320, scale = parseInt(zoom.value) / 100, aspect = capVid.videoWidth / capVid.videoHeight;
+        let cTime = 0; const outputScale = OUT_SIZE / 320, scale = parseInt(zoom.value) / 100;
+        const aspect = capVid.videoWidth / capVid.videoHeight;
         let dW, dH; if (aspect > 1) { dH = 320; dW = 320 * aspect; } else { dW = 320; dH = 320 / aspect; }
         dW *= scale * outputScale; dH *= scale * outputScale;
         let dx = (OUT_SIZE - dW) / 2 + (gifX * outputScale), dy = (OUT_SIZE - dH) / 2 + (gifY * outputScale);
@@ -756,11 +752,8 @@ go.onclick = () => {
         capVid.onseeked = () => {
             ctx.clearRect(0, 0, OUT_SIZE, OUT_SIZE);
             ctx.save();
-            ctx.beginPath();
-            ctx.arc(OUT_SIZE / 2, OUT_SIZE / 2, OUT_SIZE / 2, 0, Math.PI * 2);
-            ctx.clip();
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
+            ctx.beginPath(); ctx.arc(OUT_SIZE / 2, OUT_SIZE / 2, OUT_SIZE / 2, 0, Math.PI * 2); ctx.clip();
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
             ctx.drawImage(capVid, dx, dy, dW, dH);
             ctx.restore();
             gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed });
