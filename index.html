@@ -593,125 +593,180 @@ function renderCat(cat) {
 }
 
 function setPlainFrame(color, type=null) { f = new Image(); document.getElementById('u2').value = ''; cfg.pColor = color; cfg.pType = type; d(); playClick(); }
-// --- 🖼️ FRAME ENGINE & DRAWING ---
-let isBoundaryLocked = true;
-function toggleBoundaryLock() {
-    isBoundaryLocked = !isBoundaryLocked;
-    const btn = document.getElementById('lock-btn');
-    if (isBoundaryLocked) { 
-        btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; 
-        if(i.src) {
-            const rad = cfg.r * Math.PI / 180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-            const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-            const minS = Math.max(reqW/i.width, reqH/i.height);
-            zSl.min = minS; if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
+// --- 🕹️ FRAME STUDIO DRAG LOGIC ---
+let isP = false, tStart = { x: 0, y: 0 };
+let initialDist = 0, initialScale = 1, initialAngle = 0, initialRot = 0;
+
+c.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+c.addEventListener('drop', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (v) => {
+                let n = new Image();
+                n.onload = () => {
+                    i = n;
+                    let minScale = Math.max(800 / i.width, 800 / i.height);
+                    cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
+                    if (isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
+                    zSl.max = minScale * 2.5; zSl.value = minScale;
+                    d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
+                }; n.src = v.target.result;
+            }; reader.readAsDataURL(file);
         }
-    } else { btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; zSl.min = 0.1; }
-    d(); playClick();
+    }
+});
+
+c.onmousedown = e => { isP = true; tStart = { x: e.offsetX, y: e.offsetY }; }
+c.onmousemove = e => {
+    if (!isP) return;
+    let scale = 800 / c.offsetWidth;
+    cfg.x += (e.offsetX - tStart.x) * scale;
+    cfg.y += (e.offsetY - tStart.y) * scale;
+    tStart = { x: e.offsetX, y: e.offsetY };
+    d();
+}
+window.onmouseup = () => { isP = false; isGifDrag = false; }
+
+c.ontouchstart = e => {
+    if (i.src) { e.preventDefault(); }
+    if (e.touches.length === 1) { isP = true; tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }
+    else if (e.touches.length === 2) {
+        isP = false;
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDist = Math.sqrt(dx * dx + dy * dy);
+        initialScale = cfg.s;
+        initialAngle = Math.atan2(dy, dx);
+        initialRot = cfg.r;
+    }
+}
+c.ontouchmove = e => {
+    if (i.src) { e.preventDefault(); }
+    if (e.touches.length === 1 && isP) {
+        let scale = 800 / c.offsetWidth;
+        let dx = e.touches[0].clientX - tStart.x;
+        let dy = e.touches[0].clientY - tStart.y;
+        cfg.x += dx * scale;
+        cfg.y += dy * scale;
+        tStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        d();
+    } else if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const scaleFactor = dist / initialDist;
+        let newScale = initialScale * scaleFactor;
+        newScale = Math.max(zSl.min, Math.min(zSl.max, newScale));
+        cfg.s = newScale; zSl.value = newScale; zVal.innerText = Math.round((newScale / zSl.min) * 100) + "%"; updS(zSl);
+        const angle = Math.atan2(dy, dx);
+        let rotationDiff = (angle - initialAngle) * (180 / Math.PI);
+        cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; rVal.innerText = Math.round(cfg.r) + "°"; updS(rSl);
+        d();
+    }
+}
+window.ontouchend = () => { isP = false; }
+
+// --- ⚡ NEON GIF ENGINE (The Masterpiece Version) ---
+const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
+const workerUrl = URL.createObjectURL(workerBlob);
+
+const gfInput = document.getElementById('gfInput');
+const upBtn = document.getElementById('upBtn');
+const v = document.getElementById('v');
+const o = document.getElementById('o');
+const vp = document.getElementById('vp');
+const speed = document.getElementById('speed');
+const sv = document.getElementById('sv');
+const zoom = document.getElementById('zoom');
+const zv = document.getElementById('zv');
+const go = document.getElementById('go');
+const msg = document.getElementById('msg');
+const dlBox = document.getElementById('dlBox');
+const dl = document.getElementById('dl');
+const resetBox = document.getElementById('resetBox');
+
+let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH;
+
+function resetGifProject() {
+    v.src = ''; v.style.display = 'none'; v.style.transform = `translate(-50%, -50%) scale(1)`;
+    o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
+    document.getElementById('goBox').style.display = 'inline-block';
+    go.disabled = false; upBtn.disabled = false; zoom.disabled = false; zoom.value = 100; speed.disabled = false;
+    msg.classList.remove('active'); zv.innerText = "100%"; if (vp) vp.style.pointerEvents = 'auto';
+    gfInput.value = ''; gifX = 0; gifY = 0; if (upBtn) upBtn.parentElement.style.display = 'block';
 }
 
-function d(){ 
-  x.clearRect(0,0,800,800); 
-  if(i.src){
-      if (isBoundaryLocked) {
-          const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-          const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-          const minS = Math.max(reqW/i.width, reqH/i.height);
-          if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
-          const rangeX = (i.width*cfg.s - reqW)/2, rangeY = (i.height*cfg.s - reqH)/2;
-          cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
-      } 
-  }
-  x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
-  if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
-  x.restore(); 
-  if (cfg.pColor) {
-      x.save(); x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25;
-      if (cfg.pType === 'neon') { x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke(); x.beginPath(); x.arc(400,400,cfg.m,0,Math.PI*2); x.lineWidth=8; x.strokeStyle='#FFF'; x.stroke(); }
-      else if (cfg.pType && gradientDefs[cfg.pType]) { const c = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0,0,800,800); g.addColorStop(0,c[0]); g.addColorStop(1,c[1]); x.strokeStyle = g; }
-      else { x.strokeStyle = cfg.pColor; } x.stroke(); x.restore();
-  }
-  if(f.src) x.drawImage(f,0,0,800,800); 
+gfInput.onchange = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
+    v.src = URL.createObjectURL(file); v.playbackRate = parseFloat(speed.value); v.muted = true;
+    go.disabled = false;
+    v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); };
+};
+
+function setCoverSize() {
+    const boxSize = 320; const aspect = vidW / vidH;
+    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; }
+    else { renderW = boxSize; renderH = boxSize / aspect; }
+    v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
+    updateGifTransform();
 }
 
-function handleFile(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{ i=n; let minS = Math.max(800/i.width,800/i.height); cfg.s = minS; cfg.x=400; cfg.y=400; cfg.r=0; if (isBoundaryLocked) zSl.min = minS; else zSl.min = 0.1; zSl.max = minS * 2.5; zSl.value = cfg.s; d(); playClick(); updS(zSl); document.getElementById('save').disabled = false; }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; cfg.pColor=null; cfg.pType=null; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
-function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
-function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
-function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
-function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-function resetProject(){ i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null}; zSl.value=1; rSl.value=0; mSl.value=375; document.getElementById('u1').value = ''; document.getElementById('u2').value = ''; d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true; }
-function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
-function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
+function updateGifTransform() {
+    if (!v.src) return;
+    const z = parseInt(zoom.value) / 100;
+    v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
+}
 
-// --- 🕹️ INTERACTION (TOUCH & DRAG) ---
-let isP=false, tStart={x:0,y:0}, initialDist=0, initialScale=1, initialAngle=0, initialRot=0;
+zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
+speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
+
+// Integrated Drag Logic for GIF Preview
 let isGifDrag = false, gStartX, gStartY, gInitX, gInitY;
 
-c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
-c.onmousemove=e=>{ if(!isP)return; let scale = 800 / c.offsetWidth; cfg.x += (e.offsetX - tStart.x) * scale; cfg.y += (e.offsetY - tStart.y) * scale; tStart={x:e.offsetX,y:e.offsetY}; d(); }
+vp.onmousedown = e => { if (!v.src) return; isGifDrag = true; gStartX = e.clientX; gStartY = e.clientY; gInitX = gifX; gInitY = gifY; };
+window.addEventListener('mousemove', e => { if (!isGifDrag) return; gifX = gInitX + (e.clientX - gStartX); gifY = gInitY + (e.clientY - gStartY); updateGifTransform(); });
 
 vp.addEventListener('touchstart', e => {
-    if (!v.src || v.style.display === 'none') return;
-    if (e.touches.length === 1) { isGifDrag = true; gStartX = e.touches[0].clientX; gStartY = e.touches[0].clientY; gInitX = gifX; gInitY = gifY; }
+    if (!v.src) return; isGifDrag = true; gStartX = e.touches[0].clientX; gStartY = e.touches[0].clientY; gInitX = gifX; gInitY = gifY;
 }, { passive: false });
 vp.addEventListener('touchmove', e => {
     if (!isGifDrag) return; e.preventDefault();
-    const dx = (e.touches[0].clientX - gStartX); const dy = (e.touches[0].clientY - gStartY);
-    gifX = gInitX + dx; gifY = gInitY + dy; updateGifTransform();
+    gifX = gInitX + (e.touches[0].clientX - gStartX); gifY = gInitY + (e.touches[0].clientY - gStartY); updateGifTransform();
 }, { passive: false });
 
-vp.onmousedown = e => { if(!v.src) return; isGifDrag = true; gStartX = e.clientX; gStartY = e.clientY; gInitX = gifX; gInitY = gifY; };
-window.addEventListener('mousemove', e => { if(!isGifDrag) return; gifX = gInitX + (e.clientX - gStartX); gifY = gInitY + (e.clientY - gStartY); updateGifTransform(); });
-window.addEventListener('mouseup', () => isGifDrag = false);
-window.addEventListener('touchend', () => isGifDrag = false);
-
-// --- ⚡ MASTERPIECE GIF ENGINE ---
-const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
-const workerUrl = URL.createObjectURL(workerBlob);
-const gfInput = document.getElementById('gfInput'), upBtn = document.getElementById('upBtn'), v = document.getElementById('v'), o = document.getElementById('o'), vp = document.getElementById('vp'), speed = document.getElementById('speed'), sv = document.getElementById('sv'), zoom = document.getElementById('zoom'), zv = document.getElementById('zv'), go = document.getElementById('go'), msg = document.getElementById('msg'), dlBox = document.getElementById('dlBox'), dl = document.getElementById('dl'), resetBox = document.getElementById('resetBox');
-let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH;
-
-function resetGifProject() { v.src = ''; v.style.display='none'; o.style.display='none'; dlBox.style.display='none'; resetBox.style.display='none'; document.getElementById('goBox').style.display='inline-block'; go.disabled=false; upBtn.disabled=false; zoom.disabled=false; zoom.value=100; speed.disabled=false; msg.classList.remove('active'); zv.innerText="100%"; gifX=0; gifY=0; if(upBtn) upBtn.parentElement.style.display='block'; }
-
-gfInput.onchange = (e) => { 
-    const file = e.target.files[0]; if (!file) return;
-    v.style.display='block'; o.style.display='none'; v.muted = true;
-    const url = URL.createObjectURL(file); v.src = url;
-    v.onloadedmetadata = () => { 
-        vidW=v.videoWidth; vidH=v.videoHeight; setCoverSize(); 
-        v.play().catch(err => console.log("Auto-play blocked, waiting for touch")); 
-    };
-    go.disabled=false;
-};
-
-function setCoverSize() { const box=320; const aspect=vidW/vidH; if(aspect>1){ renderH=box; renderW=box*aspect; } else { renderW=box; renderH=box/aspect; } v.style.width=renderW+'px'; v.style.height=renderH+'px'; updateGifTransform(); }
-function updateGifTransform() { if(!v.src) return; const z=parseInt(zoom.value)/100; v.style.transform=`translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`; }
-zoom.oninput = function(){ zv.innerText=this.value+'%'; updateGifTransform(); };
-speed.oninput = () => { sv.innerText=speed.value+'x'; if(v.src) v.playbackRate=parseFloat(speed.value); };
-
+// Render Masterpiece GIF
 go.onclick = () => {
     if (!v.src) return;
-    go.disabled=true; upBtn.disabled=true; zoom.disabled=true; speed.disabled=true;
-    vp.style.pointerEvents='none'; msg.innerText="Processing..."; msg.classList.add('active');
+    go.disabled = true; upBtn.disabled = true; msg.innerText = "Processing..."; msg.classList.add('active');
     const OUT_SIZE = 480;
     const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
-    const canvas = document.createElement('canvas'); canvas.width=OUT_SIZE; canvas.height=OUT_SIZE; const ctx = canvas.getContext('2d');
-    const fps=15, duration=v.duration, playbackSpeed=parseFloat(speed.value), capVid=document.createElement('video');
-    capVid.src=v.src; capVid.muted=true; capVid.playsInline=true;
+    const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
+    const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
+    capVid.src = v.src; capVid.muted = true; capVid.playsInline = true;
     capVid.onloadeddata = () => {
-        let cTime=0; const outputScale=OUT_SIZE/320, scale=parseInt(zoom.value)/100, aspect=capVid.videoWidth/capVid.videoHeight;
-        let dW, dH; if(aspect>1){ dH=320; dW=320*aspect; } else { dW=320; dH=320/aspect; }
-        dW*=scale*outputScale; dH*=scale*outputScale;
-        let dx=(OUT_SIZE-dW)/2+(gifX*outputScale), dy=(OUT_SIZE-dH)/2+(gifY*outputScale);
-        const captureFrame = () => { if(cTime>=duration){ msg.innerText="Encoding..."; gif.render(); return; } capVid.currentTime=cTime; };
-        capVid.onseeked = () => { ctx.fillStyle='#000'; ctx.fillRect(0,0,OUT_SIZE,OUT_SIZE); ctx.drawImage(capVid,dx,dy,dW,dH); gif.addFrame(ctx,{copy:true, delay:(1000/fps)/playbackSpeed}); cTime+=(1/fps); setTimeout(captureFrame,10); };
+        let cTime = 0; const outputScale = OUT_SIZE / 320, scale = parseInt(zoom.value) / 100, aspect = capVid.videoWidth / capVid.videoHeight;
+        let dW, dH; if (aspect > 1) { dH = 320; dW = 320 * aspect; } else { dW = 320; dH = 320 / aspect; }
+        dW *= scale * outputScale; dH *= scale * outputScale;
+        let dx = (OUT_SIZE - dW) / 2 + (gifX * outputScale), dy = (OUT_SIZE - dH) / 2 + (gifY * outputScale);
+        const captureFrame = () => { if (cTime >= duration) { msg.innerText = "Encoding..."; gif.render(); return; } capVid.currentTime = cTime; };
+        capVid.onseeked = () => {
+            ctx.fillStyle = '#000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
+            ctx.drawImage(capVid, dx, dy, dW, dH);
+            gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed });
+            cTime += (1 / fps); setTimeout(captureFrame, 10);
+        };
         captureFrame();
     };
-    gif.on('finished', blob => { const url=URL.createObjectURL(blob); v.style.display='none'; o.src=url; o.style.display='block'; dl.href=url; dl.download=`Arcade_GIF_${Date.now()}.gif`; dlBox.style.display='block'; resetBox.style.display='block'; msg.classList.remove('active'); document.getElementById('goBox').style.display='none'; if(upBtn) upBtn.parentElement.style.display='none'; vp.style.pointerEvents='auto'; playShutter(); });
+    gif.on('finished', blob => {
+        const url = URL.createObjectURL(blob); v.style.display = 'none'; o.src = url; o.style.display = 'block';
+        dl.href = url; dl.download = `Arcade_GIF_${Date.now()}.gif`;
+        dlBox.style.display = 'block'; resetBox.style.display = 'block'; msg.classList.remove('active');
+        document.getElementById('goBox').style.display = 'none'; if (upBtn) upBtn.parentElement.style.display = 'none';
+        vp.style.pointerEvents = 'auto'; playShutter();
+    });
 };
-</script>
-</body>
-</html>
 
