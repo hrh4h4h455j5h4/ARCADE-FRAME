@@ -282,7 +282,7 @@
         <div id="palette-wrapper">
             <div class="cat-scroll">
                 <button class="cat-btn" onclick="renderCat('Neon')">NEON</button>
-                <button class="cat-btn" onclick="renderCat('Gradients')" style="background: linear-gradient(135deg, #FF00CC, #3333FF); border:none; color:white; text-shadow: 0 1px 2px black;">GRADIENTS</button>
+                <button class="cat-btn" onclick="renderCat('Gradients')">GRADIENTS</button>
                 <button class="cat-btn" onclick="renderCat('Basic')">BASIC</button>
                 <button class="cat-btn" onclick="renderCat('Metallics')">METALLICS</button>
                 <button class="cat-btn" onclick="renderCat('Grays')">GRAYS</button>
@@ -490,8 +490,8 @@ function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStart
 function onYouTubeIframeAPIReady(){ const rId = playlist[Math.floor(Math.random() * playlist.length)]; const sel = document.querySelector('.station-select'); if(sel) sel.value = rId; player=new YT.Player('yt-player',{height:'0',width:'0',videoId:rId,playerVars:{'autoplay':1,'loop':1,'playlist':rId,'mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
 function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
 function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
-function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
-function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.08, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
 // --- 🌈 GRADIENT DEFINITIONS (The Master List) ---
 const gradientDefs = {
     'grad-ruby': ['#FF512F', '#DD2476'],
