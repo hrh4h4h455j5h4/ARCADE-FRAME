@@ -31,21 +31,25 @@
   .plato-msg { color: #ff0000; font-family: "Arial Black", sans-serif; font-size: 22px; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,0,0,0.6); }
   .plato-desc { color: #eee; font-size: 13px; max-width: 320px; margin-bottom: 30px; line-height: 1.6; font-weight: bold; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; }
   
-  /* FIXED BUTTON STYLE: Darker and easier on the eyes */
+    /* FIXED BUTTON STYLE: Blue/Teal (Initial State) */
   .plato-btn { 
-      background: #004d4d; /* Deep Teal instead of bright cyan */
+      background: #004d4d; /* Deep Teal */
       color: #ffffff; 
       padding: 15px 25px; 
       border-radius: 8px; 
       font-weight: 900; 
-      border: 2px solid #00ffff; /* Neon border remains */
+      border: 2px solid #00ffff; /* Neon Cyan Border */
       font-size: 12px; 
       cursor: pointer; 
       text-transform: uppercase; 
-      box-shadow: 0 0 15px rgba(0,255,255,0.15); /* Softer glow */
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.15); /* Blue Glow */
       text-decoration: none; 
       display: inline-block; 
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
+  }
+  .plato-btn:hover { background: #006666; }
+  .plato-btn:active { transform: scale(0.95); }
+
   }
   .plato-btn:active { background: #006666; transform: scale(0.95); }
 
@@ -446,10 +450,17 @@ function copyCurrentUrl(e) {
     e.preventDefault();
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
-        e.target.innerText = "COPIED! OPEN CHROME/SAFARI";
-        e.target.style.background = "#00ff00"; e.target.style.color = "#000";
+        const btn = e.target;
+        btn.innerText = "COPIED! OPEN CHROME/SAFARI";
+        
+        // --- CHANGE BUTTON TO DARK RED ON CLICK ---
+        btn.style.background = "#4a0000";       // Dark Crimson Background
+        btn.style.borderColor = "#ff0000";      // Bright Red Border
+        btn.style.color = "#ffffff";            // White Text
+        btn.style.boxShadow = "0 0 15px rgba(255,0,0,0.5)"; // Red Glow
     });
 }
+
 detectPlato(); 
 
 // --- SIDEBAR MENU LOGIC ---
