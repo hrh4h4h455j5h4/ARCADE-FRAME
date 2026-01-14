@@ -74,7 +74,6 @@
     text-shadow: 0 0 5px rgba(255,255,255,0.2);
   }
   .menu-toggle:active { transform: scale(0.90); background: rgba(255, 255, 255, 0.1); border-color: #fff; }
-
   /* --- SIDEBAR MENU --- */
   #menu-panel { 
     position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
@@ -432,24 +431,15 @@ const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 // --- ⚠️ BROWSER DETECTION LOGIC (FIXED) ---
 function detectPlato() {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
-    
-    // 1. Check for specific "Plato" signature
     const isPlato = ua.indexOf("Plato") > -1;
-    
-    // 2. Check for "wv" (WebView) common in Android
     const isWV = ua.indexOf("wv") > -1;
-    
-    // 3. Check for generic Android WebView (Version/X.X + Chrome)
     const isAndroidWebView = (ua.indexOf("Android") > -1 && ua.indexOf("Version/") > -1 && ua.indexOf("Chrome") > -1);
-    
-    // 4. Check for iPhone/iPad WebViews (Not Safari)
     const isIOS = /iPhone|iPad|iPod/.test(ua);
-    const isIOSWebView = isIOS && !window.MSStream && !/Safari/.test(ua); // If it's iOS but NOT Safari, it's a webview (like Plato)
+    const isIOSWebView = isIOS && !window.MSStream && !/Safari/.test(ua);
 
-    // THE FIX: If ANY of these are true, show the overlay
     if (isPlato || isWV || isAndroidWebView || isIOSWebView) { 
         document.getElementById('plato-overlay').style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Stop scrolling
+        document.body.style.overflow = 'hidden'; 
     }
 }
 function copyCurrentUrl(e) {
@@ -460,7 +450,7 @@ function copyCurrentUrl(e) {
         e.target.style.background = "#00ff00"; e.target.style.color = "#000";
     });
 }
-detectPlato(); // Run immediately
+detectPlato(); 
 
 // --- SIDEBAR MENU LOGIC ---
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
@@ -488,7 +478,7 @@ function toggleFrameUI() {
     else { grp.style.display = 'none'; btn.innerHTML = "👁️ SHOW MENU BUTTONS"; btn.style.color = "#555"; btn.style.borderColor = "#555"; }
     playClick();
 }
-// --- ✍️ FONTS LOGIC (CLEAN VERSION) ---
+// --- ✍️ FONTS LOGIC ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}, // Default
@@ -550,7 +540,13 @@ const symData = {
 function renderSymbols(){ const b=document.getElementById('sym-container'); b.innerHTML=""; for(const[c,s]of Object.entries(symData)){ let t=document.createElement('div'); t.className="cat-title"; t.innerText=c; b.appendChild(t); let g=document.createElement('div'); g.className="sym-grid"; s.forEach(sym=>{ let btn=document.createElement('div'); btn.className="sym-btn"; btn.innerText=sym; btn.onclick=()=>{ const tb=document.getElementById('sym-box'), st=tb.selectionStart, en=tb.selectionEnd; tb.value=tb.value.substring(0,st)+sym+tb.value.substring(en); tb.selectionStart=tb.selectionEnd=st+sym.length; playClick(); }; g.appendChild(btn); }); b.appendChild(g); } }
 renderSymbols();
 // --- 🎵 AUDIO ---
-const playlist = ["jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ"];
+const playlist = [
+  "jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", 
+  "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ", "MedT9ECothA", 
+  "eAdtqDV06Ho", "2kzQ272Le8Q", "0qCL3Sz1--M", "2UN1ZVbBelU", 
+  "iDVKMdnvgl8", "9JMjZbIpmS8", "TNGsftqag6M", "GedLli_YXEI"
+];
+
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
 function onYouTubeIframeAPIReady(){ const rId = playlist[Math.floor(Math.random() * playlist.length)]; const sel = document.querySelector('.station-select'); if(sel) sel.value = rId; player=new YT.Player('yt-player',{height:'0',width:'0',videoId:rId,playerVars:{'autoplay':1,'loop':1,'playlist':rId,'mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
 function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
@@ -1085,3 +1081,4 @@ go.onclick = () => {
 </script>
 </body>
 </html>
+
