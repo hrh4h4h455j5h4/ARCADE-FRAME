@@ -30,7 +30,25 @@
   .plato-icon { font-size: 50px; margin-bottom: 20px; animation: bounce 1s infinite; }
   .plato-msg { color: #ff0000; font-family: "Arial Black", sans-serif; font-size: 22px; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,0,0,0.6); }
   .plato-desc { color: #eee; font-size: 13px; max-width: 320px; margin-bottom: 30px; line-height: 1.6; font-weight: bold; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; }
-  .plato-btn { background: #00ffff; color: #000; padding: 15px 25px; border-radius: 8px; font-weight: 900; border: 2px solid #fff; font-size: 12px; cursor: pointer; text-transform: uppercase; box-shadow: 0 0 20px rgba(0,255,255,0.4); text-decoration: none; display: inline-block; }
+  
+  /* FIXED BUTTON STYLE: Darker and easier on the eyes */
+  .plato-btn { 
+      background: #004d4d; /* Deep Teal instead of bright cyan */
+      color: #ffffff; 
+      padding: 15px 25px; 
+      border-radius: 8px; 
+      font-weight: 900; 
+      border: 2px solid #00ffff; /* Neon border remains */
+      font-size: 12px; 
+      cursor: pointer; 
+      text-transform: uppercase; 
+      box-shadow: 0 0 15px rgba(0,255,255,0.15); /* Softer glow */
+      text-decoration: none; 
+      display: inline-block; 
+      transition: background 0.2s;
+  }
+  .plato-btn:active { background: #006666; transform: scale(0.95); }
+
   @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
   /* --- CUSTOM SCROLLBAR --- */
@@ -1058,4 +1076,3 @@ go.onclick = () => {
 </script>
 </body>
 </html>
-
