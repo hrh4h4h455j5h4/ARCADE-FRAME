@@ -478,7 +478,7 @@ function toggleFrameUI() {
     else { grp.style.display = 'none'; btn.innerHTML = "👁️ SHOW MENU BUTTONS"; btn.style.color = "#555"; btn.style.borderColor = "#555"; }
     playClick();
 }
-// --- ✍️ FONTS LOGIC ---
+  // --- ✍️ FONTS LOGIC ---
 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const alphas = [
   {m:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"}, // Default
@@ -499,7 +499,7 @@ const alphas = [
   {m:"ᗩᗷᑕᗪEᖴGᕼIᒍKᒪᗰᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭YᘔᗩᗷᑕᗪEᖴGᕼIᒍKᒪᗰᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭Yᘔ0123456789"}, // Comic/Happy
   {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"}, // Full Width
   {m:"ᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖᵠʳˢᵗᵘᵛʷˣʸᶻᵃᵇᶜᵈᵉᶠᵍʰⁱʲᵏˡᵐⁿᵒᵖᵠʳˢᵗᵘᵛʷˣʸᶻ⁰¹²³⁴⁵⁶⁷⁸⁹"}  // Superscript (Lowercase)
-];
+  ];
 function genFonts(){
   const val=document.getElementById('font-input').value, resBox=document.getElementById('font-results'); resBox.innerHTML=""; if(!val)return;
   let count=0; alphas.forEach(alph=>{ let txt=""; const mapArr=Array.from(alph.m); for(let char of val){ let idx=chars.indexOf(char); txt+=(idx!==-1&&mapArr[idx])?mapArr[idx]:char; }
