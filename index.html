@@ -77,6 +77,10 @@
       background: -webkit-linear-gradient(#00ffff, #ff00ff);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       text-shadow: 0 0 10px rgba(255,0,255,0.5);
+      /* FIX: Forces the "Root" to be Purple ONLY when Retro theme is active */
+  html:has(body.theme-retro) {
+    background-color: #1a0022 !important;
+    
   }
 
   /* --- ⚠️ BROWSER DETECTION OVERLAY (NEW) --- */
