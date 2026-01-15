@@ -7,8 +7,14 @@
 <meta name="description" content="Arcade Studio is the ultimate creative tool. Create custom frames, generate fonts, make HD GIFs, and design symbols—all in one place.">
 
 <style>
-  /* --- GLOBAL SETTINGS & THEMES --- */
-  html { scroll-behavior: smooth; overflow-y: auto; }
+    /* --- GLOBAL SETTINGS & THEMES --- */
+  html { 
+      scroll-behavior: smooth; 
+      overflow-y: auto; 
+      background-color: #0a0a0c; /* <--- THIS IS THE FIX (Prevents white bar) */
+      height: 100%;
+  }
+
   
   /* DEFAULT (ORIGINAL) THEME */
   body {
