@@ -7,8 +7,10 @@
 <meta name="description" content="Arcade Studio is the ultimate creative tool. Create custom frames, generate fonts, make HD GIFs, and design symbols—all in one place.">
 
 <style>
-  /* --- GLOBAL SETTINGS --- */
+  /* --- GLOBAL SETTINGS & THEMES --- */
   html { scroll-behavior: smooth; overflow-y: auto; }
+  
+  /* DEFAULT (ORIGINAL) THEME */
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
     display: flex; flex-direction: column; align-items: center;
@@ -16,6 +18,53 @@
     -webkit-overflow-scrolling: touch; 
     background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
     background-size: 100% 4px; touch-action: pan-y; 
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  /* --- 🎨 NEW THEME: PRO TECH (Modern/Dark) --- */
+  body.theme-pro {
+      background-color: #000000;
+      background-image: 
+          radial-gradient(circle at 50% 30%, rgba(20, 40, 60, 0.4) 0%, transparent 60%),
+          linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px), 
+          linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 50px 50px, 50px 50px;
+  }
+  body.theme-pro .btn { border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 8px rgba(0, 243, 255, 0.15); background: rgba(0,0,0,0.6); }
+  body.theme-pro .menu-toggle { border-color: #00f3ff; color: #fff; background: rgba(0, 50, 60, 0.8); }
+  body.theme-pro h1 { text-shadow: 0 0 15px rgba(0, 243, 255, 0.6); color: #fff; }
+
+  /* --- 🕹️ NEW THEME: CLASSIC ARCADE (Retro/Green) --- */
+  body.theme-arcade {
+      background-color: #111;
+      background-image: radial-gradient(#1a1a1a 15%, transparent 16%), radial-gradient(#1a1a1a 15%, transparent 16%);
+      background-size: 10px 10px;
+      background-position: 0 0, 5px 5px;
+  }
+  body.theme-arcade .btn { border: 2px solid #00ff00; color: #00ff00; font-family: "Courier New", monospace; letter-spacing: 1px; }
+  body.theme-arcade h1 { color: #00ff00; text-shadow: 4px 4px 0px #005500; }
+  body.theme-arcade .menu-toggle { border: 2px solid #00ff00; color: #00ff00; }
+  body.theme-arcade .studio-sec { border-left: 1px solid #003300; border-right: 1px solid #003300; padding: 10px; }
+
+  /* --- 🌅 NEW THEME: RETRO WAVE (80s/Purple) --- */
+  body.theme-retro {
+      background: linear-gradient(to bottom, #2b003b 0%, #1a0022 100%);
+      background-attachment: fixed;
+  }
+  /* Retro Grid Floor Effect */
+  body.theme-retro::before {
+      content: ""; position: fixed; bottom: 0; left: 0; width: 100%; height: 40vh;
+      background: linear-gradient(to top, rgba(255, 0, 255, 0.2) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255, 0, 255, 0.2) 1px, transparent 1px);
+      background-size: 100% 20px, 40px 100%;
+      transform: perspective(300px) rotateX(40deg);
+      pointer-events: none; z-index: -1; opacity: 0.5;
+  }
+  body.theme-retro .btn { border-color: #ff00ff; color: #00ffff; background: rgba(20,0,20,0.6); }
+  body.theme-retro h1 { 
+      background: -webkit-linear-gradient(#00ffff, #ff00ff);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 10px rgba(255,0,255,0.5);
   }
 
   /* --- ⚠️ BROWSER DETECTION OVERLAY (NEW) --- */
@@ -31,7 +80,7 @@
   .plato-msg { color: #ff0000; font-family: "Arial Black", sans-serif; font-size: 22px; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,0,0,0.6); }
   .plato-desc { color: #eee; font-size: 13px; max-width: 320px; margin-bottom: 30px; line-height: 1.6; font-weight: bold; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; }
   
-    /* FIXED BUTTON STYLE: Blue/Teal (Initial State) */
+  /* FIXED BUTTON STYLE: Blue/Teal (Initial State) */
   .plato-btn { 
       background: #004d4d; /* Deep Teal */
       color: #ffffff; 
@@ -48,9 +97,6 @@
       transition: background 0.2s, transform 0.1s;
   }
   .plato-btn:hover { background: #006666; }
-  .plato-btn:active { transform: scale(0.95); }
-
-  }
   .plato-btn:active { background: #006666; transform: scale(0.95); }
 
   @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -78,6 +124,7 @@
     text-shadow: 0 0 5px rgba(255,255,255,0.2);
   }
   .menu-toggle:active { transform: scale(0.90); background: rgba(255, 255, 255, 0.1); border-color: #fff; }
+  
   /* --- SIDEBAR MENU --- */
   #menu-panel { 
     position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
@@ -89,34 +136,41 @@
     box-sizing: border-box; padding-bottom: 80px; 
   }
   #menu-panel.open { left: 0; }
+  
   .switch-container { position: relative; width: 100%; }
-  #switch-btn { 
+  
+  /* Shared style for Switch To and Theme buttons */
+  #switch-btn, #theme-btn { 
     background: rgba(255,255,255,0.05); color: white; border: 2px solid #ff0000; 
     padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer; 
     font-size: 11px; text-transform: uppercase; width: 100%; text-align: center;
     box-shadow: 0 0 10px rgba(255,0,0,0.5); 
     transition: transform 0.1s ease;
   }
-  #switch-btn:active { transform: scale(0.95); background: rgba(255,0,0,0.2); }
+  #switch-btn:active, #theme-btn:active { transform: scale(0.95); background: rgba(255,0,0,0.2); }
 
-  #switch-menu { 
+  /* Submenus (Switch To & Theme) */
+  #switch-menu, #theme-menu { 
     position: absolute; top: 45px; right: 0; background: #1a1a1c; 
     border: 1px solid #ff0000; border-radius: 8px; width: 210px; 
     display: none; flex-direction: column; overflow: hidden; 
     box-shadow: 0 10px 20px rgba(0,0,0,0.8); z-index: 100001;
   }
-  #switch-menu button { 
+  #switch-menu button, #theme-menu button { 
     background: transparent; color: #aaa; border: none; padding: 14px; 
     text-align: left; font-weight: bold; font-size: 11px; cursor: pointer; 
     border-bottom: 1px solid rgba(255,255,255,0.05); text-transform: uppercase;
     transition: background 0.2s;
   }
-  #switch-menu button:active { background: rgba(255,255,255,0.1); }
-  #switch-menu button.active-link { color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; }
+  #switch-menu button:active, #theme-menu button:active { background: rgba(255,255,255,0.1); }
+  
+  /* Active Link Styles */
+  #switch-menu button.active-link, #theme-menu button.active-link { 
+      color: #00ffff; background: rgba(0,255,255,0.1); border-left: 3px solid #00ffff; 
+  }
 
   .designed-by { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 11px; font-weight: 900; color: #888; background: #1a1a1c; }
   .designed-by b { color: #ff0000; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
-
   .music-section { border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); border-radius: 6px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
   .lnk { 
     display: flex; align-items: center; gap: 10px; padding: 12px; 
@@ -127,6 +181,7 @@
   }
   .lnk:active { transform: scale(0.96); background: rgba(255,255,255,0.1); }
   .lnk svg { width: 18px; height: 18px; fill: white; }
+  
   /* HEADERS */
   h1 { color: #fff; margin: 60px 0 0 0; font-family: "Arial Black", sans-serif; font-style: italic; font-size: 36px; text-transform: uppercase; letter-spacing: -1px; text-shadow: 2px 2px 0px #ff0000, -1px -1px 10px rgba(255, 0, 0, 0.8); animation: arcadeBounce 1.8s infinite ease-in-out; }
   @keyframes arcadeBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
@@ -149,6 +204,7 @@
     #sym-container { max-height: 70vh; overflow-y: scroll; padding-right: 10px; width: 100%; }
     .sym-btn { flex: 1 0 50px; }
   }
+  
   /* --- 🖼️ FRAME STUDIO CSS --- */
   #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; box-sizing: border-box; background: transparent; z-index: 10; flex-shrink: 0; }
   canvas#c { position: absolute; top: 50%; left: 50%; width: 310px; height: 310px; transform: translate(-50%, -50%); z-index: 15; touch-action: pan-y; }
@@ -163,7 +219,7 @@
     text-align: center; border-radius: 8px; font-weight: 900; 
     display: block; font-size: 12px; cursor: pointer; 
     text-transform: uppercase; width: 100%; box-sizing: border-box; 
-    transition: transform 0.1s ease, border-color 0.2s;
+    transition: transform 0.1s ease, border-color 0.2s, background 0.2s, box-shadow 0.2s;
   }
   .btn:active { transform: scale(0.95); opacity: 0.8; }
   .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; transform: none; }
@@ -171,7 +227,6 @@
   
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
-
   /* --- 🛑 SLIDER FIX (NO JUMP + SCROLL SAFETY) --- */
   input[type=range] { 
       -webkit-appearance: none; 
@@ -266,7 +321,6 @@
 </style>
 </head>
 <body onclick="initAudio()">
-
 <div id="plato-overlay">
   <div class="plato-icon">⚠️</div>
   <div class="plato-msg">Uploads Restricted</div>
@@ -280,6 +334,16 @@
 <button class="menu-toggle" onclick="toggleMenu(event)">MENU ☰</button>
 
 <div id="menu-panel">
+  <div class="switch-container" style="margin-bottom: 10px;">
+    <button id="theme-btn" onclick="toggleThemeMenu(event)">🎨 CHANGE THEME</button>
+    <div id="theme-menu">
+      <button onclick="setTheme('original')" class="active-link" id="th-original">Original (Dark)</button>
+      <button onclick="setTheme('pro')" id="th-pro">Pro Tech (Blue)</button>
+      <button onclick="setTheme('arcade')" id="th-arcade">Classic Arcade (Green)</button>
+      <button onclick="setTheme('retro')" id="th-retro">Retro Wave (Purple)</button>
+    </div>
+  </div>
+
   <div class="switch-container">
     <button id="switch-btn" onclick="toggleSwitchMenu(event)">SWITCH TO 📂</button>
     <div id="switch-menu">
@@ -424,7 +488,8 @@
 const c=document.getElementById('c'), x=c.getContext('2d');
 const zSl=document.getElementById('z'), rSl=document.getElementById('r'), mSl=document.getElementById('m');
 const panel=document.getElementById('menu-panel'), mStat=document.getElementById('m-status');
-const sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub'), swMenu=document.getElementById('switch-menu');
+const sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub');
+const swMenu=document.getElementById('switch-menu'), thMenu=document.getElementById('theme-menu');
 const zVal=document.getElementById('z-val'), rVal=document.getElementById('r-val'), mVal=document.getElementById('m-val');
 
 let i=new Image(), f=new Image();
@@ -432,7 +497,7 @@ let cfg={s:1, m:375, x:400, y:400, r:0, lx:0, ly:0, pColor: null, pType: null};
 let player, musicOn=true, audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// --- ⚠️ BROWSER DETECTION LOGIC (FIXED) ---
+// --- ⚠️ BROWSER DETECTION LOGIC ---
 function detectPlato() {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
     const isPlato = ua.indexOf("Plato") > -1;
@@ -452,31 +517,64 @@ function copyCurrentUrl(e) {
     navigator.clipboard.writeText(url).then(() => {
         const btn = e.target;
         btn.innerText = "COPIED! OPEN CHROME/SAFARI";
-        
-        // --- CHANGE BUTTON TO DARK RED ON CLICK ---
-        btn.style.background = "#4a0000";       // Dark Crimson Background
-        btn.style.borderColor = "#ff0000";      // Bright Red Border
-        btn.style.color = "#ffffff";            // White Text
-        btn.style.boxShadow = "0 0 15px rgba(255,0,0,0.5)"; // Red Glow
+        btn.style.background = "#4a0000";       
+        btn.style.borderColor = "#ff0000";      
+        btn.style.color = "#ffffff";            
+        btn.style.boxShadow = "0 0 15px rgba(255,0,0,0.5)"; 
     });
 }
-
 detectPlato(); 
-
-// --- SIDEBAR MENU LOGIC ---
+// --- SIDEBAR MENU & THEME LOGIC ---
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
-function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; playClick(); }
+function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; thMenu.style.display = 'none'; playClick(); }
+function toggleThemeMenu(e) { e.stopPropagation(); thMenu.style.display = thMenu.style.display === 'flex' ? 'none' : 'flex'; swMenu.style.display = 'none'; playClick(); }
 
 window.onclick = e => {
   initAudio(); 
   if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); }
   if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; playClick(); }
+  if (thMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { thMenu.style.display = 'none'; playClick(); }
 };
+
+// --- 🎨 THEME ENGINE (NEW FEATURE) ---
+function setTheme(theme) {
+    // 1. Remove old theme classes
+    document.body.classList.remove('theme-pro', 'theme-arcade', 'theme-retro');
+    
+    // 2. Remove 'active' status from menu buttons
+    document.querySelectorAll('#theme-menu button').forEach(b => b.classList.remove('active-link'));
+    
+    // 3. Apply new theme
+    if (theme === 'pro') { 
+        document.body.classList.add('theme-pro'); 
+        document.getElementById('th-pro').classList.add('active-link'); 
+    }
+    else if (theme === 'arcade') { 
+        document.body.classList.add('theme-arcade'); 
+        document.getElementById('th-arcade').classList.add('active-link'); 
+    }
+    else if (theme === 'retro') { 
+        document.body.classList.add('theme-retro'); 
+        document.getElementById('th-retro').classList.add('active-link'); 
+    }
+    else { 
+        // Default/Original
+        document.getElementById('th-original').classList.add('active-link'); 
+    }
+    
+    // 4. Save preference
+    localStorage.setItem('arcadeTheme', theme);
+    playClick();
+}
+
+// Load Saved Theme on Startup
+const savedTheme = localStorage.getItem('arcadeTheme');
+if (savedTheme) { setTheme(savedTheme); }
 
 function changeStudio(mode) {
   playClick(); 
   document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
-  swMenu.style.display = 'none'; panel.classList.remove('open'); 
+  swMenu.style.display = 'none'; thMenu.style.display = 'none'; panel.classList.remove('open'); 
   if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
   else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; }
   else if(mode === 'gif') { document.getElementById('gif-studio').classList.add('active-sec'); sName.innerText = "NEON"; sSub.innerText = "GIF STUDIO"; }
@@ -496,7 +594,7 @@ const alphas = [
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯ｗ𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"},
   {m:"ᗩᗷᑕᗪEᖴGᕼIᒍKᒪᗰᑎOᑭᑫᖇᔕTᑌᐯᗯ᙭Yᘔαᖿ𝖼𝖽𝖾𝖿𝗀𝗁𝗂𝗃𝗄𝗅𝗆𝗇𝗈𝗉𝗊𝗋𝗌𝗍𝗎𝗏𝗐𝗑𝗒𝗓0123456789"},
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛0123456789"},
-  {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１２３４５６７８９"},
+  {m:"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ０１𝟐𝟑４５６７８９"},
   {m:"ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨"},
   {m:"🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿➊➋➌➍➎➏➐➑➒"},
   {m:"⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵⒜⒝⒞⒟⒠⒡⒢⒣⒤⒥⒦⒧⒨⒩⒪⒫⒬⒭⒮⒯⒰⒱⒲⒳⒴⒵0123456789"},
@@ -526,9 +624,9 @@ const alphas = [
   {m:"ΛBCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"ȺƁƇƊɆƑƓĦɪʝҠŁⱮȠØⱣꝖɌŞŦɄVŴӾɎƵabcdefghijklmnopqrstuvwxyz0123456789"},
   {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝘵𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
-  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, // Serif Bold
-  {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, // Serif Bold Italic
- {m:"𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅开𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴9"},  // Sans Bold Italic
+  {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
+  {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
+ {m:"𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅开𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴9"},  
  {m:"ᴬʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘqʀsᴛᴜᴠᴡxʏᴢabcdefghijklmnopqrstuvwxyz0123456789"}
 ];
 
@@ -568,9 +666,9 @@ const symData = {
     "Chess & Cards": ["♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧"],
     "Others": ["ﾒ૦ﾒ૦💋","⋆.˚🦋༘⋆","⭑.ᐟ","༘⋆✿","𔓎","࣪ ִֶָ☾.","ᯓᡣ𐭩","⛈","ּ ֶָ֢.𓂃☂♡","ꫂ❁","☔︎︎","⋆｡ﾟ☁︎｡⋆","⛆","𖠚","⛾","♨","𓐐","☕︎","𓊤","‧₊˚ ⋅","𓐐𓎩","‧₊˚ ⋅","⋆˚✿˖°","🤎ྀིྀི☕︎ᝰ.ᐟ","⋆☕︎","˙✧˖°☕","༘ ⋆｡","‧₊˚ ⋅","☕︎","𓎩","‧₊˚ ⋅"]
 };
-
 function renderSymbols(){ const b=document.getElementById('sym-container'); b.innerHTML=""; for(const[c,s]of Object.entries(symData)){ let t=document.createElement('div'); t.className="cat-title"; t.innerText=c; b.appendChild(t); let g=document.createElement('div'); g.className="sym-grid"; s.forEach(sym=>{ let btn=document.createElement('div'); btn.className="sym-btn"; btn.innerText=sym; btn.onclick=()=>{ const tb=document.getElementById('sym-box'), st=tb.selectionStart, en=tb.selectionEnd; tb.value=tb.value.substring(0,st)+sym+tb.value.substring(en); tb.selectionStart=tb.selectionEnd=st+sym.length; playClick(); }; g.appendChild(btn); }); b.appendChild(g); } }
 renderSymbols();
+
 // --- 🎵 AUDIO ---
 const playlist = [
   "jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", 
@@ -585,50 +683,29 @@ function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
 function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
 function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
 function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
-// --- 🌈 GRADIENT DEFINITIONS (The Master List) ---
+
+// --- 🌈 GRADIENT DEFINITIONS ---
 const gradientDefs = {
-    'grad-ruby': ['#FF512F', '#DD2476'],
-    'grad-red': ['#FF4B4B', '#C00000'],
-    'grad-crimson': ['#DC143C', '#8B0000'],
-    'grad-rose': ['#FF80AB', '#C51162'],
-    'grad-hotpink': ['#FF69B4', '#C71585'],
-    'grad-magenta': ['#FF00FF', '#800080'],
-    'grad-purple': ['#D080FF', '#7000A0'],
-    'grad-violet': ['#E040FB', '#7B1FA2'],
-    'grad-indigo': ['#7C4DFF', '#311B92'],
-    'grad-midnight': ['#536DFE', '#1A237E'],
-    'grad-blue': ['#60C0FF', '#0050A0'],
-    'grad-azure': ['#448AFF', '#0D47A1'],
-    'grad-sky': ['#40C4FF', '#01579B'],
-    'grad-cyan': ['#18FFFF', '#006064'],
-    'grad-teal': ['#64FFDA', '#004D40'],
-    'grad-emerald': ['#69F0AE', '#1B5E20'],
-    'grad-green': ['#80E080', '#008000'],
-    'grad-lime': ['#EEFF41', '#827717'],
-    'grad-yellow': ['#FFF080', '#DDAA00'],
-    'grad-amber': ['#FFD740', '#FF6F00'],
-    'grad-orange': ['#FFC060', '#D06000'],
-    'grad-sunset': ['#FF512F', '#F09819'],
-    'grad-brown': ['#D7CCC8', '#5D4037'],
-    'grad-silver': ['#E0E0E0', '#606060'],
-    'grad-slate': ['#90A4AE', '#37474F'],
-    'grad-charcoal': ['#616161', '#212121'],
-    'grad-black': ['#434343', '#000000']
+    'grad-ruby': ['#FF512F', '#DD2476'], 'grad-red': ['#FF4B4B', '#C00000'], 'grad-crimson': ['#DC143C', '#8B0000'],
+    'grad-rose': ['#FF80AB', '#C51162'], 'grad-hotpink': ['#FF69B4', '#C71585'], 'grad-magenta': ['#FF00FF', '#800080'],
+    'grad-purple': ['#D080FF', '#7000A0'], 'grad-violet': ['#E040FB', '#7B1FA2'], 'grad-indigo': ['#7C4DFF', '#311B92'],
+    'grad-midnight': ['#536DFE', '#1A237E'], 'grad-blue': ['#60C0FF', '#0050A0'], 'grad-azure': ['#448AFF', '#0D47A1'],
+    'grad-sky': ['#40C4FF', '#01579B'], 'grad-cyan': ['#18FFFF', '#006064'], 'grad-teal': ['#64FFDA', '#004D40'],
+    'grad-emerald': ['#69F0AE', '#1B5E20'], 'grad-green': ['#80E080', '#008000'], 'grad-lime': ['#EEFF41', '#827717'],
+    'grad-yellow': ['#FFF080', '#DDAA00'], 'grad-amber': ['#FFD740', '#FF6F00'], 'grad-orange': ['#FFC060', '#D06000'],
+    'grad-sunset': ['#FF512F', '#F09819'], 'grad-brown': ['#D7CCC8', '#5D4037'], 'grad-silver': ['#E0E0E0', '#606060'],
+    'grad-slate': ['#90A4AE', '#37474F'], 'grad-charcoal': ['#616161', '#212121'], 'grad-black': ['#434343', '#000000']
 };
 
-// --- 🎨 ADVANCED COLOR PALETTE DATA ---
+// --- 🎨 COLOR PALETTE DATA ---
 const colorData = {
     'Neon': [
-        {c:'#FFFFFF', t:'neon'}, // Thick White
-        {c:'#FEFEFE', t:'neon'}, // Thin White
-        {c:'#808080', t:'neon'}, // Gray (Batman)
-        {c:'#000000', t:'neon'}, // Black (Batman)
+        {c:'#FFFFFF', t:'neon'}, {c:'#FEFEFE', t:'neon'}, {c:'#808080', t:'neon'}, {c:'#000000', t:'neon'},
         {c:'#FF0000', t:'neon'}, {c:'#dc143c', t:'neon'}, {c:'#ff4d4d', t:'neon'}, {c:'#ff6666', t:'neon'}, 
         {c:'#b22222', t:'neon'}, {c:'#800000', t:'neon'}, {c:'#5b0000', t:'neon'}, {c:'#fa8072', t:'neon'},
         {c:'#FFA500', t:'neon'}, {c:'#FF4500', t:'neon'}, {c:'#FF8C00', t:'neon'}, {c:'#f4a460', t:'neon'},
         {c:'#d2691e', t:'neon'}, {c:'#a0522d', t:'neon'}, {c:'#8b4500', t:'neon'},
-        {c:'#FFD700', t:'neon'}, {c:'#ffff33', t:'neon'}, {c:'#f0e68c', t:'neon'},
-        {c:'#b8860b', t:'neon'}, {c:'#daa520', t:'neon'},
+        {c:'#FFD700', t:'neon'}, {c:'#ffff33', t:'neon'}, {c:'#f0e68c', t:'neon'}, {c:'#b8860b', t:'neon'}, {c:'#daa520', t:'neon'},
         {c:'#00FF00', t:'neon'}, {c:'#32cd32', t:'neon'}, {c:'#00FA9A', t:'neon'}, {c:'#7FFF00', t:'neon'}, 
         {c:'#ADFF2F', t:'neon'}, {c:'#90ee90', t:'neon'}, {c:'#2e8b57', t:'neon'}, {c:'#008000', t:'neon'},
         {c:'#006400', t:'neon'}, {c:'#228b22', t:'neon'},
@@ -642,7 +719,6 @@ const colorData = {
         {c:'#c71585', t:'neon'}, {c:'#8b0000', t:'neon'},
         {c:'#C0C0C0', t:'neon'}, {c:'#A52A2A', t:'neon'}, {c:'#808080', t:'neon'}, {c:'#333333', t:'neon'}
     ],
-    // 🌈 EXPANDED GRADIENTS FOLDER
     'Gradients': [
         {c:'#FF512F', t:'grad-ruby'}, {c:'#FF4B4B', t:'grad-red'}, {c:'#DC143C', t:'grad-crimson'},
         {c:'#FF80AB', t:'grad-rose'}, {c:'#FF69B4', t:'grad-hotpink'}, {c:'#FF00FF', t:'grad-magenta'},
@@ -918,8 +994,7 @@ c.ontouchmove=e=>{
 }
 window.ontouchend=()=>{isP=false;}
 
-// --- ⚡ NEON GIF ENGINE (The Masterpiece Version) ---
-// This uses the Hybrid Blob Import method that bypasses the security block
+// --- ⚡ NEON GIF ENGINE ---
 const workerBlob = new Blob([`importScripts('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');`], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -958,8 +1033,6 @@ function resetGifProject() {
 
     gfInput.value = '';
     gifX = 0; gifY = 0;
-    
-    // Restore Upload Button Visibility
     if(upBtn) upBtn.parentElement.style.display = 'block'; 
 }
 
@@ -971,97 +1044,60 @@ gfInput.onchange = (e) => {
     v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); };
 };
 
-// Auto-Fit Logic
 function setCoverSize() {
-    const boxSize = 320; // Fixed size for current layout
+    const boxSize = 320; 
     const aspect = vidW / vidH;
-    
     if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } 
     else { renderW = boxSize; renderH = boxSize / aspect; }
-    
-    v.style.width = renderW + 'px'; 
-    v.style.height = renderH + 'px';
-    
-    zoom.min = 100; // Reset min zoom
-    updateGifTransform();
+    v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
+    zoom.min = 100; updateGifTransform();
 }
 
 function updateGifTransform() {
     if (!v.src) return;
     const z = parseInt(zoom.value) / 100;
     const boxSize = 320;
-    
     const currentW = renderW * z;
     const currentH = renderH * z;
-    
     const maxX = Math.max(0, (currentW - boxSize) / 2);
     const maxY = Math.max(0, (currentH - boxSize) / 2);
-    
     gifX = Math.max(-maxX, Math.min(maxX, gifX));
     gifY = Math.max(-maxY, Math.min(maxY, gifY));
-    
     v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
 }
 
 zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
 speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
 
-// Optimized Drag Logic (Auto-Lock Compatible)
 let isGifDrag = false;
 let startX, startY, initX, initY;
 
 vp.addEventListener('touchstart', e => {
     if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
-    isGifDrag = true;
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-    initX = gifX;
-    initY = gifY;
+    isGifDrag = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; initX = gifX; initY = gifY;
 }, { passive: false });
 
 vp.addEventListener('touchmove', e => {
     if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
     if (!isGifDrag) return;
     e.preventDefault();
-    
     const dx = e.touches[0].clientX - startX;
     const dy = e.touches[0].clientY - startY;
-    
-    gifX = initX + dx;
-    gifY = initY + dy;
-    
+    gifX = initX + dx; gifY = initY + dy;
     requestAnimationFrame(updateGifTransform); 
 }, { passive: false });
 
-vp.addEventListener('mousedown', e => {
-    if (!v.src) return;
-    isGifDrag = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    initX = gifX;
-    initY = gifY;
-});
-window.addEventListener('mousemove', e => {
-    if (!isGifDrag) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    gifX = initX + dx;
-    gifY = initY + dy;
-    requestAnimationFrame(updateGifTransform);
-});
+vp.addEventListener('mousedown', e => { if (!v.src) return; isGifDrag = true; startX = e.clientX; startY = e.clientY; initX = gifX; initY = gifY; });
+window.addEventListener('mousemove', e => { if (!isGifDrag) return; const dx = e.clientX - startX; const dy = e.clientY - startY; gifX = initX + dx; gifY = initY + dy; requestAnimationFrame(updateGifTransform); });
 window.addEventListener('mouseup', () => isGifDrag = false);
 window.addEventListener('touchend', () => isGifDrag = false);
 
-// Render GIF
 go.onclick = () => {
     if (!v.src) return;
-    go.disabled = true; upBtn.disabled = true;
-    zoom.disabled = true; speed.disabled = true;
-
+    go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
     vp.style.pointerEvents = 'none'; msg.innerText = "Processing..."; msg.classList.add('active');
 
     const OUT_SIZE = 480;
-    // 30 WORKERS + Blob Import = The Masterpiece Config
     const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
     const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
     const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
@@ -1103,14 +1139,11 @@ go.onclick = () => {
         dl.download = `neon_focus_${rNum}.gif`; dl.href = url;
         dlBox.style.display = 'block'; resetBox.style.display = 'block';
         msg.classList.remove('active');
-
         document.getElementById('goBox').style.display = 'none';
         if(upBtn) upBtn.parentElement.style.display = 'none';
-
         vp.style.pointerEvents = 'auto'; 
     });
 };
 </script>
 </body>
 </html>
-
