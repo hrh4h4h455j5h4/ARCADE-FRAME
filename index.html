@@ -986,460 +986,407 @@ function toggleBoundaryLock() {
     } else { btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; zSl.min = 0.1; }
     d(); playClick();
 }
-// --- ✨ FIXED MAGIC FILTERS (Corrects Blue Skin on iPhone) ---
-const magicFilters = [
-  { name: 'ORIGINAL', f: 'none' },
-  { name: 'ENHANCE', f: 'contrast(1.1) brightness(1.1) saturate(1.1)' },
-  { name: 'SHARPEN', f: 'contrast(1.4) brightness(1.0)' },
-  { name: 'DEEP', f: 'saturate(1.5) contrast(1.2) brightness(0.9)' },
-  { name: 'BLOCKBUSTER', f: 'contrast(1.2) saturate(1.3) sepia(0.2) hue-rotate(-10deg)' },
-  // 🟢 FIXED: Removed the 180 flip. Skin is now Golden/Orange.
-  { name: 'TEAL-ORANGE', f: 'contrast(1.2) saturate(1.4) sepia(0.3) hue-rotate(-15deg)' }, 
-  { name: 'DRAMA', f: 'contrast(1.4) brightness(0.9) saturate(1.1)' },
-  { name: 'WARM-FILM', f: 'sepia(0.3) contrast(1.1) brightness(1.1) saturate(1.2)' },
-  { name: 'COLD-FILM', f: 'hue-rotate(180deg) sepia(0.2) contrast(1.1)' },
-  { name: 'MOODY', f: 'contrast(0.9) brightness(0.8) saturate(1.2) sepia(0.2)' },
-  { name: 'FADE-CINE', f: 'contrast(0.8) brightness(1.2) saturate(1.2)' },
-  { name: 'GRITTY', f: 'contrast(1.8) saturate(0.5) brightness(0.9)' },
-  { name: 'VIBRANCE', f: 'saturate(2.5) contrast(1.1)' },
-  { name: 'DREAM', f: 'blur(1px) brightness(1.2) saturate(0.8)' },
-  { name: 'SOFT-FOCUS', f: 'blur(0.5px) contrast(1.1) brightness(1.1)' },
-  { name: 'GLOW', f: 'blur(2px) brightness(1.4) contrast(1.2)' },
-  { name: 'ETHEREAL', f: 'blur(1px) brightness(1.3) saturate(0.5)' },
-  { name: 'HAZE', f: 'blur(1.5px) sepia(0.3) brightness(1.1)' },
-  { name: 'MYSTERY', f: 'blur(2px) brightness(0.7) contrast(1.2)' },
-  { name: 'BLOOM', f: 'blur(3px) brightness(1.5) saturate(1.2)' },
-  { name: 'GHOST', f: 'blur(1px) grayscale(1) brightness(1.3)' },
-  { name: '1996', f: 'sepia(0.4) contrast(0.9) brightness(1.1) saturate(0.8)' },
-  { name: 'FILM-3', f: 'sepia(0.3) hue-rotate(45deg) contrast(1.1)' },
-  { name: 'POLAROID', f: 'contrast(0.8) brightness(1.2) sepia(0.2)' },
-  { name: 'VHS-TAPE', f: 'contrast(1.2) brightness(1.1) saturate(0.8) hue-rotate(-10deg)' },
-  { name: 'RETRO-POP', f: 'hue-rotate(-30deg) contrast(1.1) saturate(1.3)' },
-  { name: 'KODAK', f: 'saturate(1.5) contrast(1.1) hue-rotate(-10deg)' },
-  { name: 'FADED', f: 'contrast(0.7) brightness(1.3) sepia(0.2)' },
-  { name: 'RUST', f: 'sepia(0.6) hue-rotate(-30deg) saturate(1.2)' },
-  { name: 'ANTIQUE', f: 'sepia(0.8) contrast(0.8)' },
-  { name: 'GLITCH-X', f: 'saturate(4) hue-rotate(90deg) contrast(1.5)' },
-  { name: 'CYBERPUNK', f: 'contrast(1.4) hue-rotate(190deg) saturate(1.2)' },
-  { name: 'TOXIC', f: 'hue-rotate(90deg) contrast(1.2) brightness(1.1)' },
-  { name: 'X-RAY', f: 'invert(1) grayscale(1)' },
-  { name: 'ALIEN', f: 'hue-rotate(280deg) contrast(1.2) invert(0.8)' },
-  { name: 'INFRARED', f: 'hue-rotate(180deg) saturate(2)' },
-  { name: 'MATRIX', f: 'sepia(1) hue-rotate(50deg) saturate(3) contrast(1.2)' },
-  { name: 'VELVET-NOIR', f: 'grayscale(1) contrast(1.5) brightness(0.8)' },
-  { name: 'SILVER', f: 'grayscale(1) brightness(1.2) contrast(1.2)' },
-  { name: 'INK-WELL', f: 'grayscale(1) contrast(2.0) brightness(0.9)' },
-  { name: 'BW-SOFT', f: 'grayscale(1) brightness(1.1)' },
-  { name: 'MOONLIGHT', f: 'grayscale(1) hue-rotate(200deg) brightness(0.7)' },
-  { name: 'GOLDEN-HR', f: 'sepia(0.4) saturate(1.5) contrast(1.1)' },
-  { name: 'OCEAN-BLUE', f: 'hue-rotate(180deg) contrast(1.1) brightness(1.1)' },
-  { name: 'SUNSET', f: 'hue-rotate(-20deg) saturate(1.5)' },
-  { name: 'FOREST', f: 'sepia(0.5) hue-rotate(60deg) saturate(0.8)' },
-  { name: 'PASTEL', f: 'brightness(1.2) saturate(0.8) contrast(0.9)' },
-];
+    // --- 🚑 STABLE DRAWING FUNCTION (Native Filters - No Crashes) ---
+    function d(){ 
+      x.clearRect(0,0,800,800); 
 
-// --- 🛠️ STABLE DRAWING ENGINE (The "Scratch Canvas" Method) ---
-function d(){ 
-  x.clearRect(0,0,800,800); 
-
-  // 1. Boundary Lock Calculation
-  if(i.src && isBoundaryLocked){
-      const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-      const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-      const minS = Math.max(reqW/i.width, reqH/i.height);
-      if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
-      const rangeX = (i.width*cfg.s - reqW)/2, rangeY = (i.height*cfg.s - reqH)/2;
-      cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
-  }
-
-  // 2. Draw User Image (Stable Scratch Method)
-  if(i.src){
-      const sc = document.createElement('canvas'); 
-      sc.width = 800; sc.height = 800;
-      const sCtx = sc.getContext('2d');
-      
-      sCtx.save();
-      let w = i.width * cfg.s, h = i.height * cfg.s;
-      sCtx.translate(cfg.x, cfg.y);
-      sCtx.rotate(cfg.r * Math.PI / 180);
-      
-      // Attempt Filter
-      if(cfg.filter && cfg.filter !== 'none') {
-          sCtx.filter = cfg.filter;
-      }
-      
-      sCtx.drawImage(i, -w/2, -h/2, w, h);
-      sCtx.restore();
-
-      x.save();
-      x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28);
-      x.fillStyle = '#000000'; x.fill();
-      x.globalCompositeOperation = 'source-in';
-      x.drawImage(sc, 0, 0); 
-      x.restore();
-  }
-
-  // 3. Draw Generated Border
-  if (cfg.pColor) {
-      x.save(); x.filter = 'none'; 
-      if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
-          const shadowCol = cfg.pColor;
-          const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 25; x.strokeStyle = shadowCol; x.shadowBlur = 60; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 0; x.stroke();
-          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); 
-          x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke();
-          x.restore();
-      } 
-      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      }
-      else if (cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
-      }
-      else {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
-          if (cfg.pType && gradientDefs[cfg.pType]) {
-             const cols = gradientDefs[cfg.pType];
-             let g = x.createLinearGradient(0, 0, 800, 800);
-             g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]); x.strokeStyle = g;
+      // 1. Boundary Lock Calculation
+      if(i.src){
+          if (isBoundaryLocked) {
+              const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+              const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+              const minS = Math.max(reqW/i.width, reqH/i.height);
+              // Auto-zoom if image is too small for the rotation
+              if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
+              
+              const rangeX = (i.width*cfg.s - reqW)/2;
+              const rangeY = (i.height*cfg.s - reqH)/2;
+              
+              // Clamp position so image never leaves the circle
+              cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); 
+              cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
           } 
-          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
-              let g = x.createLinearGradient(0, 0, 800, 800);
-              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
-              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
-              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
-              x.strokeStyle = g;
-          } else { x.strokeStyle = cfg.pColor; }
-          x.stroke(); 
       }
-      x.restore();
-  }
 
-  // 4. Draw Custom Uploaded Frame (Restored)
-  if(f.src) x.drawImage(f,0,0,800,800); 
-}
+      // 2. Draw User Image (With Native Filter)
+      x.save(); 
+      x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
+      
+      if(i.src){ 
+          let w=i.width*cfg.s, h=i.height*cfg.s; 
+          x.save(); 
+          x.translate(cfg.x,cfg.y); 
+          x.rotate(cfg.r*Math.PI/180); 
+          
+          // ✨ EMERGENCY LOGIC: NATIVE FILTER CHECK ✨
+          if(cfg.filter && cfg.filter !== 'none' && 'filter' in x) {
+              x.filter = cfg.filter;
+          }
+          else if (cfg.filter && cfg.filter !== 'none') {
+               // Fallback for older browsers
+               if(cfg.filter.includes('grayscale')) x.globalCompositeOperation = 'luminosity';
+               if(cfg.filter.includes('sepia')) { x.fillStyle = 'rgba(112, 66, 20, 0.4)'; x.fillRect(-w,-h,w*2,h*2); x.globalCompositeOperation = 'overlay'; }
+          }
+          
+          x.drawImage(i,-w/2,-h/2,w,h); 
+          x.restore(); 
+      } 
+      x.restore(); 
 
-// --- 📂 FILE HANDLING (Safe) ---
-function handleFile(e){
-    const files = e.target ? e.target.files : e.files;
-    if(!files || !files[0]) return;
-    
-    const r = new FileReader();
-    r.onload = v => {
-        const n = new Image();
-        n.onload = () => {
-            i = n;
-            // Reset Position
-            cfg.x = 400; cfg.y = 400; cfg.r = 0;
-            
-            if(isBoundaryLocked) {
-                const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-                const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-                const minS = Math.max(reqW/i.width, reqH/i.height);
-                cfg.s = minS; zSl.min = minS; zSl.value = minS; 
-                zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
-            } else {
-                cfg.s = Math.max(800/i.width, 800/i.height);
-                zSl.value = cfg.s; zVal.innerText = "100%";
-            }
-            
-            renderFilters();
-            const ui = document.getElementById('filter-wrapper');
-            if(ui.style.display !== 'flex') toggleFilterUI(); 
-            
-            d(); 
-        };
-        n.src = v.target.result;
-    };
-    r.readAsDataURL(files[0]);
-}
-
-function handleFrame(e){
-    const files = e.target ? e.target.files : e.files;
-    if(!files || !files[0]) return;
-    const r = new FileReader();
-    r.onload = v => {
-        const n = new Image();
-        n.onload = () => {
-            f.src = n.src;
-            cfg.pColor = null; cfg.pType = null;
-            mLbl.innerText = "FRAME OPENING SIZE";
-            d(); 
-        };
-        n.src = v.target.result;
-    };
-    r.readAsDataURL(files[0]);
-}
-
-function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
-function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
-function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
-function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-
-function resetProject(){ 
-    i=new Image(); f=new Image(); 
-    cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none'};
-    zSl.value=1; rSl.value=0; mSl.value=375; 
-    mLbl.innerText = "CIRCLE SIZE";
-    document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
-    document.getElementById('filter-list').innerHTML = '';
-    d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true;
-}
-
-function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
-function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
-document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
-
-// --- 🖱️ INTERACTION (TOUCH FIX APPLIED) ---
-let isP=false, tStart={x:0,y:0};
-let initialDist = 0, initialScale = 1, initialAngle = 0, initialRot = 0;
-
-c.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
-c.addEventListener('drop', (e) => {
-    e.preventDefault(); e.stopPropagation();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        const file = e.dataTransfer.files[0];
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = (v) => {
-                let n = new Image();
-                n.onload = () => {
-                    i = n;
-                    let minScale = Math.max(800 / i.width, 800 / i.height);
-                    cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
-                    if(isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
-                    zSl.max = minScale * 2.5; zSl.value = minScale;
-                    renderFilters(); 
-                    d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
-                }; n.src = v.target.result;
-            }; reader.readAsDataURL(file);
-        }
+      // 3. Draw Frame/Border (Protected from Filters)
+      if (cfg.pColor) {
+          x.save(); 
+          x.filter = 'none'; // Force disable filter for border
+          
+          if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
+              const shadowCol = cfg.pColor;
+              const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 25; x.strokeStyle = shadowCol; x.shadowBlur = 60; x.shadowColor = shadowCol; x.stroke();
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 0; x.stroke();
+              x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); 
+              x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke();
+              x.restore();
+          } 
+          else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
+          }
+          else if (cfg.pType === 'neon') {
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+              x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
+          }
+          else {
+              x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
+              if (cfg.pType && gradientDefs[cfg.pType]) {
+                 const cols = gradientDefs[cfg.pType];
+                 let g = x.createLinearGradient(0, 0, 800, 800);
+                 g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]); x.strokeStyle = g;
+              } 
+              else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
+                  let g = x.createLinearGradient(0, 0, 800, 800);
+                  if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
+                  else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
+                  else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
+                  x.strokeStyle = g;
+              } else { x.strokeStyle = cfg.pColor; }
+              x.stroke(); 
+          }
+          x.restore();
+      }
+      if(f.src) x.drawImage(f,0,0,800,800); 
     }
-});
 
-c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
-c.onmousemove=e=>{
-  if(!isP)return;
-  let scale = 800 / c.offsetWidth;
-  cfg.x += (e.offsetX - tStart.x) * scale;
-  cfg.y += (e.offsetY - tStart.y) * scale;
-  tStart={x:e.offsetX,y:e.offsetY};
-  d();
-}
-window.onmouseup=()=>{isP=false;}
-
-c.ontouchstart=e=>{
-  if(i.src) { e.preventDefault(); }
-  if(e.touches.length===1){ isP=true; tStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; } 
-  else if(e.touches.length===2){
-    isP=false; 
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    initialDist = Math.sqrt(dx*dx + dy*dy);
-    initialScale = cfg.s;
-    initialAngle = Math.atan2(dy, dx);
-    initialRot = cfg.r;
-  }
-}
-c.ontouchmove=e=>{
-  if(i.src) { e.preventDefault(); }
-  // 1. One Finger Drag (Adjustment)
-  if(e.touches.length===1 && isP){
-    let scale = 800 / c.offsetWidth;
-    let dx = e.touches[0].clientX - tStart.x;
-    let dy = e.touches[0].clientY - tStart.y;
-    cfg.x += dx * scale;
-    cfg.y += dy * scale;
-    tStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
-    d();
-  } 
-  // 2. Two Finger (Rotate/Zoom)
-  else if(e.touches.length===2){
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    const scaleFactor = dist / initialDist;
-    let newScale = initialScale * scaleFactor;
-    newScale = Math.max(zSl.min, Math.min(zSl.max, newScale));
-    cfg.s = newScale; zSl.value = newScale; zVal.innerText=Math.round((newScale/zSl.min)*100)+"%"; updS(zSl);
-    const angle = Math.atan2(dy, dx);
-    let rotationDiff = (angle - initialAngle) * (180/Math.PI);
-    cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; rVal.innerText = Math.round(cfg.r) + "°"; updS(rSl);
-    d();
-  }
-}
-window.ontouchend=()=>{isP=false;}
-
-// --- ⚡ NEON GIF ENGINE (30 Workers + Hybrid Blob) ---
-const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
-const workerUrl = URL.createObjectURL(workerBlob);
-
-const gfInput = document.getElementById('gfInput');
-const upBtn = document.getElementById('upBtn');
-const v = document.getElementById('v');
-const o = document.getElementById('o');
-const vp = document.getElementById('vp');
-const speed = document.getElementById('speed');
-const sv = document.getElementById('sv');
-const zoom = document.getElementById('zoom');
-const zv = document.getElementById('zv');
-const go = document.getElementById('go');
-const msg = document.getElementById('msg');
-const dlBox = document.getElementById('dlBox');
-const dl = document.getElementById('dl');
-const resetBox = document.getElementById('resetBox');
-
-let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH;
-
-function resetGifProject() {
-    v.src = ''; v.style.display = 'none'; v.style.transform = `translate(-50%, -50%) scale(1)`;
-    o.style.display = 'none';
-    dlBox.style.display = 'none';
-    resetBox.style.display = 'none';
-    document.getElementById('goBox').style.display = 'inline-block';
-
-    go.disabled = false;
-    upBtn.disabled = false;
-    zoom.disabled = false; zoom.value = 100;
-    speed.disabled = false;
-
-    msg.classList.remove('active');
-    zv.innerText = "100%";
-    if(vp) vp.style.pointerEvents = 'auto';
-
-    gfInput.value = '';
-    gifX = 0; gifY = 0;
-    if(upBtn) upBtn.parentElement.style.display = 'block'; 
-}
-
-gfInput.onchange = (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
-    v.src = URL.createObjectURL(file); v.playbackRate = parseFloat(speed.value);
-    go.disabled = false;
-    v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); };
-};
-
-function setCoverSize() {
-    const boxSize = 320; 
-    const aspect = vidW / vidH;
-    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } 
-    else { renderW = boxSize; renderH = boxSize / aspect; }
-    v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
-    zoom.min = 100; updateGifTransform();
-    // Reset position logic
-    gifX = 0; gifY = 0;
-}
-
-function updateGifTransform() {
-    if (!v.src) return;
-    const z = parseInt(zoom.value) / 100;
-    const currentW = renderW * z;
-    const currentH = renderH * z;
-    const boxSize = 320;
-    // --- 360° LOCKED BOUNDARY LOGIC (Kept as requested) ---
-    const maxX = Math.max(0, (currentW - boxSize) / 2);
-    const maxY = Math.max(0, (currentH - boxSize) / 2);
-    gifX = Math.max(-maxX, Math.min(maxX, gifX));
-    gifY = Math.max(-maxY, Math.min(maxY, gifY));
-    
-    v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
-}
-
-zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
-speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
-
-let isGifDrag = false;
-let startX, startY, initX, initY;
-
-vp.addEventListener('touchstart', e => {
-    if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
-    isGifDrag = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; initX = gifX; initY = gifY;
-}, { passive: false });
-
-vp.addEventListener('touchmove', e => {
-    if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
-    if (!isGifDrag) return;
-    e.preventDefault();
-    const dx = e.touches[0].clientX - startX;
-    const dy = e.touches[0].clientY - startY;
-    gifX = initX + dx; gifY = initY + dy;
-    requestAnimationFrame(updateGifTransform); 
-}, { passive: false });
-
-vp.addEventListener('mousedown', e => { if (!v.src) return; isGifDrag = true; startX = e.clientX; startY = e.clientY; initX = gifX; initY = gifY; });
-window.addEventListener('mousemove', e => { if (!isGifDrag) return; const dx = e.clientX - startX; const dy = e.clientY - startY; gifX = initX + dx; gifY = initY + dy; requestAnimationFrame(updateGifTransform); });
-window.addEventListener('mouseup', () => isGifDrag = false);
-window.addEventListener('touchend', () => isGifDrag = false);
-
-go.onclick = () => {
-    if (!v.src) return;
-    go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
-    vp.style.pointerEvents = 'none'; msg.innerText = "Processing..."; msg.classList.add('active');
-
-    const OUT_SIZE = 480;
-    // --- 30 WORKERS (High Performance) ---
-    const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
-    const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
-    const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
-
-    capVid.src = v.src; capVid.muted = true; capVid.playsInline = true; capVid.crossOrigin = "anonymous";
-
-    capVid.onloadeddata = () => {
-        let cTime = 0;
-        const currentVpSize = 320;
-        const outputScale = OUT_SIZE / currentVpSize;
-        const scale = parseInt(zoom.value) / 100;
-        const aspect = capVid.videoWidth / capVid.videoHeight;
-
-        let drawW, drawH;
-        if (aspect > 1) { drawH = currentVpSize; drawW = currentVpSize * aspect; }
-        else { drawW = currentVpSize; drawH = currentVpSize / aspect; }
-
-        drawW *= scale * outputScale; drawH *= scale * outputScale;
-        const finalX = gifX * outputScale; const finalY = gifY * outputScale;
-        let dx = (OUT_SIZE - drawW) / 2 + finalX; let dy = (OUT_SIZE - drawH) / 2 + finalY;
-
-        const captureFrame = () => {
-            if (cTime >= duration) { msg.innerText = "Encoding..."; gif.render(); return; }
-            capVid.currentTime = cTime;
-        };
+    // --- 📂 FILE HANDLING (Fixed) ---
+    function handleFile(e){
+        // Ensure we read from target to fix "Nothing Showing"
+        const files = e.target ? e.target.files : e.files;
+        if(!files || !files[0]) return;
         
-        capVid.onseeked = () => {
-            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
-            ctx.drawImage(capVid, dx, dy, drawW, drawH);
-            gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed });
-            cTime += (1 / fps); setTimeout(captureFrame, 10);
+        const r = new FileReader();
+        r.onload = v => {
+            const n = new Image();
+            // REMOVED: crossOrigin = Anonymous (Fixes upload black screen)
+            n.onload = () => {
+                i = n;
+                // Reset Position
+                cfg.x = 400; cfg.y = 400; cfg.r = 0;
+                
+                // Smart Scale: Calculate Min Scale to fill circle
+                if(isBoundaryLocked) {
+                    const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+                    const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+                    const minS = Math.max(reqW/i.width, reqH/i.height);
+                    cfg.s = minS; zSl.min = minS; zSl.value = minS; 
+                    zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
+                } else {
+                    cfg.s = Math.max(800/i.width, 800/i.height);
+                    zSl.value = cfg.s; zVal.innerText = "100%";
+                }
+                
+                renderFilters();
+                const ui = document.getElementById('filter-wrapper');
+                if(ui.style.display !== 'flex') toggleFilterUI(); 
+                
+                d(); 
+            };
+            n.src = v.target.result;
         };
-        captureFrame();
+        r.readAsDataURL(files[0]);
+    }
+
+    function handleFrame(e){
+        const files = e.target ? e.target.files : e.files;
+        if(!files || !files[0]) return;
+        const r = new FileReader();
+        r.onload = v => {
+            const n = new Image();
+            n.onload = () => {
+                f.src = n.src;
+                cfg.pColor = null; cfg.pType = null;
+                mLbl.innerText = "FRAME OPENING SIZE";
+                d(); 
+            };
+            n.src = v.target.result;
+        };
+        r.readAsDataURL(files[0]);
+    }
+
+    function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
+    function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+    function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
+    function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
+
+    function resetProject(){ 
+        i=new Image(); f=new Image(); 
+        cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none'};
+        zSl.value=1; rSl.value=0; mSl.value=375; 
+        mLbl.innerText = "CIRCLE SIZE";
+        document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+        document.getElementById('filter-list').innerHTML = '';
+        d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true;
+    }
+
+    function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
+    function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
+    document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
+
+    // --- 🖱️ INTERACTION (TOUCH FIX APPLIED) ---
+    let isP=false, tStart={x:0,y:0};
+    let initialDist = 0, initialScale = 1, initialAngle = 0, initialRot = 0;
+
+    c.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+    c.addEventListener('drop', (e) => {
+        e.preventDefault(); e.stopPropagation();
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (v) => {
+                    let n = new Image();
+                    n.onload = () => {
+                        i = n;
+                        let minScale = Math.max(800 / i.width, 800 / i.height);
+                        cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
+                        if(isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
+                        zSl.max = minScale * 2.5; zSl.value = minScale;
+                        renderFilters(); 
+                        d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
+                    }; n.src = v.target.result;
+                }; reader.readAsDataURL(file);
+            }
+        }
+    });
+
+    c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
+    c.onmousemove=e=>{
+      if(!isP)return;
+      let scale = 800 / c.offsetWidth;
+      cfg.x += (e.offsetX - tStart.x) * scale;
+      cfg.y += (e.offsetY - tStart.y) * scale;
+      tStart={x:e.offsetX,y:e.offsetY};
+      d();
+    }
+    window.onmouseup=()=>{isP=false;}
+
+    c.ontouchstart=e=>{
+      if(i.src) { e.preventDefault(); }
+      if(e.touches.length===1){ isP=true; tStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; } 
+      else if(e.touches.length===2){
+        isP=false; 
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialDist = Math.sqrt(dx*dx + dy*dy);
+        initialScale = cfg.s;
+        initialAngle = Math.atan2(dy, dx);
+        initialRot = cfg.r;
+      }
+    }
+    c.ontouchmove=e=>{
+      if(i.src) { e.preventDefault(); }
+      // 1. One Finger Drag (Adjustment)
+      if(e.touches.length===1 && isP){
+        let scale = 800 / c.offsetWidth;
+        let dx = e.touches[0].clientX - tStart.x;
+        let dy = e.touches[0].clientY - tStart.y;
+        cfg.x += dx * scale;
+        cfg.y += dy * scale;
+        tStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
+        d();
+      } 
+      // 2. Two Finger (Rotate/Zoom)
+      else if(e.touches.length===2){
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        const scaleFactor = dist / initialDist;
+        let newScale = initialScale * scaleFactor;
+        newScale = Math.max(zSl.min, Math.min(zSl.max, newScale));
+        cfg.s = newScale; zSl.value = newScale; zVal.innerText=Math.round((newScale/zSl.min)*100)+"%"; updS(zSl);
+        const angle = Math.atan2(dy, dx);
+        let rotationDiff = (angle - initialAngle) * (180/Math.PI);
+        cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; rVal.innerText = Math.round(cfg.r) + "°"; updS(rSl);
+        d();
+      }
+    }
+    window.ontouchend=()=>{isP=false;}
+
+    // --- ⚡ NEON GIF ENGINE (30 Workers + Unlocked Drag) ---
+    const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
+    const workerUrl = URL.createObjectURL(workerBlob);
+
+    const gfInput = document.getElementById('gfInput');
+    const upBtn = document.getElementById('upBtn');
+    const v = document.getElementById('v');
+    const o = document.getElementById('o');
+    const vp = document.getElementById('vp');
+    const speed = document.getElementById('speed');
+    const sv = document.getElementById('sv');
+    const zoom = document.getElementById('zoom');
+    const zv = document.getElementById('zv');
+    const go = document.getElementById('go');
+    const msg = document.getElementById('msg');
+    const dlBox = document.getElementById('dlBox');
+    const dl = document.getElementById('dl');
+    const resetBox = document.getElementById('resetBox');
+
+    let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH;
+
+    function resetGifProject() {
+        v.src = ''; v.style.display = 'none'; v.style.transform = `translate(-50%, -50%) scale(1)`;
+        o.style.display = 'none';
+        dlBox.style.display = 'none';
+        resetBox.style.display = 'none';
+        document.getElementById('goBox').style.display = 'inline-block';
+
+        go.disabled = false;
+        upBtn.disabled = false;
+        zoom.disabled = false; zoom.value = 100;
+        speed.disabled = false;
+
+        msg.classList.remove('active');
+        zv.innerText = "100%";
+        if(vp) vp.style.pointerEvents = 'auto';
+
+        gfInput.value = '';
+        gifX = 0; gifY = 0;
+        if(upBtn) upBtn.parentElement.style.display = 'block'; 
+    }
+
+    gfInput.onchange = (e) => {
+        const file = e.target.files[0]; if (!file) return;
+        v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
+        v.src = URL.createObjectURL(file); v.playbackRate = parseFloat(speed.value);
+        go.disabled = false;
+        v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); };
     };
 
-    gif.on('finished', blob => {
-        const url = URL.createObjectURL(blob), rNum = Math.floor(Math.random() * 90000) + 10000;
-        v.style.display = 'none'; o.src = url; o.style.display = 'block';
-        dl.download = `neon_focus_${rNum}.gif`; dl.href = url;
-        dlBox.style.display = 'block'; resetBox.style.display = 'block';
-        msg.classList.remove('active');
-        document.getElementById('goBox').style.display = 'none';
-        if(upBtn) upBtn.parentElement.style.display = 'none';
-        vp.style.pointerEvents = 'auto'; 
-    });
-};
+    function setCoverSize() {
+        const boxSize = 320; 
+        const aspect = vidW / vidH;
+        if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } 
+        else { renderW = boxSize; renderH = boxSize / aspect; }
+        v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
+        zoom.min = 100; updateGifTransform();
+    }
+
+    function updateGifTransform() {
+        if (!v.src) return;
+        const z = parseInt(zoom.value) / 100;
+        const currentW = renderW * z;
+        const currentH = renderH * z;
+        v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
+    }
+
+    zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
+    speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
+
+    let isGifDrag = false;
+    let startX, startY, initX, initY;
+
+    vp.addEventListener('touchstart', e => {
+        if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
+        isGifDrag = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; initX = gifX; initY = gifY;
+    }, { passive: false });
+
+    vp.addEventListener('touchmove', e => {
+        if (!v.src || v.style.display === 'none' || v.getAttribute('src') === '') return;
+        if (!isGifDrag) return;
+        e.preventDefault();
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        gifX = initX + dx; gifY = initY + dy;
+        requestAnimationFrame(updateGifTransform); 
+    }, { passive: false });
+
+    vp.addEventListener('mousedown', e => { if (!v.src) return; isGifDrag = true; startX = e.clientX; startY = e.clientY; initX = gifX; initY = gifY; });
+    window.addEventListener('mousemove', e => { if (!isGifDrag) return; const dx = e.clientX - startX; const dy = e.clientY - startY; gifX = initX + dx; gifY = initY + dy; requestAnimationFrame(updateGifTransform); });
+    window.addEventListener('mouseup', () => isGifDrag = false);
+    window.addEventListener('touchend', () => isGifDrag = false);
+
+    go.onclick = () => {
+        if (!v.src) return;
+        go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
+        vp.style.pointerEvents = 'none'; msg.innerText = "Processing..."; msg.classList.add('active');
+
+        const OUT_SIZE = 480;
+        const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
+        const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
+        const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
+
+        capVid.src = v.src; capVid.muted = true; capVid.playsInline = true; capVid.crossOrigin = "anonymous";
+
+        capVid.onloadeddata = () => {
+            let cTime = 0;
+            const currentVpSize = 320;
+            const outputScale = OUT_SIZE / currentVpSize;
+            const scale = parseInt(zoom.value) / 100;
+            const aspect = capVid.videoWidth / capVid.videoHeight;
+
+            let drawW, drawH;
+            if (aspect > 1) { drawH = currentVpSize; drawW = currentVpSize * aspect; }
+            else { drawW = currentVpSize; drawH = currentVpSize / aspect; }
+
+            drawW *= scale * outputScale; drawH *= scale * outputScale;
+            const finalX = gifX * outputScale; const finalY = gifY * outputScale;
+            let dx = (OUT_SIZE - drawW) / 2 + finalX; let dy = (OUT_SIZE - drawH) / 2 + finalY;
+
+            const captureFrame = () => {
+                if (cTime >= duration) { msg.innerText = "Encoding..."; gif.render(); return; }
+                capVid.currentTime = cTime;
+            };
+            
+            capVid.onseeked = () => {
+                ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
+                ctx.drawImage(capVid, dx, dy, drawW, drawH);
+                gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed });
+                cTime += (1 / fps); setTimeout(captureFrame, 10);
+            };
+            captureFrame();
+        };
+
+        gif.on('finished', blob => {
+            const url = URL.createObjectURL(blob), rNum = Math.floor(Math.random() * 90000) + 10000;
+            v.style.display = 'none'; o.src = url; o.style.display = 'block';
+            dl.download = `neon_focus_${rNum}.gif`; dl.href = url;
+            dlBox.style.display = 'block'; resetBox.style.display = 'block';
+            msg.classList.remove('active');
+            document.getElementById('goBox').style.display = 'none';
+            if(upBtn) upBtn.parentElement.style.display = 'none';
+            vp.style.pointerEvents = 'auto'; 
+        });
+    };
 </script>
-<style>#c, .stage, .viewport { touch-action: none !important; }</style>
+<style>#c { touch-action: none !important; }</style>
 <script>
 // --- 🛠️ FIX FOR MAGIC FILTERS BUTTON ---
 window.onclick = e => {
