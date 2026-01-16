@@ -1013,11 +1013,10 @@ function toggleBoundaryLock() {
           x.rotate(cfg.r*Math.PI/180); 
           
           // ✨ EMERGENCY LOGIC: NATIVE FILTER CHECK ✨
-          // 1. Try Native Filter (Fastest & Best Quality)
           if(cfg.filter && cfg.filter !== 'none' && 'filter' in x) {
               x.filter = cfg.filter;
           }
-          // 2. Emergency Fallback (If browser ignores filter)
+          // Emergency Fallback (If browser ignores filter)
           else if (cfg.filter && cfg.filter !== 'none') {
                if(cfg.filter.includes('grayscale')) x.globalCompositeOperation = 'luminosity';
                if(cfg.filter.includes('sepia')) { x.fillStyle = 'rgba(112, 66, 20, 0.4)'; x.fillRect(-w,-h,w*2,h*2); x.globalCompositeOperation = 'overlay'; }
@@ -1080,14 +1079,13 @@ function toggleBoundaryLock() {
       if(f.src) x.drawImage(f,0,0,800,800); 
     }
 
-    // --- 📂 FILE HANDLING (With Security Bypass) ---
+    // --- 📂 FILE HANDLING (Fixed: Removed CrossOrigin for Local Files) ---
     function handleFile(e){
         if(!e.files || !e.files[0]) return;
         const r = new FileReader();
         r.onload = v => {
             const n = new Image();
-            // 🛑 EMERGENCY BYPASS: Prevents Tainted Canvas
-            n.crossOrigin = "Anonymous"; 
+            // REMOVED: n.crossOrigin = "Anonymous"; (This fixes the blank image issue)
             n.onload = () => {
                 i = n;
                 // Reset Position & Calculate Smart Zoom
@@ -1120,7 +1118,7 @@ function toggleBoundaryLock() {
         const r = new FileReader();
         r.onload = v => {
             const n = new Image();
-            n.crossOrigin = "Anonymous"; // Security Bypass
+            // REMOVED: n.crossOrigin = "Anonymous"; 
             n.onload = () => {
                 f.src = n.src;
                 cfg.pColor = null; cfg.pType = null; // Reset generated borders
@@ -1230,7 +1228,6 @@ function toggleBoundaryLock() {
     window.ontouchend=()=>{isP=false;}
 
     // --- ⚡ NEON GIF ENGINE (The Masterpiece Version / 30 Workers) ---
-    // This uses the Hybrid Blob Import method that bypasses the security block
     const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
     const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -1292,10 +1289,8 @@ function toggleBoundaryLock() {
     function updateGifTransform() {
         if (!v.src) return;
         const z = parseInt(zoom.value) / 100;
-        // --- UNLOCKED DRAGGING: Allow full movement anywhere ---
         const currentW = renderW * z;
         const currentH = renderH * z;
-        // Removed clamping to allow black bars/free movement as requested
         v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
     }
 
@@ -1331,7 +1326,6 @@ function toggleBoundaryLock() {
         vp.style.pointerEvents = 'none'; msg.innerText = "Processing..."; msg.classList.add('active');
 
         const OUT_SIZE = 480;
-        // --- 30 WORKERS (High Performance) ---
         const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
         const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
         const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
