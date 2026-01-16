@@ -808,11 +808,47 @@ function setPlainFrame(color, type=null) {
     d(); 
     playClick();
 }
-// --- ✨ FIXED MAGIC FILTERS (Mega Picsart Collection + iPhone Engine) ---
+// --- ✨ FIXED MAGIC FILTERS (Ultimate Picsart Collection) ---
 const magicFilters = [
   { name: 'ORIGINAL', f: 'none' },
 
-  // --- 🎨 SIMPLE SECTION (General Enhancements) ---
+  // --- 🎬 FILM SECTION (Cinematic) ---
+  { name: 'FILM-1', f: 'contrast(1.1) saturate(1.5) brightness(0.9)' },
+  { name: 'FILM-2', f: 'sepia(0.2) contrast(1.2) brightness(1.1)' },
+  { name: 'FILM-B&W', f: 'grayscale(1) contrast(1.2)' },
+  { name: 'CINEMA', f: 'contrast(1.3) saturate(1.2) sepia(0.2)' },
+  { name: 'MOVIEMATIC', f: 'hue-rotate(-10deg) contrast(1.1) saturate(1.1)' },
+  { name: 'KODAK-GOLD', f: 'saturate(1.4) contrast(1.1) hue-rotate(-5deg)' },
+  { name: 'PORTRA', f: 'saturate(1.1) brightness(1.1) contrast(0.9) hue-rotate(-5deg)' },
+  { name: 'FUJI', f: 'saturate(1.2) hue-rotate(10deg) brightness(1.05)' },
+
+  // --- 🎞️ VINTAGE & RETRO SECTION ---
+  { name: 'VINTAGE-IVORY', f: 'sepia(0.4) contrast(0.9) brightness(1.1)' },
+  { name: 'VINTAGE-1970', f: 'sepia(0.5) hue-rotate(-10deg) saturate(1.2)' },
+  { name: 'VINTAGE-1990', f: 'contrast(1.1) saturate(0.8) brightness(0.9)' },
+  { name: 'RETRO-TEAL', f: 'sepia(0.2) hue-rotate(180deg) saturate(0.8)' },
+  { name: 'RETRO-WARM', f: 'sepia(0.6) brightness(0.9) contrast(1.2)' },
+  { name: 'LIGHT-LEAK', f: 'brightness(1.2) sepia(0.3) saturate(1.3)' },
+  { name: 'FADED-FILM', f: 'contrast(0.7) brightness(1.2) sepia(0.2)' },
+
+  // --- ⚡ FX SECTION (The Classics) ---
+  { name: 'FX-HDR-1', f: 'contrast(1.3) saturate(1.4) brightness(1.05) sepia(0.1)' },
+  { name: 'FX-HDR-2', f: 'contrast(1.5) saturate(1.5)' },
+  { name: 'FX-LIGHT-CROSS', f: 'contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(-15deg) saturate(1.1)' },
+  { name: 'FX-DODGER', f: 'brightness(1.15) contrast(0.85) saturate(0.9) sepia(0.05)' },
+  { name: 'FX-TWILIGHT', f: 'contrast(1.2) brightness(0.9) hue-rotate(210deg) saturate(0.7)' },
+  { name: 'FX-SUNNY', f: 'brightness(1.1) sepia(0.4) saturate(1.3) contrast(1.1)' },
+  { name: 'FX-CROSS-PROC', f: 'contrast(1.2) brightness(1.1) sepia(0.3) hue-rotate(-30deg)' },
+  { name: 'FX-CINERAMA', f: 'contrast(1.2) brightness(0.9) saturate(1.2) sepia(0.2)' },
+  { name: 'FX-LOMO', f: 'contrast(1.4) saturate(1.2) sepia(0.2)' },
+  { name: 'FX-ORTON', f: 'brightness(1.3) contrast(1.1) saturate(1.3) blur(1px)' },
+  { name: 'FX-1991', f: 'contrast(1.1) saturate(0.5) sepia(0.2) brightness(1.1)' },
+  { name: 'FX-1992', f: 'contrast(0.9) saturate(0.9) sepia(0.2) hue-rotate(20deg)' },
+  { name: 'FX-1993', f: 'contrast(0.8) brightness(1.2) grayscale(0.2)' },
+  { name: 'FX-1994', f: 'sepia(0.4) contrast(1.2) brightness(0.9)' },
+  { name: 'FX-BW-HICON', f: 'grayscale(1) contrast(1.6) brightness(0.9)' },
+
+  // --- 🎨 SIMPLE SECTION ---
   { name: 'SMP-SUNNY', f: 'contrast(1.1) brightness(1.1) saturate(1.3) sepia(0.2)' },
   { name: 'SMP-VIBRANT', f: 'saturate(1.8) contrast(1.1)' },
   { name: 'SMP-WARM', f: 'sepia(0.3) saturate(1.2) hue-rotate(-10deg)' },
@@ -822,22 +858,7 @@ const magicFilters = [
   { name: 'SMP-DARK', f: 'brightness(0.8) contrast(1.2)' },
   { name: 'SMP-FADED', f: 'contrast(0.8) brightness(1.2) sepia(0.1)' },
 
-  // --- ⚡ FX SECTION (The Classics) ---
-  { name: 'FX-HDR-1', f: 'contrast(1.3) saturate(1.4) brightness(1.05) sepia(0.1)' },
-  { name: 'FX-LIGHT-CROSS', f: 'contrast(1.1) brightness(1.1) sepia(0.3) hue-rotate(-15deg) saturate(1.1)' },
-  { name: 'FX-DODGER', f: 'brightness(1.15) contrast(0.85) saturate(0.9) sepia(0.05)' },
-  { name: 'FX-TWILIGHT', f: 'contrast(1.2) brightness(0.9) hue-rotate(210deg) saturate(0.7)' },
-  { name: 'FX-CROSS-PROC', f: 'contrast(1.2) brightness(1.1) sepia(0.3) hue-rotate(-30deg)' },
-  { name: 'FX-CINERAMA', f: 'contrast(1.2) brightness(0.9) saturate(1.2) sepia(0.2)' },
-  { name: 'FX-LOMO', f: 'contrast(1.4) saturate(1.2) sepia(0.2)' },
-  { name: 'FX-1991', f: 'contrast(1.1) saturate(0.5) sepia(0.2) brightness(1.1)' },
-  { name: 'FX-1992', f: 'contrast(0.9) saturate(0.9) sepia(0.2) hue-rotate(20deg)' },
-  { name: 'FX-1993', f: 'contrast(0.8) brightness(1.2) grayscale(0.2)' },
-  { name: 'FX-1994', f: 'sepia(0.4) contrast(1.2) brightness(0.9)' },
-  { name: 'FX-VINTAGE', f: 'sepia(0.6) contrast(1.1) brightness(0.9)' },
-  { name: 'FX-WARM-AMBER', f: 'sepia(0.5) hue-rotate(-10deg) saturate(1.2)' },
-
-  // --- 🏁 B&W SECTION (Black & White) ---
+  // --- 🏁 B&W SECTION ---
   { name: 'BW-STANDARD', f: 'grayscale(1)' },
   { name: 'BW-HICON', f: 'grayscale(1) contrast(1.6) brightness(0.9)' },
   { name: 'BW-LOWCON', f: 'grayscale(1) contrast(0.7) brightness(1.2)' },
@@ -845,20 +866,21 @@ const magicFilters = [
   { name: 'BW-SEPIA', f: 'sepia(1.0) contrast(1.1)' },
   { name: 'BW-WARM', f: 'grayscale(1) sepia(0.3)' },
 
-  // --- 💧 BLUR SECTION (Softness) ---
+  // --- 💧 BLUR SECTION ---
   { name: 'BL-SMART', f: 'blur(0.5px) contrast(1.1)' },
   { name: 'BL-SOFT', f: 'blur(1px) brightness(1.1)' },
   { name: 'BL-MEDIUM', f: 'blur(2px)' },
-  { name: 'BL-HEAVY', f: 'blur(4px)' },
   { name: 'BL-DREAMY', f: 'blur(1.5px) brightness(1.2) saturate(0.8)' },
-  { name: 'BL-GHOST', f: 'blur(1px) grayscale(1) brightness(1.3)' },
 
-  // --- 🌈 SPECIAL COLORS ---
-  { name: 'TEAL-ORANGE', f: 'contrast(1.2) saturate(1.4) sepia(0.3) hue-rotate(-15deg)' }, 
-  { name: 'INFRARED', f: 'hue-rotate(180deg) saturate(2)' },
-  { name: 'MATRIX', f: 'sepia(1) hue-rotate(50deg) saturate(3) contrast(1.2)' },
-  { name: 'GOLDEN-HR', f: 'sepia(0.4) saturate(1.5) contrast(1.1)' },
-  { name: 'OCEAN-BLUE', f: 'hue-rotate(180deg) contrast(1.1) brightness(1.1)' }
+  // --- 🌈 COLORS & POP ART ---
+  { name: 'CLR-HUE-POP', f: 'hue-rotate(90deg) saturate(1.5)' },
+  { name: 'CLR-INVERT', f: 'invert(1)' },
+  { name: 'CLR-NEG-BW', f: 'invert(1) grayscale(1)' },
+  { name: 'CLR-PINK', f: 'sepia(1) hue-rotate(300deg) saturate(1.5)' },
+  { name: 'CLR-BLUE', f: 'sepia(1) hue-rotate(180deg) saturate(1.5)' },
+  { name: 'CLR-PURPLE', f: 'sepia(1) hue-rotate(250deg) saturate(1.5)' },
+  { name: 'POP-ART', f: 'saturate(3.0) contrast(1.5)' },
+  { name: 'POP-WARHOL', f: 'contrast(2.0) saturate(2.0) hue-rotate(45deg)' }
 ];
 
 function toggleFilterUI() {
@@ -926,7 +948,7 @@ function toggleBoundaryLock() {
     d(); playClick();
 }
 
-// --- 🛠️ STABLE DRAWING ENGINE (HYBRID IOS MODE) ---
+// --- 🛠️ STABLE DRAWING ENGINE (BLANK SCREEN FIXED) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
 
@@ -940,7 +962,7 @@ function d(){
       cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
   }
 
-  // 2. Draw User Image (With iPhone Fallback)
+  // 2. Draw User Image (Cleaner Method)
   if(i.src){
       x.save();
       x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.clip(); 
@@ -949,21 +971,10 @@ function d(){
       x.translate(cfg.x, cfg.y);
       x.rotate(cfg.r * Math.PI / 180);
       
-      // A. Try Native Filter
+      // A. APPLY FILTER (Standard)
+      // I removed the dangerous fallback block here that was causing the blank screens.
       if(cfg.filter && cfg.filter !== 'none') { 
           x.filter = cfg.filter; 
-      }
-      
-      // B. iPhone Fallback: If native filter fails or is ignored, use basic composites
-      // This ensures at least basic effects work on older WebViews
-      if (cfg.filter && cfg.filter !== 'none') {
-        if(cfg.filter.includes('grayscale')) x.globalCompositeOperation = 'luminosity';
-        if(cfg.filter.includes('sepia')) {
-            // Draw background sepia overlay
-            x.fillStyle = 'rgba(112, 66, 20, 0.5)';
-            x.fillRect(-w/2, -h/2, w, h);
-            x.globalCompositeOperation = 'destination-atop';
-        }
       }
 
       x.drawImage(i, -w/2, -h/2, w, h);
