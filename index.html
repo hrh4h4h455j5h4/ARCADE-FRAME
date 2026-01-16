@@ -996,9 +996,15 @@ function toggleBoundaryLock() {
               const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
               const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
               const minS = Math.max(reqW/i.width, reqH/i.height);
+              // Auto-zoom if image is too small for the rotation
               if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
-              const rangeX = (i.width*cfg.s - reqW)/2, rangeY = (i.height*cfg.s - reqH)/2;
-              cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
+              
+              const rangeX = (i.width*cfg.s - reqW)/2;
+              const rangeY = (i.height*cfg.s - reqH)/2;
+              
+              // Clamp position so image never leaves the circle
+              cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); 
+              cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
           } 
       }
 
@@ -1016,8 +1022,8 @@ function toggleBoundaryLock() {
           if(cfg.filter && cfg.filter !== 'none' && 'filter' in x) {
               x.filter = cfg.filter;
           }
-          // Emergency Fallback (If browser ignores filter)
           else if (cfg.filter && cfg.filter !== 'none') {
+               // Fallback for older browsers
                if(cfg.filter.includes('grayscale')) x.globalCompositeOperation = 'luminosity';
                if(cfg.filter.includes('sepia')) { x.fillStyle = 'rgba(112, 66, 20, 0.4)'; x.fillRect(-w,-h,w*2,h*2); x.globalCompositeOperation = 'overlay'; }
           }
@@ -1079,21 +1085,22 @@ function toggleBoundaryLock() {
       if(f.src) x.drawImage(f,0,0,800,800); 
     }
 
-    // --- 📂 FILE HANDLING (FIXED: Correctly reads e.target.files) ---
+    // --- 📂 FILE HANDLING (Fixed) ---
     function handleFile(e){
-        // FIX: Ensure we read from target, not event directly
+        // Ensure we read from target to fix "Nothing Showing"
         const files = e.target ? e.target.files : e.files;
         if(!files || !files[0]) return;
         
         const r = new FileReader();
         r.onload = v => {
             const n = new Image();
-            // REMOVED: n.crossOrigin = "Anonymous"; (Keeps uploads working)
+            // REMOVED: crossOrigin = Anonymous (Fixes upload black screen)
             n.onload = () => {
                 i = n;
-                // Reset Position & Calculate Smart Zoom
+                // Reset Position
                 cfg.x = 400; cfg.y = 400; cfg.r = 0;
                 
+                // Smart Scale: Calculate Min Scale to fill circle
                 if(isBoundaryLocked) {
                     const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
                     const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
@@ -1109,7 +1116,7 @@ function toggleBoundaryLock() {
                 const ui = document.getElementById('filter-wrapper');
                 if(ui.style.display !== 'flex') toggleFilterUI(); 
                 
-                d(); // Draw immediately
+                d(); 
             };
             n.src = v.target.result;
         };
@@ -1119,16 +1126,14 @@ function toggleBoundaryLock() {
     function handleFrame(e){
         const files = e.target ? e.target.files : e.files;
         if(!files || !files[0]) return;
-        
         const r = new FileReader();
         r.onload = v => {
             const n = new Image();
-            // REMOVED: n.crossOrigin = "Anonymous"; 
             n.onload = () => {
                 f.src = n.src;
-                cfg.pColor = null; cfg.pType = null; // Reset generated borders
+                cfg.pColor = null; cfg.pType = null;
                 mLbl.innerText = "FRAME OPENING SIZE";
-                d(); // Draw immediately
+                d(); 
             };
             n.src = v.target.result;
         };
@@ -1142,7 +1147,7 @@ function toggleBoundaryLock() {
 
     function resetProject(){ 
         i=new Image(); f=new Image(); 
-        cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none'}; // Reset filter
+        cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none'};
         zSl.value=1; rSl.value=0; mSl.value=375; 
         mLbl.innerText = "CIRCLE SIZE";
         document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
@@ -1155,7 +1160,7 @@ function toggleBoundaryLock() {
     function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
     document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
-    // --- 🖱️ INTERACTION (Touch/Mouse) ---
+    // --- 🖱️ INTERACTION (TOUCH FIX APPLIED) ---
     let isP=false, tStart={x:0,y:0};
     let initialDist = 0, initialScale = 1, initialAngle = 0, initialRot = 0;
 
@@ -1208,6 +1213,7 @@ function toggleBoundaryLock() {
     }
     c.ontouchmove=e=>{
       if(i.src) { e.preventDefault(); }
+      // 1. One Finger Drag (Adjustment)
       if(e.touches.length===1 && isP){
         let scale = 800 / c.offsetWidth;
         let dx = e.touches[0].clientX - tStart.x;
@@ -1216,7 +1222,9 @@ function toggleBoundaryLock() {
         cfg.y += dy * scale;
         tStart={x:e.touches[0].clientX, y:e.touches[0].clientY};
         d();
-      } else if(e.touches.length===2){
+      } 
+      // 2. Two Finger (Rotate/Zoom)
+      else if(e.touches.length===2){
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx*dx + dy*dy);
@@ -1232,8 +1240,7 @@ function toggleBoundaryLock() {
     }
     window.ontouchend=()=>{isP=false;}
 
-    // --- ⚡ NEON GIF ENGINE (The Masterpiece Version / 30 Workers) ---
-    // This uses the Hybrid Blob Import method that bypasses the security block
+    // --- ⚡ NEON GIF ENGINE (30 Workers + Unlocked Drag) ---
     const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
     const workerUrl = URL.createObjectURL(workerBlob);
 
@@ -1295,10 +1302,8 @@ function toggleBoundaryLock() {
     function updateGifTransform() {
         if (!v.src) return;
         const z = parseInt(zoom.value) / 100;
-        // --- UNLOCKED DRAGGING: Allow full movement anywhere ---
         const currentW = renderW * z;
         const currentH = renderH * z;
-        // Removed clamping to allow black bars/free movement as requested
         v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
     }
 
@@ -1334,7 +1339,6 @@ function toggleBoundaryLock() {
         vp.style.pointerEvents = 'none'; msg.innerText = "Processing..."; msg.classList.add('active');
 
         const OUT_SIZE = 480;
-        // --- 30 WORKERS (High Performance) ---
         const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
         const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
         const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
@@ -1382,8 +1386,9 @@ function toggleBoundaryLock() {
         });
     };
 </script>
+<style>#c { touch-action: none !important; }</style>
 <script>
-// --- 🛠️ FIX FOR MAGIC FILTERS BUTTON & POPUPS ---
+// --- 🛠️ FIX FOR MAGIC FILTERS BUTTON ---
 window.onclick = e => {
   initAudio(); 
   
@@ -1415,3 +1420,4 @@ window.onclick = e => {
 </script>
 </body>
 </html>
+
