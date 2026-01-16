@@ -11,10 +11,11 @@
   html { 
       scroll-behavior: smooth; 
       overflow-y: auto; 
-      background-color: #0a0a0c; 
+      background-color: #0a0a0c; /* <--- THIS IS THE FIX (Prevents white bar) */
       height: 100%;
   }
 
+  
   /* DEFAULT (ORIGINAL) THEME */
   body {
     background: #0a0a0c; color: white; font-family: sans-serif;
@@ -53,13 +54,15 @@
 
   /* --- 🌅 NEW THEME: RETRO WAVE (80s/Purple) --- */
   body.theme-retro {
-    background-color: #1a0022; 
+    background-color: #1a0022; /* <--- THIS paints the bottom gap Purple */
     background-image: linear-gradient(to bottom, #2b003b 0%, #1a0022 100%);
     background-attachment: fixed;
     background-size: cover;
     min-height: 100vh;
-  }
+}
 
+
+  }
   /* Retro Grid Floor Effect */
   body.theme-retro::before {
       content: ""; position: fixed; bottom: 0; left: 0; width: 100%; height: 40vh;
@@ -80,7 +83,9 @@
     background-color: #1a0022 !important;
   } 
 
-  /* --- ⚠️ BROWSER DETECTION OVERLAY --- */
+      
+  /* --- ⚠️ BROWSER DETECTION OVERLAY (NEW) --- */
+  /* This hides by default and only shows if Plato/WebView is detected */
   #plato-overlay { 
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: rgba(10, 10, 12, 0.98); z-index: 999999; 
@@ -91,6 +96,7 @@
   .plato-icon { font-size: 50px; margin-bottom: 20px; animation: bounce 1s infinite; }
   .plato-msg { color: #ff0000; font-family: "Arial Black", sans-serif; font-size: 22px; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,0,0,0.6); }
   .plato-desc { color: #eee; font-size: 13px; max-width: 320px; margin-bottom: 30px; line-height: 1.6; font-weight: bold; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; }
+  
   /* FIXED BUTTON STYLE: Blue/Teal (Initial State) */
   .plato-btn { 
       background: #004d4d; /* Deep Teal */
@@ -215,6 +221,7 @@
     #sym-container { max-height: 70vh; overflow-y: scroll; padding-right: 10px; width: 100%; }
     .sym-btn { flex: 1 0 50px; }
   }
+  
   /* --- 🖼️ FRAME STUDIO CSS --- */
   #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; box-sizing: border-box; background: transparent; z-index: 10; flex-shrink: 0; }
   canvas#c { position: absolute; top: 50%; left: 50%; width: 310px; height: 310px; transform: translate(-50%, -50%); z-index: 15; touch-action: pan-y; }
@@ -289,6 +296,7 @@
   .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
   .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; font-size: 16px; white-space: pre-wrap; transition: transform 0.05s ease; }
   .font-item:active { transform: scale(0.98); background: #333; color: #fff; }
+  
   /* --- ✨ SYMBOLS STUDIO CSS --- */
   .sym-box-container { width: 100%; margin-bottom: 15px; }
   .sym-input { width: 100%; background: #000; border: 1px solid #00ffff; color: #00ffff; padding: 12px; font-size: 18px; border-radius: 6px; text-align: center; box-sizing: border-box; outline: none; }
@@ -362,6 +370,7 @@
       <button id="nav-sym" onclick="changeStudio('sym')">✨ Symbols Studio</button>
     </div>
   </div>
+
   <div class="music-section">
     <div class="music-btn" style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; cursor:pointer;" onclick="toggleMusic()">
       <span>MUSIC PLAYER</span> <span id="m-status" style="color:#ff0000;">ON</span>
@@ -433,8 +442,8 @@
     <input type="range" id="z" min="0.1" max="2.5" step="0.01" value="1" oninput="updateZ(this.value)">
     <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
     <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
-    <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">400px</span></div>
-    <input type="range" id="m" min="300" max="400" step="1" value="400" oninput="updateM(this.value)">
+    <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
+    <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
     
     <button id="save" class="btn" onclick="downloadPic()" disabled>DOWNLOAD PICTURE</button>
   </div>
@@ -501,8 +510,7 @@ const swMenu=document.getElementById('switch-menu'), thMenu=document.getElementB
 const zVal=document.getElementById('z-val'), rVal=document.getElementById('r-val'), mVal=document.getElementById('m-val');
 
 let i=new Image(), f=new Image();
-// --- FIX: CHANGED m:375 TO m:400 HERE ---
-let cfg={s:1, m:400, x:400, y:400, r:0, lx:0, ly:0, pColor: null, pType: null};
+let cfg={s:1, m:375, x:400, y:400, r:0, lx:0, ly:0, pColor: null, pType: null};
 let player, musicOn=true, audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -520,22 +528,19 @@ function detectPlato() {
         document.body.style.overflow = 'hidden'; 
     }
 }
-
-// --- RED BUTTON FIX APPLIED HERE ---
 function copyCurrentUrl(e) {
     e.preventDefault();
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
         const btn = e.target;
         btn.innerText = "COPIED! OPEN CHROME/SAFARI";
-        btn.style.background = "#990000";       // Lighter Dark Red (Visible)
-        btn.style.borderColor = "#ff0000";      // Neon Red Border
-        btn.style.color = "#ffffff";            // Force White Text
-        btn.style.boxShadow = "0 0 15px rgba(255,0,0,0.6)"; 
+        btn.style.background = "#4a0000";       
+        btn.style.borderColor = "#ff0000";      
+        btn.style.color = "#ffffff";            
+        btn.style.boxShadow = "0 0 15px rgba(255,0,0,0.5)"; 
     });
 }
 detectPlato(); 
-
 // --- SIDEBAR MENU & THEME LOGIC ---
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; thMenu.style.display = 'none'; playClick(); }
@@ -680,6 +685,7 @@ const symData = {
 };
 function renderSymbols(){ const b=document.getElementById('sym-container'); b.innerHTML=""; for(const[c,s]of Object.entries(symData)){ let t=document.createElement('div'); t.className="cat-title"; t.innerText=c; b.appendChild(t); let g=document.createElement('div'); g.className="sym-grid"; s.forEach(sym=>{ let btn=document.createElement('div'); btn.className="sym-btn"; btn.innerText=sym; btn.onclick=()=>{ const tb=document.getElementById('sym-box'), st=tb.selectionStart, en=tb.selectionEnd; tb.value=tb.value.substring(0,st)+sym+tb.value.substring(en); tb.selectionStart=tb.selectionEnd=st+sym.length; playClick(); }; g.appendChild(btn); }); b.appendChild(g); } }
 renderSymbols();
+
 // --- 🎵 AUDIO ---
 const playlist = [
   "jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", 
@@ -741,7 +747,7 @@ const colorData = {
         {c:'#FF512F', t:'grad-sunset'}, {c:'#D7CCC8', t:'grad-brown'}, {c:'#E0E0E0', t:'grad-silver'},
         {c:'#90A4AE', t:'grad-slate'}, {c:'#616161', t:'grad-charcoal'}, {c:'#000000', t:'grad-black'}
     ],
-    'Basic': [ {c:'#000000'}, {c:'#FFFFFF'}, {c:'#FF0000'}, {c:'#00FF00'}, {c:'#0000FF'}, {c:'#FFFF00'}, {c:'#00FFFF'}, {c:'#FF00FF'}, {c:'#FFA500'}, {c:'#800000'}, {c:'#A52A2A'}, {c:'#808080'} ],
+    'Basic': [ {c:'#000000'}, {c:'#FFFFFF'}, {c:'#FF0000'}, {c:'#00FF00'}, {c:'#0000FF'}, {c:'#FFFF00'}, {c:'#00FFFF'}, {c:'#FF00FF'}, {c:'#FFA500'}, {c:'#800080'}, {c:'#A52A2A'}, {c:'#808080'} ],
     'Metallics': [ {c:'#FFD700', t:'gold'}, {c:'#C0C0C0', t:'silver'}, {c:'#CD7F32', t:'bronze'}, {c:'#D4AF37', t:'gold'}, {c:'#B8860B', t:'gold'}, {c:'#E5E4E2', t:'silver'} ],
     'Grays': [ {c:'#000000'}, {c:'#1a1a1a'}, {c:'#333333'}, {c:'#4d4d4d'}, {c:'#666666'}, {c:'#808080'}, {c:'#999999'}, {c:'#b3b3b3'}, {c:'#cccccc'}, {c:'#e6e6e6'}, {c:'#ffffff'} ],
     'Reds': [ {c:'#5b0000'}, {c:'#800000'}, {c:'#a52a2a'}, {c:'#b22222'}, {c:'#dc143c'}, {c:'#ff0000'}, {c:'#ff4d4d'}, {c:'#ff6666'}, {c:'#fa8072'}, {c:'#e9967a'}, {c:'#ff6347'}, {c:'#cd5c5c'} ],
@@ -920,17 +926,15 @@ function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
-
-// --- FIXED: CHANGED DEFAULT RESET VALUE TO 400 TO FIX GAP ---
 function resetProject(){ 
-    i=new Image(); f=new Image(); cfg={s:1,m:400,x:400,y:400,r:0, pColor:null, pType:null}; 
-    zSl.value=1; rSl.value=0; mSl.value=400; document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+    i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null}; 
+    zSl.value=1; rSl.value=0; mSl.value=375; document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
     d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true;
 }
-
 function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
+
 // --- 🕹️ FRAME STUDIO DRAG LOGIC ---
 let isP=false, tStart={x:0,y:0};
 let initialDist = 0, initialScale = 1, initialAngle = 0, initialRot = 0;
@@ -1160,3 +1164,4 @@ go.onclick = () => {
 </script>
 </body>
 </html>
+
