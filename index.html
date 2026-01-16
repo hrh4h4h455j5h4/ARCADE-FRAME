@@ -807,30 +807,65 @@ function togglePaletteUI() {
     playClick();
 }
 
-// --- ✨ NEW FEATURE: MAGIC FILTERS ENGINE (20 FILTERS) ---
+// --- ✨ NEW FEATURE: MAGIC FILTERS ENGINE (MEGA PACK) ---
 const magicFilters = [
+  // --- 🌟 ESSENTIALS ---
   { name: 'ORIGINAL', f: 'none' },
-  { name: 'ARCADE', f: 'contrast(1.2) saturate(1.5)' },
-  { name: '1985', f: 'sepia(0.4) contrast(1.1) brightness(1.1)' },
-  { name: 'CYBER', f: 'contrast(1.4) hue-rotate(190deg) saturate(1.2)' },
-  { name: 'NOIR', f: 'grayscale(1) contrast(1.2)' },
+  { name: 'BRIGHT', f: 'brightness(1.2) contrast(1.1)' },
+  { name: 'SHARP', f: 'contrast(1.3) brightness(1.1)' },
+  { name: 'MATTE', f: 'contrast(0.9) brightness(1.2) saturate(0.8)' },
+  { name: 'HDR', f: 'contrast(1.4) saturate(1.4) brightness(1.1)' },
+  { name: 'VIVID', f: 'saturate(2.0)' },
+  { name: 'DEEP', f: 'saturate(1.5) brightness(0.9) contrast(1.2)' },
+  
+  // --- 🔮 GLITCH & CYBER (NEW) ---
+  { name: 'GLITCH-A', f: 'saturate(4) hue-rotate(90deg) contrast(1.5)' },
+  { name: 'GLITCH-B', f: 'hue-rotate(180deg) invert(1) contrast(1.2)' },
+  { name: 'X-RAY', f: 'invert(1) grayscale(1)' },
+  { name: 'ALIEN', f: 'hue-rotate(280deg) contrast(1.2) invert(0.8)' },
   { name: 'TOXIC', f: 'hue-rotate(90deg) contrast(1.2) brightness(1.1)' },
+  { name: 'CYBER', f: 'contrast(1.4) hue-rotate(190deg) saturate(1.2)' },
+  { name: 'INFRARED', f: 'hue-rotate(180deg) saturate(2)' },
+  { name: 'ERROR', f: 'saturate(0) brightness(0.5) contrast(3) invert(1)' },
+
+  // --- 🎞️ VINTAGE & RETRO ---
+  { name: '1985', f: 'sepia(0.4) contrast(1.1) brightness(1.1)' },
   { name: 'VHS', f: 'contrast(1.1) brightness(1.2) saturate(0.8) hue-rotate(-10deg)' },
   { name: 'RETRO', f: 'hue-rotate(-30deg) contrast(1.1) saturate(1.3)' },
-  { name: 'DRAMA', f: 'contrast(1.5) grayscale(0.2)' },
-  { name: 'SEPIA', f: 'sepia(1)' },
+  { name: 'POLAROID', f: 'contrast(0.8) brightness(1.2) sepia(0.3)' },
+  { name: 'KODAK', f: 'saturate(1.5) contrast(1.1) hue-rotate(-10deg)' },
+  { name: '1970', f: 'sepia(0.5) hue-rotate(-20deg) contrast(0.9)' },
+  { name: 'FADED', f: 'contrast(0.7) brightness(1.3) sepia(0.2)' },
   { name: 'RUST', f: 'sepia(0.5) hue-rotate(-30deg) saturate(1.2)' },
-  { name: 'HDR', f: 'contrast(1.4) saturate(1.4) brightness(1.1)' },
-  { name: 'MATTE', f: 'contrast(0.9) brightness(1.2) saturate(0.8)' },
-  { name: 'VIVID', f: 'saturate(2.0)' },
-  { name: 'SHARP', f: 'contrast(1.3) brightness(1.1)' },
-  { name: 'BRIGHT', f: 'brightness(1.3) contrast(1.1)' },
+  { name: 'SEPIA', f: 'sepia(1)' },
+
+  // --- 🎨 CANVA / STUDIO STYLES (NEW) ---
+  { name: 'GOLDEN', f: 'sepia(0.4) saturate(1.5) contrast(1.1)' },
+  { name: 'NORDIC', f: 'contrast(0.9) saturate(0.5) brightness(1.1)' },
+  { name: 'DREAMY', f: 'blur(0.5px) brightness(1.2) saturate(0.8)' },
+  { name: 'WARMTH', f: 'sepia(0.3) saturate(1.2)' },
+  { name: 'COOL', f: 'hue-rotate(180deg) sepia(0.2) saturate(0.8)' },
+  { name: 'CINEMA', f: 'contrast(1.5) brightness(0.9) saturate(1.2)' },
+  { name: 'VAMP', f: 'brightness(0.8) saturate(1.5) contrast(1.3)' },
+  { name: 'PASTEL', f: 'brightness(1.2) saturate(0.8) contrast(0.9)' },
+  { name: 'POP-ART', f: 'saturate(3) contrast(1.3) brightness(1.2)' },
+  
+  // --- 🌑 MONOCHROME & NOIR ---
+  { name: 'NOIR', f: 'grayscale(1) contrast(1.2)' },
+  { name: 'INK', f: 'grayscale(1) contrast(2.0) brightness(0.9)' },
+  { name: 'BW-SOFT', f: 'grayscale(1) brightness(1.1)' },
+  { name: 'MOON', f: 'grayscale(1) hue-rotate(200deg) brightness(0.8)' },
+  { name: 'DRAMA', f: 'contrast(1.5) grayscale(0.2)' },
+  
+  // --- 🌈 ATMOSPHERE ---
   { name: 'OCEAN', f: 'hue-rotate(180deg) contrast(1.1)' },
   { name: 'SUNSET', f: 'hue-rotate(-20deg) saturate(1.5)' },
   { name: 'NIGHT', f: 'brightness(0.7) contrast(1.2) saturate(1.2)' },
-  { name: 'INVERT', f: 'invert(1)' },
-  { name: 'BW-SOFT', f: 'grayscale(1) brightness(1.1)' }
+  { name: 'FOREST', f: 'sepia(0.5) hue-rotate(60deg) saturate(0.8)' },
+  { name: 'NEON-G', f: 'grayscale(1) drop-shadow(0 0 0 #00ff00)' }, // Experimental
+  { name: 'INVERT', f: 'invert(1)' }
 ];
+
 
 function toggleFilterUI() {
     const el = document.getElementById('filter-wrapper');
