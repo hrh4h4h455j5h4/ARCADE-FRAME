@@ -994,44 +994,47 @@ function toggleBoundaryLock() {
     d(); playClick();
 }
 
+// --- 🛠️ SAFARI-OPTIMIZED DRAWING FUNCTION ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   
-  // 1. Boundary Lock Calculation
-  if(i.src){
-      if (isBoundaryLocked) {
-          const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-          const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-          const minS = Math.max(reqW/i.width, reqH/i.height);
-          if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
-          const rangeX = (i.width*cfg.s - reqW)/2, rangeY = (i.height*cfg.s - reqH)/2;
-          cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
-      } 
+  // 1. Boundary Lock Calculation (Math Only)
+  if(i.src && isBoundaryLocked){
+      const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+      const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+      const minS = Math.max(reqW/i.width, reqH/i.height);
+      if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
+      const rangeX = (i.width*cfg.s - reqW)/2, rangeY = (i.height*cfg.s - reqH)/2;
+      cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
   }
 
-  // 2. Draw User Image (With Filter)
-  x.save(); 
-  x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
-  
+  // 2. Draw User Image (Using 'Source-In' for Safari Compatibility)
   if(i.src){ 
-      let w=i.width*cfg.s, h=i.height*cfg.s; 
       x.save(); 
-      x.translate(cfg.x,cfg.y); 
-      x.rotate(cfg.r*Math.PI/180); 
       
-      // ✨ APPLY MAGIC FILTER HERE ✨
+      // A. Draw the Mask (The Circle)
+      x.beginPath(); x.arc(400,400,cfg.m,0,6.28); 
+      x.fillStyle = '#000000'; x.fill(); 
+
+      // B. Set Composite Mode (Keeps image ONLY inside the circle)
+      x.globalCompositeOperation = 'source-in';
+
+      // C. Apply Filter (Now works on Safari because we aren't using clip())
       if(cfg.filter) x.filter = cfg.filter;
       
+      // D. Draw the Image
+      let w=i.width*cfg.s, h=i.height*cfg.s; 
+      x.translate(cfg.x,cfg.y); 
+      x.rotate(cfg.r*Math.PI/180); 
       x.drawImage(i,-w/2,-h/2,w,h); 
-      x.restore(); 
+      
+      x.restore(); // Resets Composite Mode & Filter for the border
   } 
-  x.restore(); 
 
-  // 3. Draw Frame/Border (NO Filter)
+  // 3. Draw Frame/Border (Standard Layering)
   if (cfg.pColor) {
       x.save(); 
-      // Reset filter so the border doesn't get blurry/colored
-      x.filter = 'none'; 
+      x.filter = 'none'; // Ensure border is crisp
       
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const shadowCol = cfg.pColor;
@@ -1042,6 +1045,7 @@ function d(){
           x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
           x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
           x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 0; x.stroke();
+          // Inner Shadow for Neon
           x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
           x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); 
           x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke();
@@ -1064,8 +1068,7 @@ function d(){
           if (cfg.pType && gradientDefs[cfg.pType]) {
              const cols = gradientDefs[cfg.pType];
              let g = x.createLinearGradient(0, 0, 800, 800);
-             g.addColorStop(0, cols[0]);
-             g.addColorStop(1, cols[1]);
+             g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]);
              x.strokeStyle = g;
           } 
           else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
@@ -1081,8 +1084,8 @@ function d(){
       }
       x.restore();
   }
-  if(f.src) x.drawImage(f,0,0,800,800); 
 }
+
 
 function handleFile(e){ 
   let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{
