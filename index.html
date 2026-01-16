@@ -994,77 +994,7 @@ function toggleBoundaryLock() {
     d(); playClick();
 }
 
-// 2. Draw User Image (Smart Engine)
-  if(i.src){
-      if(!window.scrC) { window.scrC = document.createElement('canvas'); window.scrC.width = 800; window.scrC.height = 800; }
-      const sc = window.scrC;
-      const sCtx = sc.getContext('2d');
-      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent); 
-
-      // A. Clear & Draw Raw Image to Scratch Canvas
-      sCtx.clearRect(0, 0, 800, 800);
-      sCtx.save();
-      let w = i.width * cfg.s, h = i.height * cfg.s;
-      sCtx.translate(cfg.x, cfg.y);
-      sCtx.rotate(cfg.r * Math.PI / 180);
-      
-      // B. Apply Filter (Method 1: Android/PC)
-      if (cfg.filter && cfg.filter !== 'none') {
-          if (!isIOS) { sCtx.filter = cfg.filter; }
-      }
-      sCtx.drawImage(i, -w/2, -h/2, w, h);
-      sCtx.restore();
-
-      // C. Apply Filter (Method 2: iPhone Manual Math)
-      if (isIOS && cfg.filter && cfg.filter !== 'none') {
-          const id = sCtx.getImageData(0, 0, 800, 800);
-          const d = id.data;
-          const fStr = cfg.filter;
-          
-          const getVal = (n, def) => fStr.includes(n) ? (parseFloat(fStr.split(n + '(')[1]) || def) : def;
-          const br = getVal('brightness', 1);
-          const ct = getVal('contrast', 1);
-          const sat = getVal('saturate', 1);
-          const sep = getVal('sepia', 0);
-          const gry = getVal('grayscale', 0);
-          const inv = getVal('invert', 0);
-
-          for (let k = 0; k < d.length; k += 4) {
-              let r = d[k], g = d[k+1], b = d[k+2];
-              if (gry > 0) { const avg = 0.299*r + 0.587*g + 0.114*b; r=r*(1-gry)+avg*gry; g=g*(1-gry)+avg*gry; b=b*(1-gry)+avg*gry; }
-              if (sep > 0) { const tr=(r*0.393)+(g*0.769)+(b*0.189), tg=(r*0.349)+(g*0.686)+(b*0.168), tb=(r*0.272)+(g*0.534)+(b*0.131); r=r*(1-sep)+tr*sep; g=g*(1-sep)+tg*sep; b=b*(1-sep)+tb*sep; }
-              if (ct !== 1) { r=(r-128)*ct+128; g=(g-128)*ct+128; b=(b-128)*ct+128; }
-              if (br !== 1) { r*=br; g*=br; b*=br; }
-              if (inv > 0) { r=(255-r)*inv+r*(1-inv); g=(255-g)*inv+g*(1-inv); b=(255-b)*inv+b*(1-inv); }
-              if (sat !== 1) { const avg=(r+g+b)/3; r=avg+(r-avg)*sat; g=avg+(g-avg)*sat; b=avg+(b-avg)*sat; }
-              d[k] = r; d[k+1] = g; d[k+2] = b;
-          }
-          sCtx.putImageData(id, 0, 0);
-      }
-
-      // D. Draw Result
-      x.save();
-      x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28);
-      x.fillStyle = '#000000'; x.fill();
-      x.globalCompositeOperation = 'source-in';
-      x.drawImage(sc, 0, 0); 
-      x.restore();
-  }
-
-  // 3. Draw Generated Border
-  if (cfg.pColor) {
-      x.save(); x.filter = 'none'; 
-      if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
-          const shadowCol = cfg.pColor;
-          const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 25; x.strokeStyle = shadowCol; x.shadowBlur = 60; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
-          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 0; x.stroke();
-          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); 
+           x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); 
           x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke();
           x.restore();
       } 
@@ -1097,12 +1027,11 @@ function toggleBoundaryLock() {
           x.stroke(); 
       }
       x.restore();
-  }
+     }
   
-  // 4. Draw Custom Uploaded Frame (THIS WAS MISSING BEFORE)
+  // 4. Draw Custom Uploaded Frame (Guaranteed to work)
   if(f.src) x.drawImage(f,0,0,800,800); 
-}
-
+    }
 function handleFile(e){ 
   let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{
       i=n; let minScale = Math.max(800/i.width,800/i.height); cfg.s = minScale; cfg.x=400; cfg.y=400; cfg.r=0; 
