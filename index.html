@@ -1211,8 +1211,7 @@ go.onclick = () => {
             const finalData = reader.result; v.style.display = 'none'; o.src = finalData; o.style.display = 'block'; 
             dl.href = finalData; dl.download = `Arcade_GIF_${Date.now()}.gif`; dlBox.style.display = 'block'; resetBox.style.display = 'block'; 
             msg.classList.remove('active'); document.getElementById('goBox').style.display = 'none'; isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
-            const autoLink = document.createElement('a'); autoLink.href = finalData; autoLink.download = dl.download;
-            document.body.appendChild(autoLink); autoLink.click(); document.body.removeChild(autoLink);
+            // Manual download only: The autoLink click logic has been removed to ensure the user must click the button.
         }; reader.readAsDataURL(blob);
     });
 };
@@ -1221,4 +1220,3 @@ window.onclick = e => { initAudio(); if (panel.classList.contains('open') && !pa
 </script>
 </body>
 </html>
-
