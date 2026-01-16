@@ -11,10 +11,9 @@
   html { 
       scroll-behavior: smooth; 
       overflow-y: auto; 
-      background-color: #0a0a0c; /* <--- THIS IS THE FIX (Prevents white bar) */
+      background-color: #0a0a0c; /* <--- SAFETY NET: Prevents white bar glitches */
       height: 100%;
   }
-
   
   /* DEFAULT (ORIGINAL) THEME */
   body {
@@ -51,7 +50,6 @@
   body.theme-arcade h1 { color: #00ff00; text-shadow: 4px 4px 0px #005500; }
   body.theme-arcade .menu-toggle { border: 2px solid #00ff00; color: #00ff00; }
   body.theme-arcade .studio-sec { border-left: 1px solid #003300; border-right: 1px solid #003300; padding: 10px; }
-
   /* --- 🌅 NEW THEME: RETRO WAVE (80s/Purple) --- */
   body.theme-retro {
     background-color: #1a0022; /* <--- THIS paints the bottom gap Purple */
@@ -59,10 +57,8 @@
     background-attachment: fixed;
     background-size: cover;
     min-height: 100vh;
-}
-
-
   }
+  
   /* Retro Grid Floor Effect */
   body.theme-retro::before {
       content: ""; position: fixed; bottom: 0; left: 0; width: 100%; height: 40vh;
@@ -83,7 +79,6 @@
     background-color: #1a0022 !important;
   } 
 
-      
   /* --- ⚠️ BROWSER DETECTION OVERLAY (NEW) --- */
   /* This hides by default and only shows if Plato/WebView is detected */
   #plato-overlay { 
@@ -124,6 +119,24 @@
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; border: 2px solid #0a0a0c; }
   ::-webkit-scrollbar-thumb:hover { background: #00ffff; }
 
+  /* --- ✨ NEW FEATURE: MAGIC FILTERS MENU CSS --- */
+  #filter-wrapper { display: none; flex-direction: column; width: 100%; margin-top: 5px; background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px; box-sizing: border-box; }
+  #filter-wrapper.active { display: flex; animation: slideDown 0.3s ease; }
+  
+  .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .filter-scroll::-webkit-scrollbar { display: none; }
+  
+  .filter-btn { 
+    flex: 0 0 70px; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    background: transparent; border: none; cursor: pointer; opacity: 0.7; transition: 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active-filter { opacity: 1; transform: scale(1.05); }
+  .filter-btn.active-filter .filter-preview { border-color: #00ffff; box-shadow: 0 0 8px #00ffff; }
+  
+  .filter-preview { width: 60px; height: 60px; border-radius: 6px; border: 2px solid #444; object-fit: cover; background: #000; }
+  .filter-name { color: #fff; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+  
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   /* --- NAVIGATION BUTTONS --- */
   .menu-toggle { 
     position: absolute; 
@@ -221,7 +234,6 @@
     #sym-container { max-height: 70vh; overflow-y: scroll; padding-right: 10px; width: 100%; }
     .sym-btn { flex: 1 0 50px; }
   }
-  
   /* --- 🖼️ FRAME STUDIO CSS --- */
   #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; box-sizing: border-box; background: transparent; z-index: 10; flex-shrink: 0; }
   canvas#c { position: absolute; top: 50%; left: 50%; width: 310px; height: 310px; transform: translate(-50%, -50%); z-index: 15; touch-action: pan-y; }
@@ -407,11 +419,17 @@
   <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
     <button id="ui-toggle-btn" class="btn" style="border-color:#ffcc00; color:#ffcc00; margin-bottom:10px;" onclick="toggleFrameUI()">👁️ HIDE MENU BUTTONS</button>
-    
     <div id="frame-btn-group">
         <label class="btn" onclick="playClick()">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
         <label class="btn btn-r" onclick="playClick()">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
         
+        <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="toggleFilterUI()">MAGIC FILTERS ✨</button>
+        
+        <div id="filter-wrapper">
+            <div class="filter-scroll" id="filter-list">
+                </div>
+        </div>
+
         <button class="btn" style="border-color:#ffffff; color:#ffffff;" onclick="togglePaletteUI()">COLOR PALETTE 🎨</button>
         
         <div id="palette-wrapper">
@@ -440,14 +458,17 @@
 
     <div class="lbl">ZOOM <span id="z-val" class="val-tag">100%</span></div>
     <input type="range" id="z" min="0.1" max="2.5" step="0.01" value="1" oninput="updateZ(this.value)">
+    
     <div class="lbl">ROTATE <span id="r-val" class="val-tag">0°</span></div>
     <input type="range" id="r" min="0" max="360" step="1" value="0" oninput="updateR(this.value)">
-    <div class="lbl">CIRCLE SIZE <span id="m-val" class="val-tag">375px</span></div>
+    
+    <div class="lbl"><span id="m-lbl">CIRCLE SIZE</span> <span id="m-val" class="val-tag">375px</span></div>
     <input type="range" id="m" min="300" max="400" step="1" value="375" oninput="updateM(this.value)">
     
     <button id="save" class="btn" onclick="downloadPic()" disabled>DOWNLOAD PICTURE</button>
   </div>
 </div>
+
 <div id="font-studio" class="studio-sec">
   <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
   <div class="lbl">TAP TO COPY <span class="val-tag" id="font-count">0 STYLES</span></div>
@@ -508,9 +529,11 @@ const panel=document.getElementById('menu-panel'), mStat=document.getElementById
 const sName=document.getElementById('studio-name'), sSub=document.getElementById('studio-sub');
 const swMenu=document.getElementById('switch-menu'), thMenu=document.getElementById('theme-menu');
 const zVal=document.getElementById('z-val'), rVal=document.getElementById('r-val'), mVal=document.getElementById('m-val');
+const mLbl=document.getElementById('m-lbl'); // New reference for Smart Label
 
 let i=new Image(), f=new Image();
-let cfg={s:1, m:375, x:400, y:400, r:0, lx:0, ly:0, pColor: null, pType: null};
+// UPDATED CFG: Added 'filter' property for the new engine
+let cfg={s:1, m:375, x:400, y:400, r:0, lx:0, ly:0, pColor: null, pType: null, filter: 'none'}; 
 let player, musicOn=true, audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -541,6 +564,7 @@ function copyCurrentUrl(e) {
     });
 }
 detectPlato(); 
+
 // --- SIDEBAR MENU & THEME LOGIC ---
 function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggle('open'); playClick(); }
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; thMenu.style.display = 'none'; playClick(); }
@@ -551,9 +575,31 @@ window.onclick = e => {
   if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); }
   if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; playClick(); }
   if (thMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { thMenu.style.display = 'none'; playClick(); }
+  
+  // Close Filter Menu if clicking outside
+  const fw = document.getElementById('filter-wrapper');
+  if (fw.style.display === 'flex' && !fw.contains(e.target) && !e.target.innerText.includes('MAGIC FILTERS')) {
+      fw.style.display = 'none';
+      const btn = document.querySelector("button[onclick='toggleFilterUI()']");
+      if(btn) { btn.innerHTML = "MAGIC FILTERS ✨"; btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff"; }
+  }
 };
 
-// --- 🎨 THEME ENGINE (NEW FEATURE) ---
+// --- 🎵 AUDIO ---
+const playlist = [
+  "jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", 
+  "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ", "MedT9ECothA", 
+  "eAdtqDV06Ho", "2kzQ272Le8Q", "0qCL3Sz1--M", "2UN1ZVbBelU", 
+  "iDVKMdnvgl8", "9JMjZbIpmS8", "TNGsftqag6M", "GedLli_YXEI"
+];
+
+function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
+function onYouTubeIframeAPIReady(){ const rId = playlist[Math.floor(Math.random() * playlist.length)]; const sel = document.querySelector('.station-select'); if(sel) sel.value = rId; player=new YT.Player('yt-player',{height:'0',width:'0',videoId:rId,playerVars:{'autoplay':1,'loop':1,'playlist':rId,'mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
+function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
+function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
+function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
+// --- 🎨 THEME ENGINE ---
 function setTheme(theme) {
     // 1. Remove old theme classes
     document.body.classList.remove('theme-pro', 'theme-arcade', 'theme-retro');
@@ -685,22 +731,6 @@ const symData = {
 };
 function renderSymbols(){ const b=document.getElementById('sym-container'); b.innerHTML=""; for(const[c,s]of Object.entries(symData)){ let t=document.createElement('div'); t.className="cat-title"; t.innerText=c; b.appendChild(t); let g=document.createElement('div'); g.className="sym-grid"; s.forEach(sym=>{ let btn=document.createElement('div'); btn.className="sym-btn"; btn.innerText=sym; btn.onclick=()=>{ const tb=document.getElementById('sym-box'), st=tb.selectionStart, en=tb.selectionEnd; tb.value=tb.value.substring(0,st)+sym+tb.value.substring(en); tb.selectionStart=tb.selectionEnd=st+sym.length; playClick(); }; g.appendChild(btn); }); b.appendChild(g); } }
 renderSymbols();
-
-// --- 🎵 AUDIO ---
-const playlist = [
-  "jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", 
-  "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ", "MedT9ECothA", 
-  "eAdtqDV06Ho", "2kzQ272Le8Q", "0qCL3Sz1--M", "2UN1ZVbBelU", 
-  "iDVKMdnvgl8", "9JMjZbIpmS8", "TNGsftqag6M", "GedLli_YXEI"
-];
-
-function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
-function onYouTubeIframeAPIReady(){ const rId = playlist[Math.floor(Math.random() * playlist.length)]; const sel = document.querySelector('.station-select'); if(sel) sel.value = rId; player=new YT.Player('yt-player',{height:'0',width:'0',videoId:rId,playerVars:{'autoplay':1,'loop':1,'playlist':rId,'mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
-function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
-function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
-function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
-function playShutter(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type='square'; o.frequency.setValueAtTime(150, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
-
 // --- 🌈 GRADIENT DEFINITIONS ---
 const gradientDefs = {
     'grad-ruby': ['#FF512F', '#DD2476'], 'grad-red': ['#FF4B4B', '#C00000'], 'grad-crimson': ['#DC143C', '#8B0000'],
@@ -777,6 +807,85 @@ function togglePaletteUI() {
     playClick();
 }
 
+// --- ✨ NEW FEATURE: MAGIC FILTERS ENGINE (20 FILTERS) ---
+const magicFilters = [
+  { name: 'ORIGINAL', f: 'none' },
+  { name: 'ARCADE', f: 'contrast(1.2) saturate(1.5)' },
+  { name: '1985', f: 'sepia(0.4) contrast(1.1) brightness(1.1)' },
+  { name: 'CYBER', f: 'contrast(1.4) hue-rotate(190deg) saturate(1.2)' },
+  { name: 'NOIR', f: 'grayscale(1) contrast(1.2)' },
+  { name: 'TOXIC', f: 'hue-rotate(90deg) contrast(1.2) brightness(1.1)' },
+  { name: 'VHS', f: 'contrast(1.1) brightness(1.2) saturate(0.8) hue-rotate(-10deg)' },
+  { name: 'RETRO', f: 'hue-rotate(-30deg) contrast(1.1) saturate(1.3)' },
+  { name: 'DRAMA', f: 'contrast(1.5) grayscale(0.2)' },
+  { name: 'SEPIA', f: 'sepia(1)' },
+  { name: 'RUST', f: 'sepia(0.5) hue-rotate(-30deg) saturate(1.2)' },
+  { name: 'HDR', f: 'contrast(1.4) saturate(1.4) brightness(1.1)' },
+  { name: 'MATTE', f: 'contrast(0.9) brightness(1.2) saturate(0.8)' },
+  { name: 'VIVID', f: 'saturate(2.0)' },
+  { name: 'SHARP', f: 'contrast(1.3) brightness(1.1)' },
+  { name: 'BRIGHT', f: 'brightness(1.3) contrast(1.1)' },
+  { name: 'OCEAN', f: 'hue-rotate(180deg) contrast(1.1)' },
+  { name: 'SUNSET', f: 'hue-rotate(-20deg) saturate(1.5)' },
+  { name: 'NIGHT', f: 'brightness(0.7) contrast(1.2) saturate(1.2)' },
+  { name: 'INVERT', f: 'invert(1)' },
+  { name: 'BW-SOFT', f: 'grayscale(1) brightness(1.1)' }
+];
+
+function toggleFilterUI() {
+    const el = document.getElementById('filter-wrapper');
+    const btn = document.querySelector("button[onclick='toggleFilterUI()']");
+    if(el.style.display === 'flex') {
+        el.style.display = 'none';
+        btn.innerHTML = "MAGIC FILTERS ✨";
+        btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff";
+    } else {
+        el.style.display = 'flex';
+        el.classList.add('active');
+        btn.innerHTML = "CLOSE FILTERS ✖";
+        btn.style.color = "#ff00ff"; btn.style.borderColor = "#ff00ff";
+        if(document.getElementById('filter-list').children.length === 0) renderFilters();
+    }
+    playClick();
+}
+
+function renderFilters() {
+    const list = document.getElementById('filter-list');
+    list.innerHTML = '';
+    const previewSrc = i.src || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Use uploaded img or placeholder
+    
+    magicFilters.forEach(mf => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn';
+        
+        const img = document.createElement('img');
+        img.className = 'filter-preview';
+        img.src = previewSrc;
+        img.style.filter = mf.f; // CSS Preview (Fast)
+        
+        const span = document.createElement('span');
+        span.className = 'filter-name';
+        span.innerText = mf.name;
+        
+        btn.appendChild(img);
+        btn.appendChild(span);
+        
+        btn.onclick = () => { applyFilter(mf.f, btn); };
+        list.appendChild(btn);
+    });
+}
+
+function applyFilter(filterVal, btn) {
+    cfg.filter = filterVal;
+    
+    // Highlight active button
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+    if(btn) btn.classList.add('active-filter');
+    
+    d(); // Redraw canvas with filter
+    playClick();
+}
+
 function renderCat(cat) {
     playClick();
     document.querySelectorAll('.cat-btn').forEach(b => {
@@ -817,12 +926,12 @@ function renderCat(cat) {
         grid.classList.add('show');
     }, 10);
 }
-
 function setPlainFrame(color, type=null) {
     f = new Image(); 
     document.getElementById('u2').value = ''; 
     cfg.pColor = color; 
     cfg.pType = type; 
+    mLbl.innerText = "FRAME OPENING SIZE"; // Smart Label update
     d(); 
     playClick();
 }
@@ -846,6 +955,8 @@ function toggleBoundaryLock() {
 
 function d(){ 
   x.clearRect(0,0,800,800); 
+  
+  // 1. Boundary Lock Calculation
   if(i.src){
       if (isBoundaryLocked) {
           const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
@@ -857,12 +968,30 @@ function d(){
       } 
   }
 
-  x.save(); x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
-  if(i.src){ let w=i.width*cfg.s, h=i.height*cfg.s; x.save(); x.translate(cfg.x,cfg.y); x.rotate(cfg.r*Math.PI/180); x.drawImage(i,-w/2,-h/2,w,h); x.restore(); } 
+  // 2. Draw User Image (With Filter)
+  x.save(); 
+  x.beginPath(); x.arc(400,400,cfg.m,0,6.28); x.clip(); 
+  
+  if(i.src){ 
+      let w=i.width*cfg.s, h=i.height*cfg.s; 
+      x.save(); 
+      x.translate(cfg.x,cfg.y); 
+      x.rotate(cfg.r*Math.PI/180); 
+      
+      // ✨ APPLY MAGIC FILTER HERE ✨
+      if(cfg.filter) x.filter = cfg.filter;
+      
+      x.drawImage(i,-w/2,-h/2,w,h); 
+      x.restore(); 
+  } 
   x.restore(); 
 
+  // 3. Draw Frame/Border (NO Filter)
   if (cfg.pColor) {
       x.save(); 
+      // Reset filter so the border doesn't get blurry/colored
+      x.filter = 'none'; 
+      
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const shadowCol = cfg.pColor;
           const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
@@ -918,19 +1047,38 @@ function handleFile(e){
   let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{
       i=n; let minScale = Math.max(800/i.width,800/i.height); cfg.s = minScale; cfg.x=400; cfg.y=400; cfg.r=0; 
       if (isBoundaryLocked) { zSl.min = minScale; } else { zSl.min = 0.1; } zSl.max = minScale * 2.5; zSl.value = cfg.s; 
+      renderFilters(); // Generate previews for new image
       d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
     }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); 
 }
-function handleFrame(e){ let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{f=n; cfg.pColor=null; cfg.pType=null; d(); playClick();}; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); }
+
+function handleFrame(e){ 
+    let r=new FileReader(); r.onload=v=>{ let n=new Image(); n.onload=()=>{
+        f=n; cfg.pColor=null; cfg.pType=null; 
+        mLbl.innerText = "FRAME OPENING SIZE"; // ✨ Smart Label Change
+        d(); playClick();
+    }; n.src=v.target.result; }; r.readAsDataURL(e.target.files[0]); 
+}
+
 function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
+
 function resetProject(){ 
-    i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null}; 
-    zSl.value=1; rSl.value=0; mSl.value=375; document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+    i=new Image(); f=new Image(); 
+    cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none'}; // Reset filter
+    zSl.value=1; rSl.value=0; mSl.value=375; 
+    mLbl.innerText = "CIRCLE SIZE"; // Reset Smart Label
+    document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+    
+    // Reset Filter UI
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+    document.getElementById('filter-list').innerHTML = '';
+    
     d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true;
 }
+
 function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
@@ -954,6 +1102,7 @@ c.addEventListener('drop', (e) => {
                     cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
                     if(isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
                     zSl.max = minScale * 2.5; zSl.value = minScale;
+                    renderFilters(); // Generate previews
                     d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
                 }; n.src = v.target.result;
             }; reader.readAsDataURL(file);
