@@ -1311,6 +1311,37 @@ go.onclick = () => {
     });
 };
 </script>
+    <script>
+// --- 🛠️ FIX FOR MAGIC FILTERS BUTTON ---
+window.onclick = e => {
+  initAudio(); 
+  
+  // Logic for Side Menu
+  if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { 
+      panel.classList.remove('open'); playClick(); 
+  }
+  
+  // Logic for Switch/Theme Dropdowns
+  if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { 
+      swMenu.style.display = 'none'; playClick(); 
+  }
+  if (thMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { 
+      thMenu.style.display = 'none'; playClick(); 
+  }
+  
+  // --- FIXED FILTER LOGIC ---
+  const fw = document.getElementById('filter-wrapper');
+  if (fw.style.display === 'flex' && !fw.contains(e.target) && !e.target.innerText.includes('FILTERS')) {
+      fw.style.display = 'none';
+      const btn = document.querySelector("button[onclick='toggleFilterUI()']");
+      if(btn) { 
+          btn.innerHTML = "MAGIC FILTERS ✨"; 
+          btn.style.color = "#00ffff"; 
+          btn.style.borderColor = "#00ffff"; 
+      }
+  }
+};
+</script>
 </body>
 </html>
 
