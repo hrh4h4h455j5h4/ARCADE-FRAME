@@ -808,106 +808,67 @@ function setPlainFrame(color, type=null) {
     d(); 
     playClick();
 }
-// --- 🏆 THE ULTIMATE MASTER COLLECTION (100+ PRO LOOKS) ---
 const magicFilters = [
-    { name: 'ORIGINAL', f: 'none' },
-    { name: 'AUTO-ENHANCE ✨', f: 'contrast(1.15) saturate(1.25) brightness(1.05) sepia(0.05)' },
+  { name: 'ORIGINAL', f: 'none' },
+  { name: 'AUTO-PRO ✨', f: 'contrast(1.1) saturate(1.1) brightness(1.05)' },
 
-    // --- 📸 INSTAGRAM CLASSICS ---
-    { name: 'CLARENDON', f: 'contrast(1.2) brightness(1.1) saturate(1.1) hue-rotate(5deg)' },
-    { name: 'GINGHAM', f: 'brightness(1.05) sepia(0.2) contrast(0.9) saturate(0.9)' },
-    { name: 'LARK', f: 'brightness(1.1) contrast(0.9) saturate(1.2) hue-rotate(-5deg)' },
-    { name: 'JUNO', f: 'contrast(1.2) saturate(1.4) brightness(1.05) sepia(0.1)' },
-    { name: 'LO-FI', f: 'contrast(1.4) saturate(1.5)' },
-    { name: 'ADEN', f: 'hue-rotate(-20deg) contrast(0.9) saturate(0.85) brightness(1.15)' },
-    { name: 'LUDWIG', f: 'contrast(1.1) brightness(1.1) sepia(0.2)' },
-    { name: 'X-PRO II', f: 'sepia(0.3) contrast(1.3) saturate(1.6) brightness(0.9)' },
+  // --- 📱 VSCO PREMIUM "FILM X" SERIES ---
+  { name: 'VSCO-A4 (Warm)', f: 'contrast(0.95) saturate(1.2) sepia(0.1) brightness(1.02)' },
+  { name: 'VSCO-A6 (Clean)', f: 'saturate(1.1) brightness(1.05) contrast(1.05) sepia(0.05)' },
+  { name: 'VSCO-C1 (Vibrant)', f: 'saturate(1.4) contrast(1.1) brightness(1.05) hue-rotate(-2deg)' },
+  { name: 'VSCO-G3 (Portrait)', f: 'contrast(1.1) saturate(1.2) brightness(1.0) sepia(0.15)' },
+  { name: 'VSCO-M5 (Moody)', f: 'contrast(0.9) saturate(0.8) sepia(0.25) brightness(0.95)' },
+  { name: 'VSCO-P5 (Instant)', f: 'hue-rotate(180deg) saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.1)' },
+  { name: 'VSCO-S2 (Bright)', f: 'brightness(1.15) saturate(1.1) contrast(0.95)' },
+  { name: 'VSCO-B1 (Classic BW)', f: 'grayscale(1) contrast(1.1) brightness(1.1)' },
+  { name: 'VSCO-B5 (High Contrast BW)', f: 'grayscale(1) contrast(1.4) brightness(0.9)' },
+  { name: 'VSCO-L1 (Minimal)', f: 'contrast(0.9) saturate(0.9) brightness(1.1)' },
 
-    // --- 📱 VSCO PREMIUM SERIES (Film Aesthetic) ---
-    { name: 'VSCO-A6', f: 'saturate(1.1) brightness(1.05) contrast(1.05) sepia(0.05)' },
-    { name: 'VSCO-M5', f: 'contrast(0.9) saturate(0.8) sepia(0.25) brightness(0.95)' },
-    { name: 'VSCO-C1', f: 'saturate(1.4) contrast(1.1) brightness(1.05) hue-rotate(-2deg)' },
-    { name: 'VSCO-G3', f: 'contrast(1.1) saturate(1.2) brightness(1.0) sepia(0.15)' },
-    { name: 'VSCO-P5', f: 'hue-rotate(180deg) saturate(0.8) contrast(1.1) brightness(1.1) sepia(0.1)' },
-    { name: 'VSCO-B1', f: 'grayscale(1) contrast(1.1) brightness(1.1)' },
-    { name: 'VSCO-S2', f: 'brightness(1.15) saturate(1.1) contrast(0.95)' },
-    { name: 'VSCO-A4', f: 'contrast(0.95) saturate(1.2) sepia(0.1) brightness(1.02)' },
+  // --- 🎨 ADOBE LIGHTROOM PRO PRESETS ---
+  { name: 'LR-TEAL-ORANGE', f: 'contrast(1.2) hue-rotate(-15deg) saturate(1.3) brightness(1.05)' },
+  { name: 'LR-DARK-MOODY', f: 'brightness(0.8) contrast(1.3) saturate(0.7) sepia(0.1)' },
+  { name: 'LR-BRIGHT-AIRY', f: 'brightness(1.2) contrast(0.85) saturate(1.1) sepia(0.05)' },
+  { name: 'LR-URBAN-CHIC', f: 'contrast(1.2) saturate(0.6) hue-rotate(-10deg) brightness(0.95)' },
+  { name: 'LR-DEEP-MATTE', f: 'contrast(0.8) brightness(1.1) saturate(1.2) sepia(0.15)' },
+  { name: 'LR-WARM-VINTAGE', f: 'sepia(0.4) saturate(1.3) contrast(1.1) brightness(1.0)' },
+  { name: 'LR-DESERT-GOLD', f: 'sepia(0.3) saturate(1.5) hue-rotate(-5deg) brightness(1.1)' },
+  { name: 'LR-AQUA-SOFT', f: 'hue-rotate(170deg) saturate(0.8) brightness(1.1) contrast(0.9)' },
+  { name: 'LR-CINEMATIC-400', f: 'contrast(1.1) saturate(1.1) brightness(1.0) blur(0.2px) sepia(0.1)' },
+  { name: 'LR-FILM-GRAIN', f: 'contrast(1.1) brightness(0.95) saturate(0.9) sepia(0.05)' },
 
-    // --- 🎨 LIGHTROOM PRO (Color Grading) ---
-    { name: 'LR-TEAL-ORANGE', f: 'contrast(1.2) hue-rotate(-15deg) saturate(1.3) brightness(1.05)' },
-    { name: 'LR-DARK-MOODY', f: 'brightness(0.8) contrast(1.3) saturate(0.7) sepia(0.1)' },
-    { name: 'LR-BRIGHT-AIRY', f: 'brightness(1.2) contrast(0.85) saturate(1.1) sepia(0.05)' },
-    { name: 'LR-URBAN-CHIC', f: 'contrast(1.2) saturate(0.6) hue-rotate(-10deg) brightness(0.95)' },
-    { name: 'LR-DEEP-MATTE', f: 'contrast(0.8) brightness(1.1) saturate(1.2) sepia(0.15)' },
-    { name: 'LR-WARM-VINTAGE', f: 'sepia(0.4) saturate(1.3) contrast(1.1) brightness(1.0)' },
-    { name: 'LR-AQUA-SOFT', f: 'hue-rotate(170deg) saturate(0.8) brightness(1.1) contrast(0.9)' },
-    { name: 'LR-CINEMATIC', f: 'contrast(1.1) saturate(1.1) brightness(1.0) blur(0.2px) sepia(0.1)' },
+  // --- 🎬 VIDEO EDITOR & SNAPSEED HDR ---
+  { name: 'SNAP-HDR-SCAPE', f: 'contrast(1.5) saturate(1.4) brightness(1.1)' },
+  { name: 'SNAP-DRAMA', f: 'contrast(1.4) saturate(0.6) brightness(0.9)' },
+  { name: 'SNAP-GLOW', f: 'brightness(1.1) blur(0.5px) saturate(1.2)' },
+  { name: 'SNAP-RETRO', f: 'sepia(0.4) contrast(0.9) saturate(1.2)' },
 
-    // --- 💠 SNAPSEED CLASSICS (Drama & HDR) ---
-    { name: 'SNAP-HDR-SCAPE', f: 'contrast(1.5) saturate(1.4) brightness(1.1)' },
-    { name: 'SNAP-DRAMA-1', f: 'contrast(1.4) saturate(0.6) brightness(0.9)' },
-    { name: 'SNAP-DRAMA-2', f: 'contrast(1.6) saturate(0.5) brightness(0.85)' },
-    { name: 'SNAP-ACCENTUATE', f: 'contrast(1.3) saturate(1.3) brightness(1.1)' },
-    { name: 'SNAP-RETROLUX', f: 'sepia(0.3) contrast(0.9) brightness(1.1) saturate(1.2)' },
-    { name: 'SNAP-GRUNGE', f: 'contrast(1.2) sepia(0.4) saturate(0.7) hue-rotate(15deg)' },
-    { name: 'SNAP-GLOW', f: 'brightness(1.15) blur(0.5px) saturate(1.1) contrast(0.9)' },
-    { name: 'SNAP-STRUCTURE', f: 'contrast(1.4) saturate(1.1) brightness(1.05)' },
+  // --- 🎞️ LEGACY ANALOG STOCKS ---
+  { name: 'KODAK-GOLD', f: 'saturate(1.4) contrast(1.1) sepia(0.2) brightness(1.0)' },
+  { name: 'FUJI-ASTIA', f: 'saturate(1.2) hue-rotate(5deg) brightness(1.05)' },
+  { name: 'AGFA-ULTRA', f: 'saturate(1.8) contrast(1.2)' },
+  { name: 'POLAROID-PRO', f: 'contrast(1.1) brightness(1.1) sepia(0.2) saturate(0.8)' },
 
-    // --- 🎞️ ANALOG FILM STOCKS ---
-    { name: 'KODAK-PORTRA', f: 'saturate(1.15) brightness(1.1) contrast(0.95) sepia(0.12)' },
-    { name: 'FUJI-VELVIA', f: 'saturate(1.6) contrast(1.2) brightness(1.05)' },
-    { name: 'AGFA-VISTA', f: 'saturate(1.3) hue-rotate(-10deg) contrast(1.1)' },
-    { name: 'POLAROID-600', f: 'contrast(1.1) brightness(1.1) sepia(0.25) saturate(0.8)' },
-    { name: 'EXPIRED-FILM', f: 'sepia(0.5) contrast(0.85) brightness(1.1) saturate(1.3)' },
-    { name: 'LOMO-LC-A', f: 'contrast(1.4) saturate(1.3) brightness(1.1) sepia(0.1)' },
-    { name: 'KODACOLOR', f: 'saturate(1.5) contrast(1.1) sepia(0.2) brightness(1.05)' },
-    { name: 'HOLLYWOOD', f: 'contrast(1.2) saturate(1.1) brightness(1.08) hue-rotate(-5deg)' },
-
-    // --- 🎨 ARTISTIC & MOODY ---
-    { name: 'CYBERPUNK', f: 'hue-rotate(160deg) saturate(2.5) contrast(1.25) brightness(0.9)' },
-    { name: 'VAPORWAVE', f: 'hue-rotate(280deg) saturate(1.8) contrast(1.1) brightness(1.1)' },
-    { name: 'GOLDEN-HOUR', f: 'sepia(0.4) saturate(1.6) contrast(1.1) brightness(1.05)' },
-    { name: 'PASTEL-DREAM', f: 'brightness(1.2) saturate(0.6) contrast(0.9) hue-rotate(-10deg)' },
-    { name: 'MIDNIGHT', f: 'hue-rotate(190deg) brightness(0.75) contrast(1.3) saturate(1.2)' },
-    { name: 'BW-NOIR', f: 'grayscale(1) contrast(2.2) brightness(0.7)' },
-    { name: 'NEON-NIGHT', f: 'saturate(2.5) contrast(1.3) brightness(0.8)' }
+  // --- ⚡ TRENDING & ARTISTIC ---
+  { name: 'CYBERPUNK-V2', f: 'hue-rotate(160deg) saturate(2.5) contrast(1.3) brightness(0.9)' },
+  { name: 'VAPORWAVE', f: 'hue-rotate(280deg) saturate(2) contrast(1.1) brightness(1.1)' },
+  { name: 'SILVER-SCREEN', f: 'grayscale(1) brightness(1.2) contrast(1.4)' },
+  { name: 'NOIR-MASTER', f: 'grayscale(1) contrast(2.5) brightness(0.6)' }
 ];
 
-cfg.adj = { b: 100, c: 100, s: 100 };
 
 function toggleFilterUI() {
     const el = document.getElementById('filter-wrapper');
     const btn = document.querySelector("button[onclick='toggleFilterUI()']");
-    
-    if (el.style.display === 'flex') {
+    if(el.style.display === 'flex') {
         el.style.display = 'none';
         btn.innerHTML = "MAGIC FILTERS ✨";
-        btn.style.color = "#00ffff"; 
-        btn.style.borderColor = "#00ffff";
+        btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff";
     } else {
         el.style.display = 'flex';
         el.classList.add('active');
         btn.innerHTML = "CLOSE FILTERS ✖";
-        btn.style.color = "#ff00ff"; 
-        btn.style.borderColor = "#ff00ff";
-        
-        if (document.getElementById('filter-list').children.length === 0) {
-            renderFilters();
-        }
-        
-        if (!document.getElementById('adj-panel')) {
-            createAdjustUI();
-        }
-        
-        if (!document.getElementById('open-adj-btn')) {
-            createSmartEditBtn();
-        }
-        
-        document.getElementById('filter-list').style.display = 'flex';
-        document.getElementById('adj-panel').style.display = 'none';
-        
-        const isFilterActive = (cfg.filter && cfg.filter !== 'none');
-        document.getElementById('open-adj-btn').style.display = isFilterActive ? 'block' : 'none';
+        btn.style.color = "#ff00ff"; btn.style.borderColor = "#ff00ff";
+        if(document.getElementById('filter-list').children.length === 0) renderFilters();
     }
     playClick();
 }
@@ -915,364 +876,343 @@ function toggleFilterUI() {
 function renderFilters() {
     const list = document.getElementById('filter-list');
     list.innerHTML = '';
-    
     const previewSrc = i.src || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; 
-    
-    magicFilters.forEach(function(mf) {
+    magicFilters.forEach(mf => {
         const btn = document.createElement('button');
         btn.className = 'filter-btn';
-        
         const img = document.createElement('img');
         img.className = 'filter-preview';
-        img.src = previewSrc; 
+        img.src = previewSrc;
         img.style.filter = mf.f; 
-        
         const span = document.createElement('span');
-        span.className = 'filter-name'; 
+        span.className = 'filter-name';
         span.innerText = mf.name;
-        
-        btn.appendChild(img); 
+        btn.appendChild(img);
         btn.appendChild(span);
-        
-        btn.onclick = function() { 
-            applyFilter(mf.f, btn); 
-        };
-        
+        btn.onclick = () => { applyFilter(mf.f, btn); };
         list.appendChild(btn);
     });
 }
 
-function createSmartEditBtn() {
-    const wrapper = document.getElementById('filter-wrapper');
-    const b = document.createElement('button');
-    b.id = 'open-adj-btn';
-    b.innerHTML = "ADJUST SETTINGS ⚙️";
-    b.style.width = "100%";
-    b.style.background = "black";
-    b.style.color = "#00ffff";
-    b.style.border = "2px solid #00ffff";
-    b.style.fontWeight = "900";
-    b.style.padding = "12px";
-    b.style.marginTop = "10px";
-    b.style.borderRadius = "8px";
-    b.style.cursor = "pointer";
-    b.style.display = "none";
-    
-    b.onclick = openAdjust;
-    wrapper.insertBefore(b, document.getElementById('filter-list').nextSibling);
-}
-
-function createAdjustUI() {
-    const wrapper = document.getElementById('filter-wrapper');
-    const p = document.createElement('div');
-    p.id = 'adj-panel';
-    p.style.display = "none";
-    p.style.flexDirection = "column";
-    p.style.width = "100%";
-    p.style.gap = "15px";
-    p.style.padding = "10px 5px";
-    
-    const sliderHTML = function(id, func, label, color) {
-        return `
-            <div style="display:flex; justify-content:space-between; color:${color}; font-size:12px; font-weight:bold;">
-                <span>${label}</span><span id="val-${id}" style="color:#fff;">100%</span>
-            </div>
-            <input type="range" id="sl-${id}" min="0" max="200" value="100" class="neon-slider" oninput="${func}">
-        `;
-    };
-    
-    p.innerHTML = sliderHTML('b', "adjChange('b', this.value)", "BRIGHTNESS", "#ff0055") +
-                  sliderHTML('c', "adjChange('c', this.value)", "CONTRAST", "#00ffff") +
-                  sliderHTML('s', "adjChange('s', this.value)", "SATURATION", "#ff0055");
-                  
-    const doneBtn = document.createElement('button');
-    doneBtn.innerText = "DONE ✓";
-    doneBtn.style.width = "100%";
-    doneBtn.style.background = "#00ff00";
-    doneBtn.style.color = "#000";
-    doneBtn.style.fontWeight = "900";
-    doneBtn.style.padding = "12px";
-    doneBtn.style.marginTop = "10px";
-    doneBtn.style.borderRadius = "4px";
-    doneBtn.style.cursor = "pointer";
-    
-    doneBtn.onclick = closeAdjust;
-    p.appendChild(doneBtn);
-    wrapper.appendChild(p);
-}
-
-function openAdjust() { 
-    document.getElementById('filter-list').style.display = 'none'; 
-    document.getElementById('open-adj-btn').style.display = 'none'; 
-    document.getElementById('adj-panel').style.display = 'flex'; 
-    playClick(); 
-}
-
-function closeAdjust() { 
-    document.getElementById('adj-panel').style.display = 'none'; 
-    document.getElementById('filter-list').style.display = 'flex'; 
-    document.getElementById('open-adj-btn').style.display = 'block'; 
-    playClick(); 
-}
-
-function adjChange(type, val) {
-    cfg.adj[type] = parseInt(val);
-    document.getElementById(`val-${type}`).innerText = val + "%";
-    
-    let finalF = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
-    finalF += ` brightness(${cfg.adj.b}%) contrast(${cfg.adj.c}%) saturate(${cfg.adj.s}%)`;
-    
-    c.style.filter = finalF; 
-    d(); 
-}
-
 function applyFilter(filterVal, btn) {
-    cfg.filter = filterVal; 
-    cfg.adj = { b: 100, c: 100, s: 100 };
-    c.style.filter = filterVal;
-    
-    document.querySelectorAll('.filter-btn').forEach(function(b) {
-        b.classList.remove('active-filter');
-    });
-    
-    if (btn) {
-        btn.classList.add('active-filter');
-    }
-    
-    if (filterVal === 'none') {
-        document.getElementById('open-adj-btn').style.display = 'none';
-    } else {
-        document.getElementById('open-adj-btn').style.display = 'block';
-    }
-    
-    d(); 
-    playClick();
+    cfg.filter = filterVal;
+    c.style.filter = filterVal; 
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+    if(btn) btn.classList.add('active-filter');
+    d(); playClick();
 }
 
+// --- 🖼️ FRAME ENGINE ---
 let isBoundaryLocked = true;
 function toggleBoundaryLock() {
     isBoundaryLocked = !isBoundaryLocked;
     const btn = document.getElementById('lock-btn');
-    
     if (isBoundaryLocked) { 
-        btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; 
-        btn.style.borderColor = "#00ff00"; 
-        btn.style.color = "#00ff00"; 
-    } else { 
-        btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; 
-        btn.style.borderColor = "#ff0000"; 
-        btn.style.color = "#ff0000"; 
-        zSl.min = 0.01; // RELEASE ZOOM LIMIT
-    }
-    d(); 
-    playClick();
-}
-
-function d() { 
-    x.clearRect(0,0,800,800); 
-    
-    if (i.src && isBoundaryLocked) {
-        const rad = cfg.r * Math.PI / 180;
-        const cos = Math.abs(Math.cos(rad));
-        const sin = Math.abs(Math.sin(rad));
-        const w = i.width * cfg.s;
-        const h = i.height * cfg.s;
-        
-        const reqW = (cfg.m * 2 * cos + cfg.m * 2 * sin);
-        const reqH = (cfg.m * 2 * sin + cfg.m * 2 * cos);
-        
-        const minS = Math.max(reqW / i.width, reqH / i.height);
-        
-        if (cfg.s < minS) { 
-            cfg.s = minS; 
-            zSl.value = minS; 
-            zVal.innerText = Math.round((minS / zSl.min) * 100) + "%"; 
+        btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; 
+        if(i.src) {
+            const rad = cfg.r * Math.PI / 180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+            const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+            const minS = Math.max(reqW/i.width, reqH/i.height);
+            zSl.min = minS; if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
         }
-        
-        const rangeX = Math.max(0, (w - reqW) / 2);
-        const rangeY = Math.max(0, (h - reqH) / 2);
-        
-        cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
-        cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
-    }
-    
-    if (i.src) {
-        x.save(); 
-        x.beginPath(); 
-        x.arc(400, 400, cfg.m, 0, 6.28); 
-        x.clip(); 
-        
-        let w = i.width * cfg.s;
-        let h = i.height * cfg.s;
-        
-        x.translate(cfg.x, cfg.y); 
-        x.rotate(cfg.r * Math.PI / 180);
-        x.drawImage(i, -w / 2, -h / 2, w, h); 
-        x.restore(); 
-    }
-    
-    if (f.src) {
-        x.drawImage(f, 0, 0, 800, 800); 
-    }
+    } else { btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; zSl.min = 0.1; }
+    d(); playClick();
 }
 
-function handleFile(e) {
-    const files = e.target.files; 
-    if (!files[0]) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(v) {
-        const img = new Image();
-        img.onload = function() {
-            i = img; 
-            cfg.x = 400; 
-            cfg.y = 400; 
-            cfg.r = 0;
-            
-            if (isBoundaryLocked) {
-                const minS = (cfg.m * 2) / Math.min(i.width, i.height);
-                cfg.s = minS; 
-                zSl.min = minS; 
-                zSl.value = minS; 
-            } else { 
-                cfg.s = 1; 
-                zSl.min = 0.01; 
+// --- 🛠️ STABLE DRAWING ENGINE ---
+function d(){ 
+  x.clearRect(0,0,800,800); 
+
+  // 1. Boundary Lock Calculation
+  if(i.src && isBoundaryLocked){
+      const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+      const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+      const minS = Math.max(reqW/i.width, reqH/i.height);
+      if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
+      const rangeX = (i.width*cfg.s - reqW)/2, rangeY = (i.height*cfg.s - reqH)/2;
+      cfg.x = Math.max(400-rangeX, Math.min(400+rangeX, cfg.x)); cfg.y = Math.max(400-rangeY, Math.min(400+rangeY, cfg.y));
+  }
+
+  // 2. Draw User Image
+  if(i.src){
+      x.save();
+      x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.clip(); 
+      
+      let w = i.width * cfg.s, h = i.height * cfg.s;
+      x.translate(cfg.x, cfg.y);
+      x.rotate(cfg.r * Math.PI / 180);
+      
+      if(cfg.filter && cfg.filter !== 'none') { x.filter = cfg.filter; }
+
+      x.drawImage(i, -w/2, -h/2, w, h);
+      x.restore();
+  }
+
+  // 3. Draw Generated Border
+  if (cfg.pColor) {
+      x.save(); x.filter = 'none'; 
+      if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
+          const shadowCol = cfg.pColor;
+          const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 25; x.strokeStyle = shadowCol; x.shadowBlur = 60; x.shadowColor = shadowCol; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 0; x.stroke();
+          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); 
+          x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke();
+          x.restore();
+      } 
+      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
+      }
+      else if (cfg.pType === 'neon') {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); 
+          x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
+      }
+      else {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
+          if (cfg.pType && gradientDefs[cfg.pType]) {
+             const cols = gradientDefs[cfg.pType];
+             let g = x.createLinearGradient(0, 0, 800, 800);
+             g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]); x.strokeStyle = g;
+          } 
+          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
+              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
+              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
+              x.strokeStyle = g;
+          } else { x.strokeStyle = cfg.pColor; }
+          x.stroke(); 
+      }
+      x.restore();
+  }
+  if(f.src) x.drawImage(f,0,0,800,800); 
+}
+
+// --- 📂 FILE HANDLING ---
+function handleFile(e){
+    const files = e.target ? e.target.files : e.files;
+    if(!files || !files[0]) return;
+    const r = new FileReader();
+    r.onload = v => {
+        const n = new Image();
+        n.onload = () => {
+            i = n;
+            cfg.x = 400; cfg.y = 400; cfg.r = 0;
+            if(isBoundaryLocked) {
+                const rad = cfg.r*Math.PI/180, cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+                const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+                const minS = Math.max(reqW/i.width, reqH/i.height);
+                cfg.s = minS; zSl.min = minS; zSl.value = minS; 
+                zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
+            } else {
+                cfg.s = Math.max(800/i.width, 800/i.height);
+                zSl.value = cfg.s; zVal.innerText = "100%";
             }
-            
-            renderFilters(); 
+            renderFilters();
+            const ui = document.getElementById('filter-wrapper');
+            if(ui.style.display !== 'flex') toggleFilterUI(); 
             d(); 
-            document.getElementById('save').disabled = false;
-        }; 
-        img.src = v.target.result;
-    }; 
-    reader.readAsDataURL(files[0]);
+
+            // --- 📱 UNIVERSAL MOBILE BUTTON FIX ---
+            // 1. Add massive padding to bottom of UI
+            const uiPanel = document.querySelector('.ui');
+            uiPanel.style.paddingBottom = "200px"; 
+            
+            // 2. Enable button and SCROLL IT INTO VIEW (Center)
+            const saveBtn = document.getElementById('save');
+            saveBtn.disabled = false;
+            setTimeout(() => { 
+                saveBtn.scrollIntoView({behavior: "smooth", block: "center"}); 
+            }, 300);
+        };
+        n.src = v.target.result;
+    };
+    r.readAsDataURL(files[0]);
 }
 
-// --- 🖱️ INTERACTION ENGINE (PROTECTED ONE-FINGER DRAG) ---
-c.addEventListener('touchstart', function(e) { 
-    if (i.src) {
-        e.preventDefault();
-    }
-    isP = true; 
-    tStart = { x: e.touches[0].pageX, y: e.touches[0].pageY }; 
-}, { passive: false });
+function handleFrame(e){
+    const files = e.target ? e.target.files : e.files;
+    if(!files || !files[0]) return;
+    const r = new FileReader();
+    r.onload = v => {
+        const n = new Image();
+        n.onload = () => { f.src = n.src; cfg.pColor = null; cfg.pType = null; mLbl.innerText = "FRAME OPENING SIZE"; d(); };
+        n.src = v.target.result;
+    };
+    r.readAsDataURL(files[0]);
+}
 
-c.addEventListener('touchmove', function(e) { 
-    if (i.src) {
-        e.preventDefault();
-    } 
-    if (isP && e.touches.length === 1) {
-        const scale = 800 / c.offsetWidth;
-        cfg.x += (e.touches[0].pageX - tStart.x) * scale;
-        cfg.y += (e.touches[0].pageY - tStart.y) * scale;
-        tStart = { x: e.touches[0].pageX, y: e.touches[0].pageY }; 
-        d();
-    }
-}, { passive: false });
+function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
+function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
+function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
+function resetProject(){ 
+    i=new Image(); f=new Image(); 
+    cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none'};
+    zSl.value=1; rSl.value=0; mSl.value=375; 
+    mLbl.innerText = "CIRCLE SIZE";
+    document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+    // Reset Filter Visuals
+    c.style.filter = 'none';
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+    document.getElementById('filter-list').innerHTML = '';
+    d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); 
+    document.getElementById('save').disabled = true;
+    document.querySelector('.ui').style.paddingBottom = "0px"; // Reset padding
+}
 
-window.addEventListener('touchend', function() { 
-    isP = false; 
+function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
+function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
+document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
+
+// --- 🖱️ INTERACTION (TOUCH FIX FOR FRAME) ---
+let isP=false, tStart={x:0,y:0}, initialDist=0, initialScale=1, initialAngle=0, initialRot=0;
+c.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); });
+c.addEventListener('drop', (e) => {
+    e.preventDefault(); e.stopPropagation();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (v) => {
+                let n = new Image();
+                n.onload = () => {
+                    i = n;
+                    let minScale = Math.max(800 / i.width, 800 / i.height);
+                    cfg.s = minScale; cfg.x = 400; cfg.y = 400; cfg.r = 0;
+                    if(isBoundaryLocked) zSl.min = minScale; else zSl.min = 0.1;
+                    zSl.max = minScale * 2.5; zSl.value = minScale;
+                    renderFilters(); d(); playClick(); updS(zSl); document.getElementById('save').disabled = false;
+                }; n.src = v.target.result;
+            }; reader.readAsDataURL(file);
+        }
+    }
 });
 
-// --- ⚡ GIF ENGINE (MANUAL DOWNLOAD + STICKY LOGIC) ---
-go.onclick = function() {
-    if (!v.src) return; 
-    
-    go.disabled = true; 
-    msg.innerText = "Processing..."; 
-    msg.classList.add('active'); 
-    isProcessingGif = true;
-    vp.style.pointerEvents = 'none'; // LOCK VIEWPORT
-    
+c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
+c.onmousemove=e=>{ if(!isP)return; let scale = 800 / c.offsetWidth; cfg.x += (e.offsetX - tStart.x) * scale; cfg.y += (e.offsetY - tStart.y) * scale; tStart={x:e.offsetX,y:e.offsetY}; d(); }
+window.onmouseup=()=>{isP=false;}
+
+c.ontouchstart=e=>{ if(i.src) { e.preventDefault(); } if(e.touches.length===1){ isP=true; tStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; } else if(e.touches.length===2){ isP=false; const dx = e.touches[0].clientX - e.touches[1].clientX; const dy = e.touches[0].clientY - e.touches[1].clientY; initialDist = Math.sqrt(dx*dx + dy*dy); initialScale = cfg.s; initialAngle = Math.atan2(dy, dx); initialRot = cfg.r; } }
+c.ontouchmove=e=>{ if(i.src) { e.preventDefault(); } if(e.touches.length===1 && isP){ let scale = 800 / c.offsetWidth; let dx = e.touches[0].clientX - tStart.x; let dy = e.touches[0].clientY - tStart.y; cfg.x += dx * scale; cfg.y += dy * scale; tStart={x:e.touches[0].clientX, y:e.touches[0].clientY}; d(); } else if(e.touches.length===2){ const dx = e.touches[0].clientX - e.touches[1].clientX; const dy = e.touches[0].clientY - e.touches[1].clientY; const dist = Math.sqrt(dx*dx + dy*dy); const scaleFactor = dist / initialDist; let newScale = initialScale * scaleFactor; newScale = Math.max(zSl.min, Math.min(zSl.max, newScale)); cfg.s = newScale; zSl.value = newScale; zVal.innerText=Math.round((newScale/zSl.min)*100)+"%"; updS(zSl); const angle = Math.atan2(dy, dx); let rotationDiff = (angle - initialAngle) * (180/Math.PI); cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; rVal.innerText = Math.round(cfg.r) + "°"; updS(rSl); d(); } }
+window.ontouchend=()=>{isP=false;}
+
+// --- ⚡ NEON GIF ENGINE (30 Workers + Hybrid Blob + Locked/Movable) ---
+const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
+const workerUrl = URL.createObjectURL(workerBlob);
+
+const gfInput = document.getElementById('gfInput');
+const upBtn = document.getElementById('upBtn');
+const v = document.getElementById('v');
+const o = document.getElementById('o');
+const vp = document.getElementById('vp');
+const speed = document.getElementById('speed');
+const sv = document.getElementById('sv');
+const zoom = document.getElementById('zoom');
+const zv = document.getElementById('zv');
+const go = document.getElementById('go');
+const msg = document.getElementById('msg');
+const dlBox = document.getElementById('dlBox');
+const dl = document.getElementById('dl');
+const resetBox = document.getElementById('resetBox');
+
+let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH;
+
+function resetGifProject() {
+    v.src = ''; v.style.display = 'none'; v.style.transform = `translate(-50%, -50%) scale(1)`;
+    o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
+    document.getElementById('goBox').style.display = 'inline-block';
+    go.disabled = false; upBtn.disabled = false; zoom.disabled = false; zoom.value = 100; speed.disabled = false;
+    msg.classList.remove('active'); zv.innerText = "100%"; if(vp) vp.style.pointerEvents = 'auto';
+    gfInput.value = ''; gifX = 0; gifY = 0; if(upBtn) upBtn.parentElement.style.display = 'block'; 
+}
+
+gfInput.onchange = (e) => {
+    const file = e.target.files[0]; if (!file) return;
+    v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none';
+    v.src = URL.createObjectURL(file); v.playbackRate = parseFloat(speed.value);
+    go.disabled = false;
+    v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); };
+};
+
+function setCoverSize() {
+    const boxSize = 320; 
+    const aspect = vidW / vidH;
+    if (aspect > 1) { renderH = boxSize; renderW = boxSize * aspect; } 
+    else { renderW = boxSize; renderH = boxSize / aspect; }
+    v.style.width = renderW + 'px'; v.style.height = renderH + 'px';
+    zoom.min = 100; updateGifTransform();
+    gifX = 0; gifY = 0;
+}
+
+function updateGifTransform() {
+    if (!v.src) return;
+    const z = parseInt(zoom.value) / 100;
+    const currentW = renderW * z;
+    const currentH = renderH * z;
+    const boxSize = 320;
+    const maxX = Math.max(0, (currentW - boxSize) / 2);
+    const maxY = Math.max(0, (currentH - boxSize) / 2);
+    gifX = Math.max(-maxX, Math.min(maxX, gifX));
+    gifY = Math.max(-maxY, Math.min(maxY, gifY));
+    v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`;
+}
+
+zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
+speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
+
+let isGifDrag = false, startX, startY, initX, initY;
+vp.addEventListener('touchstart', e => { if (!v.src || v.style.display === 'none') return; isGifDrag = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; initX = gifX; initY = gifY; }, { passive: false });
+vp.addEventListener('touchmove', e => { if (!v.src || v.style.display === 'none') return; if (!isGifDrag) return; e.preventDefault(); const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY; gifX = initX + dx; gifY = initY + dy; requestAnimationFrame(updateGifTransform); }, { passive: false });
+vp.addEventListener('mousedown', e => { if (!v.src) return; isGifDrag = true; startX = e.clientX; startY = e.clientY; initX = gifX; initY = gifY; });
+window.addEventListener('mousemove', e => { if (!isGifDrag) return; const dx = e.clientX - startX; const dy = e.clientY - startY; gifX = initX + dx; gifY = initY + dy; requestAnimationFrame(updateGifTransform); });
+window.addEventListener('mouseup', () => isGifDrag = false);
+window.addEventListener('touchend', () => isGifDrag = false);
+
+go.onclick = () => {
+    if (!v.src) return;
+    go.disabled = true; upBtn.disabled = true; zoom.disabled = true; speed.disabled = true;
+    vp.style.pointerEvents = 'none'; msg.innerText = "Processing..."; msg.classList.add('active');
+
     const OUT_SIZE = 480;
-    const gif = new GIF({ 
-        workers: 30, 
-        quality: 20, 
-        width: OUT_SIZE, 
-        height: OUT_SIZE, 
-        workerScript: workerUrl 
-    });
-    
-    const canvas = document.createElement('canvas'); 
-    canvas.width = OUT_SIZE; 
-    canvas.height = OUT_SIZE;
-    const ctx = canvas.getContext('2d');
-    
-    const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value);
-    const capVid = document.createElement('video'); 
-    capVid.src = v.src; 
-    capVid.muted = true; 
-    capVid.playsInline = true;
+    const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
+    const canvas = document.createElement('canvas'); canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; const ctx = canvas.getContext('2d');
+    const fps = 15, duration = v.duration, playbackSpeed = parseFloat(speed.value), capVid = document.createElement('video');
+    capVid.src = v.src; capVid.muted = true; capVid.playsInline = true; capVid.crossOrigin = "anonymous";
 
-    capVid.onloadeddata = function() {
-        let currentTime = 0;
-        const captureFrame = function() {
-            if (currentTime >= duration) { 
-                msg.innerText = "Encoding..."; 
-                gif.render(); 
-                return; 
-            }
-            capVid.currentTime = currentTime;
-        };
-
-        capVid.onseeked = function() {
-            ctx.fillStyle = '#000000'; 
-            ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE);
-            
-            const zoomVal = parseInt(zoom.value) / 100; 
-            const aspect = capVid.videoWidth / capVid.videoHeight;
-            let drawW, drawH;
-            
-            if (aspect > 1) { 
-                drawH = 320; drawW = 320 * aspect; 
-            } else { 
-                drawW = 320; drawH = 320 / aspect; 
-            }
-            
-            const outputScale = OUT_SIZE / 320;
-            drawW *= zoomVal * outputScale; 
-            drawH *= zoomVal * outputScale;
-            
-            ctx.drawImage(
-                capVid, 
-                (OUT_SIZE - drawW) / 2 + (gifX * outputScale), 
-                (OUT_SIZE - drawH) / 2 + (gifY * outputScale), 
-                drawW, 
-                drawH
-            );
-            
-            gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed });
-            currentTime += (1 / fps); 
-            captureFrame();
-        };
+    capVid.onloadeddata = () => {
+        let cTime = 0;
+        const currentVpSize = 320;
+        const outputScale = OUT_SIZE / currentVpSize;
+        const scale = parseInt(zoom.value) / 100;
+        const aspect = capVid.videoWidth / capVid.videoHeight;
+        let drawW, drawH;
+        if (aspect > 1) { drawH = currentVpSize; drawW = currentVpSize * aspect; } else { drawW = currentVpSize; drawH = currentVpSize / aspect; }
+        drawW *= scale * outputScale; drawH *= scale * outputScale;
+        const finalX = gifX * outputScale; const finalY = gifY * outputScale;
+        let dx = (OUT_SIZE - drawW) / 2 + finalX; let dy = (OUT_SIZE - drawH) / 2 + finalY;
+        const captureFrame = () => { if (cTime >= duration) { msg.innerText = "Encoding..."; gif.render(); return; } capVid.currentTime = cTime; };
+        capVid.onseeked = () => { ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE); ctx.drawImage(capVid, dx, dy, drawW, drawH); gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed }); cTime += (1 / fps); setTimeout(captureFrame, 10); };
         captureFrame();
     };
 
-    gif.on('finished', function(blob) { 
-        const reader = new FileReader();
-        reader.onloadend = function() {
-            v.style.display = 'none'; 
-            o.src = reader.result; 
-            o.style.display = 'block'; 
-            
-            dl.href = reader.result; 
-            dl.download = `Arcade_${Date.now()}.gif`;
-            
-            dlBox.style.display = 'block'; 
-            resetBox.style.display = 'block'; 
-            
-            msg.classList.remove('active'); 
-            document.getElementById('goBox').style.display = 'none';
-            
-            isProcessingGif = false; 
-            vp.style.pointerEvents = 'auto'; // UNLOCK VIEWPORT
-            
-            // AUTO-DOWNLOAD REMOVED AS REQUESTED. 
-            // USER MUST NOW PRESS THE DOWNLOAD BUTTON MANUALLY.
-        }; 
-        reader.readAsDataURL(blob);
+    gif.on('finished', blob => {
+        const url = URL.createObjectURL(blob), rNum = Math.floor(Math.random() * 90000) + 10000;
+        v.style.display = 'none'; o.src = url; o.style.display = 'block'; dl.download = `neon_focus_${rNum}.gif`; dl.href = url; dlBox.style.display = 'block'; resetBox.style.display = 'block';
+        msg.classList.remove('active'); document.getElementById('goBox').style.display = 'none'; if(upBtn) upBtn.parentElement.style.display = 'none'; vp.style.pointerEvents = 'auto'; 
     });
 };
+window.onclick = e => { initAudio(); if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; playClick(); } if (thMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { thMenu.style.display = 'none'; playClick(); } const fw = document.getElementById('filter-wrapper'); if (fw.style.display === 'flex' && !fw.contains(e.target) && !e.target.innerText.includes('FILTERS')) { fw.style.display = 'none'; const btn = document.querySelector("button[onclick='toggleFilterUI()']"); if(btn) { btn.innerHTML = "MAGIC FILTERS ✨"; btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff"; } } };
 </script>
 </body>
 </html>
