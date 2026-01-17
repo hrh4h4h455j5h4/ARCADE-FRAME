@@ -11,7 +11,7 @@
   html { 
       scroll-behavior: smooth; 
       overflow-y: auto; 
-      background-color: #0a0a0c; /* <--- SAFETY NET: Prevents white bar glitches */
+      background-color: #0a0a0c; 
       height: 100%;
   }
   
@@ -26,6 +26,24 @@
     transition: background 0.3s ease, color 0.3s ease;
   }
 
+  /* --- 📸 NEW: PHOTO EDITOR UTILITIES (Professional Mode) --- */
+  /* This ensures the Photo Studio can take over the screen like an App */
+  body.editor-mode {
+      justify-content: center;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      background: #000 !important; /* Total Darkroom Mode */
+      overflow: hidden; /* Lock scroll for app-like feel */
+  }
+
+  body.editor-mode .studio-sec {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: 100vh !important;
+      margin: 0 !important;
+      border: none !important;
+      justify-content: center;
+  }
   /* --- 🎨 NEW THEME: PRO TECH (Modern/Dark) --- */
   body.theme-pro {
       background-color: #000000;
@@ -50,9 +68,10 @@
   body.theme-arcade h1 { color: #00ff00; text-shadow: 4px 4px 0px #005500; }
   body.theme-arcade .menu-toggle { border: 2px solid #00ff00; color: #00ff00; }
   body.theme-arcade .studio-sec { border-left: 1px solid #003300; border-right: 1px solid #003300; padding: 10px; }
+  
   /* --- 🌅 NEW THEME: RETRO WAVE (80s/Purple) --- */
   body.theme-retro {
-    background-color: #1a0022; /* <--- THIS paints the bottom gap Purple */
+    background-color: #1a0022; 
     background-image: linear-gradient(to bottom, #2b003b 0%, #1a0022 100%);
     background-attachment: fixed;
     background-size: cover;
@@ -74,13 +93,69 @@
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
       text-shadow: 0 0 10px rgba(255,0,255,0.5);
   }
-    /* FIX: Forces the "Root" to be Purple ONLY when Retro theme is active */
-  html:has(body.theme-retro) {
-    background-color: #1a0022 !important;
-  } 
+  html:has(body.theme-retro) { background-color: #1a0022 !important; } 
 
-  /* --- ⚠️ BROWSER DETECTION OVERLAY (NEW) --- */
-  /* This hides by default and only shows if Plato/WebView is detected */
+  /* --- 📸 NEW: PROFESSIONAL PHOTO STUDIO CSS (Canva/PicsArt Style) --- */
+  /* This layout is strictly independent from the Arcade themes */
+  #photo-studio {
+      display: none; /* Hidden until switched to */
+      flex-direction: column;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #181818; /* Professional Dark Gray */
+      z-index: 20000; /* Sit above everything */
+  }
+  #photo-studio.active-sec { display: flex; }
+
+  /* Top Bar: Minimal & Clean */
+  .pe-topbar {
+      height: 50px; background: #252525; border-bottom: 1px solid #333;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 15px; box-sizing: border-box; color: #fff;
+  }
+  .pe-title { font-family: 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0.5px; opacity: 0.8; }
+  .pe-action-btn { background: transparent; border: none; color: #fff; font-size: 14px; font-weight: bold; cursor: pointer; opacity: 0.9; }
+  .pe-save-btn { color: #00ffff; }
+
+  /* Workspace: Where the image lives */
+  .pe-workspace {
+      flex: 1; background: #0e0e0e; /* Deep Black for contrast */
+      display: flex; justify-content: center; align-items: center;
+      overflow: hidden; position: relative;
+      touch-action: none; /* Fluid gestures */
+  }
+  .pe-canvas-container {
+      box-shadow: 0 0 30px rgba(0,0,0,0.5);
+      transition: transform 0.1s ease;
+  }
+
+  /* Bottom Toolbar: Scrollable Tools (Canva Style) */
+  .pe-toolbar {
+      height: 70px; background: #252525; border-top: 1px solid #333;
+      display: flex; align-items: center; gap: 20px;
+      overflow-x: auto; padding: 0 20px; box-sizing: border-box;
+      scrollbar-width: none;
+  }
+  .pe-toolbar::-webkit-scrollbar { display: none; }
+  
+  .pe-tool {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: #aaa; gap: 4px; min-width: 60px; cursor: pointer;
+      transition: 0.2s;
+  }
+  .pe-tool.active-tool { color: #fff; }
+  .pe-icon { font-size: 20px; margin-bottom: 2px; }
+  .pe-label { font-size: 10px; font-weight: 500; text-transform: uppercase; }
+
+  /* Sub-Menu (Sliders/Options) pops up above toolbar */
+  .pe-submenu {
+      height: 0; overflow: hidden; background: #1f1f1f; width: 100%;
+      transition: height 0.2s ease; border-top: 1px solid #333;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; padding: 0 20px; box-sizing: border-box;
+  }
+  .pe-submenu.open { height: 80px; }
+
+  /* --- ⚠️ BROWSER DETECTION OVERLAY --- */
   #plato-overlay { 
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
       background: rgba(10, 10, 12, 0.98); z-index: 999999; 
@@ -92,51 +167,21 @@
   .plato-msg { color: #ff0000; font-family: "Arial Black", sans-serif; font-size: 22px; text-transform: uppercase; margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,0,0,0.6); }
   .plato-desc { color: #eee; font-size: 13px; max-width: 320px; margin-bottom: 30px; line-height: 1.6; font-weight: bold; background: #222; padding: 15px; border-radius: 8px; border: 1px solid #444; }
   
-  /* FIXED BUTTON STYLE: Blue/Teal (Initial State) */
   .plato-btn { 
-      background: #004d4d; /* Deep Teal */
-      color: #ffffff; 
-      padding: 15px 25px; 
-      border-radius: 8px; 
-      font-weight: 900; 
-      border: 2px solid #00ffff; /* Neon Cyan Border */
-      font-size: 12px; 
-      cursor: pointer; 
-      text-transform: uppercase; 
-      box-shadow: 0 0 15px rgba(0, 255, 255, 0.15); /* Blue Glow */
-      text-decoration: none; 
-      display: inline-block; 
-      transition: background 0.2s, transform 0.1s;
+      background: #004d4d; color: #ffffff; padding: 15px 25px; border-radius: 8px; 
+      font-weight: 900; border: 2px solid #00ffff; font-size: 12px; cursor: pointer; 
+      text-transform: uppercase; box-shadow: 0 0 15px rgba(0, 255, 255, 0.15); 
+      text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.1s;
   }
   .plato-btn:hover { background: #006666; }
   .plato-btn:active { background: #006666; transform: scale(0.95); }
-
   @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
   /* --- CUSTOM SCROLLBAR --- */
   ::-webkit-scrollbar { width: 12px; }
   ::-webkit-scrollbar-track { background: #0a0a0c; border-left: 1px solid #333; }
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 6px; border: 2px solid #0a0a0c; }
   ::-webkit-scrollbar-thumb:hover { background: #00ffff; }
 
-  /* --- ✨ NEW FEATURE: MAGIC FILTERS MENU CSS --- */
-  #filter-wrapper { display: none; flex-direction: column; width: 100%; margin-top: 5px; background: #111; border: 1px solid #333; border-radius: 8px; padding: 10px; box-sizing: border-box; }
-  #filter-wrapper.active { display: flex; animation: slideDown 0.3s ease; }
-  
-  .filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .filter-scroll::-webkit-scrollbar { display: none; }
-  
-  .filter-btn { 
-    flex: 0 0 70px; display: flex; flex-direction: column; align-items: center; gap: 5px;
-    background: transparent; border: none; cursor: pointer; opacity: 0.7; transition: 0.2s;
-  }
-  .filter-btn:hover, .filter-btn.active-filter { opacity: 1; transform: scale(1.05); }
-  .filter-btn.active-filter .filter-preview { border-color: #00ffff; box-shadow: 0 0 8px #00ffff; }
-  
-  .filter-preview { width: 60px; height: 60px; border-radius: 6px; border: 2px solid #444; object-fit: cover; background: #000; }
-  .filter-name { color: #fff; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-  
-  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
   /* --- NAVIGATION BUTTONS --- */
   .menu-toggle { 
     position: absolute; 
@@ -154,6 +199,7 @@
     text-shadow: 0 0 5px rgba(255,255,255,0.2);
   }
   .menu-toggle:active { transform: scale(0.90); background: rgba(255, 255, 255, 0.1); border-color: #fff; }
+
   /* --- SIDEBAR MENU --- */
   #menu-panel { 
     position: fixed; top: 0; left: -260px; width: 240px; height: 100%; 
@@ -233,16 +279,40 @@
     .sym-btn { flex: 1 0 50px; }
   }
   /* --- 🖼️ FRAME STUDIO CSS --- */
-  #box { position: relative; width: 310px; height: 310px; border-radius: 50%; overflow: hidden; border: 3px solid #ff0000; box-sizing: border-box; background: transparent; z-index: 10; flex-shrink: 0; }
+  /* This controls the Red Ring Canvas Container */
+  #box { 
+    position: relative; 
+    width: 310px; 
+    height: 310px; 
+    border-radius: 50%; /* Default Circle Shape */
+    overflow: hidden; 
+    border: 3px solid #ff0000; 
+    box-sizing: border-box; 
+    background: transparent; 
+    z-index: 10; 
+    flex-shrink: 0; 
+    transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
+  }
   
   /* 🛠️ TOUCH FIX: 'touch-action: none' enables 1-finger dragging on the canvas */
-  canvas#c { position: absolute; top: 50%; left: 50%; width: 310px; height: 310px; transform: translate(-50%, -50%); z-index: 15; touch-action: none; }
+  canvas#c { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    width: 310px; 
+    height: 310px; 
+    transform: translate(-50%, -50%); 
+    z-index: 15; 
+    touch-action: none; 
+  }
   
   #frame-btn-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
   #ui-toggle-btn { margin-bottom: 6px; }
 
+  /* UI Container for Frame Studio */
   .ui { margin-top: 20px; width: 310px; display: flex; flex-direction: column; gap: 6px; background: transparent; }
   
+  /* General Button Styles */
   .btn { 
     background: #000; border: 2px solid #fff; color: white; padding: 12px; 
     text-align: center; border-radius: 8px; font-weight: 900; 
@@ -254,32 +324,37 @@
   .btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #555; color: #555; transform: none; }
   .btn-r { border-color: #ff0000; }
   
+  /* Labels and Tags */
   .lbl { font-size: 9px; color: #888; text-transform: uppercase; margin-top: 2px; display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .val-tag { color: #ff0000; font-weight: bold; font-family: monospace; font-size: 10px; }
   
-  /* --- 🛑 SLIDER FIX (NO JUMP + SCROLL SAFETY) --- */
+  /* --- 🛑 NEON SLIDER STYLES (Frame Studio Only) --- */
+  /* These affect the Zoom, Rotate, and Circle Size sliders */
   input[type=range] { 
       -webkit-appearance: none; 
       width: 100%; 
       background: transparent; 
       margin: 10px 0; 
       cursor: pointer; 
-      touch-action: pan-y; /* Allows scrolling over the slider */
-      pointer-events: none; /* Disables clicking the track to jump */
+      touch-action: pan-y; 
+      pointer-events: none; /* Prevents accidental jumps on tap */
   }
-  input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); border-radius: 4px; }
+  input[type=range]::-webkit-slider-runnable-track { 
+      width: 100%; height: 8px; 
+      background: linear-gradient(to right, #ff0000 var(--v, 0%), #00ffff var(--v, 0%)); 
+      border-radius: 4px; 
+  }
   input[type=range]::-webkit-slider-thumb { 
       -webkit-appearance: none; 
-      height: 20px; 
-      width: 20px; 
+      height: 20px; width: 20px; 
       border-radius: 50%; 
       background: #ff0000; 
       margin-top: -6px; 
       border: 2px solid #ffffff; 
       box-shadow: 0 0 10px #ff0000; 
-      pointer-events: auto; /* Re-enables dragging ONLY the circle */
+      pointer-events: auto; /* Re-enables thumb dragging */
   }
-  /* --- 🎨 PALETTE CSS --- */
+  /* --- 🎨 PALETTE CSS (Frame Studio Only) --- */
   #palette-wrapper { display: none; flex-direction: column; width: 100%; margin-top: 5px; background: #000; border: 1px solid #333; border-radius: 8px; padding: 8px; box-sizing: border-box; }
   #palette-wrapper.active { display: flex; }
   
@@ -309,7 +384,6 @@
   .font-scroll { width: 100%; max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; border-radius: 8px; overflow-x: hidden; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box; touch-action: pan-y; }
   .font-item { background: #1a1a1c; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 16px; width: 100%; text-align: center; cursor: pointer; color: #eee; font-size: 16px; white-space: pre-wrap; transition: transform 0.05s ease; }
   .font-item:active { transform: scale(0.98); background: #333; color: #fff; }
-  
   /* --- ✨ SYMBOLS STUDIO CSS --- */
   .sym-box-container { width: 100%; margin-bottom: 15px; }
   .sym-input { width: 100%; background: #000; border: 1px solid #00ffff; color: #00ffff; padding: 12px; font-size: 18px; border-radius: 6px; text-align: center; box-sizing: border-box; outline: none; }
@@ -327,7 +401,6 @@
   
   .led-ring { position: absolute; inset: -15px; border-radius: 50%; background: conic-gradient(from 0deg, #00f3ff, #bc13fe, #ff0055, #00f3ff); animation: rotate 1.0s linear infinite; filter: blur(20px); z-index: 1; pointer-events: none; }
   
-  /* 🛠️ TOUCH FIX applied here too */
   .viewport { position: relative; z-index: 5; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background-color: #000; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 0 20px #000; touch-action: none; }
   
   #v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; will-change: transform; }
@@ -385,11 +458,12 @@
     <button id="switch-btn" onclick="toggleSwitchMenu(event)">SWITCH TO 📂</button>
     <div id="switch-menu">
       <button id="nav-frame" class="active-link" onclick="changeStudio('frame')">🖼️ Frame Studio</button>
-      <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
+      <button id="nav-photo" onclick="changeStudio('photo')">📸 Photo Editor Studio</button> <button id="nav-font" onclick="changeStudio('font')">✍️ Font Generator</button>
       <button id="nav-gif" onclick="changeStudio('gif')">⚡ GIF Maker</button>
       <button id="nav-sym" onclick="changeStudio('sym')">✨ Symbols Studio</button>
     </div>
   </div>
+
   <div class="music-section">
     <div class="music-btn" style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; cursor:pointer;" onclick="toggleMusic()">
       <span>MUSIC PLAYER</span> <span id="m-status" style="color:#ff0000;">ON</span>
@@ -421,10 +495,12 @@
 <div id="yt-player"></div>
 <h1 id="studio-name">ARCADE</h1>
 <p class="sub" id="studio-sub">FRAME STUDIO</p>
+
 <div id="frame-studio" class="studio-sec active-sec">
   <div id="box"><canvas id="c" width="800" height="800"></canvas></div>
   <div class="ui">
     <button id="ui-toggle-btn" class="btn" style="border-color:#ffcc00; color:#ffcc00; margin-bottom:10px;" onclick="toggleFrameUI()">👁️ HIDE MENU BUTTONS</button>
+    
     <div id="frame-btn-group">
         <label class="btn" onclick="playClick()">CHOOSE IMAGE<input type="file" id="u1" accept="image/*" onchange="handleFile(event)" style="display:none"></label>
         <label class="btn btn-r" onclick="playClick()">APPLY FRAME<input type="file" id="u2" accept="image/*" onchange="handleFrame(event)" style="display:none"></label>
@@ -432,8 +508,7 @@
         <button class="btn" style="border-color:#00ffff; color:#00ffff;" onclick="toggleFilterUI()">MAGIC FILTERS ✨</button>
         
         <div id="filter-wrapper">
-            <div class="filter-scroll" id="filter-list">
-                </div>
+            <div class="filter-scroll" id="filter-list"></div>
         </div>
 
         <button class="btn" style="border-color:#ffffff; color:#ffffff;" onclick="togglePaletteUI()">COLOR PALETTE 🎨</button>
@@ -474,11 +549,53 @@
     <button id="save" class="btn" onclick="downloadPic()" disabled>DOWNLOAD PICTURE</button>
   </div>
 </div>
+
+<div id="photo-studio">
+    <div class="pe-topbar">
+        <button class="pe-action-btn" onclick="document.getElementById('pe-upload').click()">📂 OPEN</button>
+        <input type="file" id="pe-upload" accept="image/*" style="display:none" onchange="peHandleFile(event)">
+        
+        <div class="pe-title">PHOTO EDITOR PRO</div>
+        
+        <button class="pe-action-btn pe-save-btn" onclick="peDownload()">SAVE ⬇</button>
+    </div>
+
+    <div class="pe-workspace" id="pe-workspace">
+        <div class="pe-canvas-container">
+            <canvas id="pe-c"></canvas>
+        </div>
+    </div>
+
+    <div class="pe-submenu" id="pe-submenu">
+        </div>
+
+    <div class="pe-toolbar">
+        <div class="pe-tool" onclick="peSetTool('filters')">
+            <span class="pe-icon">✨</span><span class="pe-label">Filters</span>
+        </div>
+        <div class="pe-tool" onclick="peSetTool('tune')">
+            <span class="pe-icon">🎚️</span><span class="pe-label">Adjust</span>
+        </div>
+        <div class="pe-tool" onclick="peSetTool('crop')">
+            <span class="pe-icon">📐</span><span class="pe-label">Ratio</span>
+        </div>
+        <div class="pe-tool" onclick="peSetTool('rotate')">
+            <span class="pe-icon">↻</span><span class="pe-label">Transform</span>
+        </div>
+        <div class="pe-tool" onclick="peSetTool('text')">
+            <span class="pe-icon">T</span><span class="pe-label">Text</span>
+        </div>
+        <div class="pe-tool" onclick="peSetTool('ai')">
+            <span class="pe-icon">🤖</span><span class="pe-label">AI Enhance</span>
+        </div>
+    </div>
+</div>
 <div id="font-studio" class="studio-sec">
   <input type="text" id="font-input" class="font-input" placeholder="Type text here..." oninput="genFonts()">
   <div class="lbl">TAP TO COPY <span class="val-tag" id="font-count">0 STYLES</span></div>
   <div id="font-results" class="font-scroll"></div>
 </div>
+
 <div id="gif-studio" class="studio-sec">
     <div class="stage" id="stage">
         <div class="led-ring"></div>
@@ -523,11 +640,10 @@
     </div>
     <div id="sym-container" class="font-scroll"></div>
 </div>
-
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
 <script>
-// --- CORE VARIABLES ---
+// --- CORE VARIABLES (FRAME STUDIO) ---
 const c=document.getElementById('c'), x=c.getContext('2d');
 const zSl=document.getElementById('z'), rSl=document.getElementById('r'), mSl=document.getElementById('m');
 const panel=document.getElementById('menu-panel'), mStat=document.getElementById('m-status');
@@ -537,7 +653,24 @@ const zVal=document.getElementById('z-val'), rVal=document.getElementById('r-val
 const mLbl=document.getElementById('m-lbl'); 
 
 let i=new Image(), f=new Image();
-let cfg={s:1, m:375, x:400, y:400, r:0, lx:0, ly:0, pColor: null, pType: null, filter: 'none'}; 
+let cfg = { s:1, m:375, x:400, y:400, r:0, pColor: null, pType: null, filter: 'none', adj: { b: 100, c: 100, s: 100 } }; 
+
+// --- 📸 NEW: CORE VARIABLES (PHOTO EDITOR STUDIO) ---
+const peC = document.getElementById('pe-c');
+const peX = peC.getContext('2d');
+let peImg = new Image(); // Separate image object for the editor
+let peCfg = {
+    filter: 'none',
+    brightness: 100,
+    contrast: 100,
+    saturation: 100,
+    rotation: 0,
+    scale: 1,
+    flipH: 1,
+    flipV: 1,
+    cropRatio: 'free' // free, square, 4:5, 16:9
+};
+
 let player, musicOn=true, audioStarted=false;
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -564,7 +697,7 @@ function toggleMenu(e) { e.stopPropagation(); initAudio(); panel.classList.toggl
 function toggleSwitchMenu(e) { e.stopPropagation(); swMenu.style.display = swMenu.style.display === 'flex' ? 'none' : 'flex'; thMenu.style.display = 'none'; playClick(); }
 function toggleThemeMenu(e) { e.stopPropagation(); thMenu.style.display = thMenu.style.display === 'flex' ? 'none' : 'flex'; swMenu.style.display = 'none'; playClick(); }
 
-// --- 🎵 AUDIO ---
+// --- 🎵 AUDIO ENGINE ---
 const playlist = ["jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ", "MedT9ECothA", "eAdtqDV06Ho", "2kzQ272Le8Q", "0qCL3Sz1--M", "2UN1ZVbBelU", "iDVKMdnvgl8", "9JMjZbIpmS8", "TNGsftqag6M", "GedLli_YXEI"];
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
 function onYouTubeIframeAPIReady(){ const rId = playlist[Math.floor(Math.random() * playlist.length)]; const sel = document.querySelector('.station-select'); if(sel) sel.value = rId; player=new YT.Player('yt-player',{height:'0',width:'0',videoId:rId,playerVars:{'autoplay':1,'loop':1,'playlist':rId,'mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
@@ -585,14 +718,45 @@ function setTheme(theme) {
 }
 const savedTheme = localStorage.getItem('arcadeTheme'); if (savedTheme) { setTheme(savedTheme); }
 
+// --- 🔄 STUDIO SWITCHER (Handles Full-Screen App Mode) ---
 function changeStudio(mode) {
   playClick(); 
-  document.querySelectorAll('.studio-sec').forEach(s => s.classList.remove('active-sec')); 
+  document.querySelectorAll('.studio-sec, #photo-studio').forEach(s => s.classList.remove('active-sec')); 
   swMenu.style.display = 'none'; thMenu.style.display = 'none'; panel.classList.remove('open'); 
-  if(mode === 'frame') { document.getElementById('frame-studio').classList.add('active-sec'); sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; }
-  else if(mode === 'font') { document.getElementById('font-studio').classList.add('active-sec'); sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; }
-  else if(mode === 'gif') { document.getElementById('gif-studio').classList.add('active-sec'); sName.innerText = "NEON"; sSub.innerText = "GIF STUDIO"; }
-  else if(mode === 'sym') { document.getElementById('sym-studio').classList.add('active-sec'); sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; }
+  
+  // RESET FULL SCREEN MODE
+  document.body.classList.remove('editor-mode'); 
+  document.getElementById('studio-name').style.display = 'block';
+  document.getElementById('studio-sub').style.display = 'block';
+
+  if(mode === 'frame') { 
+      document.getElementById('frame-studio').classList.add('active-sec'); 
+      sName.innerText = "ARCADE"; sSub.innerText = "FRAME STUDIO"; 
+  }
+  else if(mode === 'photo') { 
+      // 📸 ACTIVATE PHOTO STUDIO
+      document.getElementById('photo-studio').classList.add('active-sec'); 
+      document.body.classList.add('editor-mode'); // Forces full screen darkroom
+      
+      // Hide standard headers for immersive feel
+      document.getElementById('studio-name').style.display = 'none';
+      document.getElementById('studio-sub').style.display = 'none';
+      
+      // Init Editor Canvas if empty
+      if(!peImg.src) peInitCanvas();
+  }
+  else if(mode === 'font') { 
+      document.getElementById('font-studio').classList.add('active-sec'); 
+      sName.innerText = "FONTS"; sSub.innerText = "GENERATOR STUDIO"; 
+  }
+  else if(mode === 'gif') { 
+      document.getElementById('gif-studio').classList.add('active-sec'); 
+      sName.innerText = "NEON"; sSub.innerText = "GIF STUDIO"; 
+  }
+  else if(mode === 'sym') { 
+      document.getElementById('sym-studio').classList.add('active-sec'); 
+      sName.innerText = "SYMBOLS"; sSub.innerText = "STUDIO"; 
+  }
 }
 
 function toggleFrameUI() {
@@ -642,7 +806,7 @@ const alphas = [
   {m:"𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝘵𝚞𝑣𝚠𝚡𝚢𝚣𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿"},
   {m:"𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
   {m:"𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗"}, 
- {m:"𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅开𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙯𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴9"},  
+ {m:"𝘼𝘽𝘾𝘿𝙀𝙁𝙂𝙃𝙄𝙅开𝙇𝙈𝙉𝙊𝙋𝙌𝙍𝙎𝙏𝙐𝙑𝙒𝙓𝙔𝙕𝙖𝙗𝙘𝙙𝙚𝙛𝙜𝙝𝙞𝙟𝙠𝙡𝙢𝙣𝙤𝙥𝙦𝙧𝙨𝙩𝙪𝙫𝙬𝙭𝙮𝙕𝟬𝟭𝟮𝟯𝟰𝟱𝟲𝟳𝟴9"},  
  {m:"ᴬʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘqʀsᴛᴜᴠᴡxʏᴢabcdefghijklmnopqrstuvwxyz0123456789"}
 ];
 
@@ -706,7 +870,7 @@ const colorData = {
         {c:'#d2691e', t:'neon'}, {c:'#a0522d', t:'neon'}, {c:'#8b4500', t:'neon'},
         {c:'#FFD700', t:'neon'}, {c:'#ffff33', t:'neon'}, {c:'#f0e68c', t:'neon'}, {c:'#b8860b', t:'neon'}, {c:'#daa520', t:'neon'},
         {c:'#00FF00', t:'neon'}, {c:'#32cd32', t:'neon'}, {c:'#00FA9A', t:'neon'}, {c:'#7FFF00', t:'neon'}, 
-        {c:'#ADFF2F', t:'neon'}, {c:'#90ee90', t:'neon'}, {c:'#2e8b57', t:'neon'}, {c:'#008000', t:'neon'},
+        {c:'#ADFF2F', t:'neon'}, {c:'#90ee90', t:'neon'}, {c:'#2e8b57', t:'neon'}, {c:'#008080', t:'neon'},
         {c:'#006400', t:'neon'}, {c:'#228b22', t:'neon'},
         {c:'#00FFFF', t:'neon'}, {c:'#00CED1', t:'neon'}, {c:'#40e0d0', t:'neon'}, {c:'#7fffd4', t:'neon'},
         {c:'#afeeee', t:'neon'}, {c:'#008b8b', t:'neon'}, {c:'#008080', t:'neon'},
@@ -799,29 +963,64 @@ function renderCat(cat) {
         grid.classList.add('show');
     }, 10);
 }
+
 function setPlainFrame(color, type=null) {
     f = new Image(); 
     document.getElementById('u2').value = ''; 
     cfg.pColor = color; 
     cfg.pType = type; 
-    mLbl.innerText = "FRAME OPENING SIZE"; 
+    mLbl.innerText = "FRAME OPENING SIZE";
     d(); 
     playClick();
 }
 
-// --- 🏆 THE ULTIMATE MASTER COLLECTION (280+ PRO LOOKS) ---
-// Status: Bug Fixed (sharpen() replaced with contrast-layering for universal stability)
-// Protection: No code compression; all features untouched [cite: 2026-01-02]
-// Performance: Hardware Accelerated & Universal Device Compatible
+// --- 📸 NEW: PHOTO EDITOR CORE LOGIC ---
+function peInitCanvas() {
+    const ws = document.getElementById('pe-workspace');
+    // Set initial size if no image, or max size
+    peC.width = ws.clientWidth;
+    peC.height = ws.clientHeight;
+    // Draw placeholder
+    peX.fillStyle = "#222";
+    peX.fillRect(0,0, peC.width, peC.height);
+    peX.fillStyle = "#444";
+    peX.font = "bold 20px Segoe UI";
+    peX.textAlign = "center";
+    peX.fillText("OPEN AN IMAGE TO START", peC.width/2, peC.height/2);
+}
 
+function peHandleFile(e) {
+    const files = e.target ? e.target.files : e.files; 
+    if(!files || !files[0]) return;
+    const r = new FileReader();
+    r.onload = v => {
+        const n = new Image();
+        n.onload = () => {
+            peImg = n;
+            // Reset Settings
+            peCfg = { filter: 'none', brightness: 100, contrast: 100, saturation: 100, rotation: 0, scale: 1, flipH: 1, flipV: 1, cropRatio: 'free' };
+            peDraw();
+            peSetTool('filters'); // Open filters by default
+        };
+        n.src = v.target.result;
+    };
+    r.readAsDataURL(files[0]);
+}
+
+function peDownload() {
+    if(!peImg.src) return;
+    const link = document.createElement('a');
+    link.download = `Arcade_Pro_${Date.now()}.png`;
+    link.href = peC.toDataURL('image/png', 1.0);
+    link.click();
+    playShutter();
+}
+// --- 🏆 THE ULTIMATE MASTER COLLECTION (280+ PRO LOOKS) ---
 const magicFilters = [
     { name: 'ORIGINAL', f: 'none' },
     { name: 'AUTO-ENHANCE ✨', f: 'contrast(1.15) saturate(1.25) brightness(1.05) sepia(0.05)' },
     { name: 'AI-4K-ULTRA-ENHANCE 💎', f: 'contrast(1.4) saturate(1.1) brightness(1.05) contrast(1.1)' },
     { name: 'ENHANCE ✨', f: 'contrast(1.25) saturate(1.4) brightness(1.1) sepia(0.05)' },
-
-    // --- 🤖 POWERFUL AI REMASTERING & "REMINI" RECOVERY ---
-    // High-definition simulations for texture recovery and clarity
     { name: 'AI-8K-SUPER-RESOLUTION', f: 'contrast(1.5) saturate(1.1) brightness(1.05) contrast(1.2)' },
     { name: 'AI-REMINI-PRO-v3', f: 'contrast(1.35) saturate(1.2) brightness(1.1) contrast(1.1)' },
     { name: 'AI-DEEP-TEXTURE-FIX', f: 'contrast(1.8) brightness(1.0) saturate(1.1) contrast(1.2)' },
@@ -829,9 +1028,6 @@ const magicFilters = [
     { name: 'AI-STUDIO-REMASTER', f: 'brightness(1.2) contrast(1.2) saturate(1.3) sepia(0.05) blur(0.2px)' },
     { name: 'AI-FACE-GLOW-PRO', f: 'brightness(1.15) saturate(1.1) contrast(0.95) blur(0.2px) contrast(1.1)' },
     { name: 'AI-LOW-LIGHT-RESCUE', f: 'brightness(1.4) contrast(1.2) saturate(1.1) sepia(0.05) contrast(1.05)' },
-
-    // --- 🎭 AI ANIMATED & CHARACTER TRANSFORMATION ---
-    // Digital render and animation aesthetics
     { name: 'AI-DISNEY-PIXAR-LOOK', f: 'saturate(2.8) brightness(1.2) contrast(0.95) blur(0.8px)' },
     { name: 'AI-LENSA-AVATAR-VIBE', f: 'hue-rotate(10deg) saturate(2.2) contrast(1.3) brightness(1.1) blur(0.4px)' },
     { name: 'AI-VECTOR-ART-PRO', f: 'contrast(2) saturate(1.8) brightness(1.2) blur(1.2px) contrast(1.1)' },
@@ -839,22 +1035,16 @@ const magicFilters = [
     { name: 'AI-MIDJOURNEY-RENDER', f: 'contrast(1.4) saturate(1.6) brightness(1.1) sepia(0.1) blur(0.5px)' },
     { name: 'AI-STUDIO-GHIBLI', f: 'saturate(1.8) brightness(1.15) contrast(0.9) sepia(0.1) blur(0.3px)' },
     { name: 'AI-NICKELODEON-VIBE', f: 'saturate(3.5) contrast(1.2) brightness(1.1) sepia(0.05)' },
-
-    // --- 🛠️ PHOTOSHOP PRO TOOLS (Advanced Simulation) ---
     { name: 'PS-BLOOM-GLOW', f: 'brightness(1.2) blur(0.4px) contrast(1.1) saturate(1.1)' },
     { name: 'PS-HIGH-PASS-SHARP', f: 'contrast(1.8) brightness(1.05) saturate(1.1)' },
     { name: 'PS-AUTO-TONE-v2', f: 'contrast(1.2) saturate(1.2) brightness(1.1)' },
     { name: 'PS-DEEP-MATTE', f: 'contrast(0.7) brightness(1.2) saturate(1.1) sepia(0.05)' },
     { name: 'PS-VIBRANCE-BOOST', f: 'saturate(1.8) brightness(1.05) contrast(1.1)' },
     { name: 'PS-COLOR-BALANCE', f: 'hue-rotate(-10deg) saturate(1.3) contrast(1.1) brightness(1.05)' },
-
-    // --- 🎨 AI ARTISTIC MASTERPIECES ---
     { name: 'AI-OIL-PAINTING-ULTRA', f: 'saturate(2.2) contrast(1.6) brightness(0.9) blur(1px)' },
     { name: 'AI-WATERCOLOR-GEN', f: 'brightness(1.3) contrast(0.8) saturate(2) blur(1.8px) hue-rotate(10deg)' },
     { name: 'AI-SKETCH-REMASTER', f: 'grayscale(1) contrast(5) brightness(1.6) blur(0.2px)' },
     { name: 'AI-FANTASY-ART', f: 'hue-rotate(20deg) saturate(2.2) contrast(1.2) brightness(1.1) blur(0.5px)' },
-
-    // --- 🔥 2026 HOT & TRENDING ---
     { name: 'THROWBACK-2016', f: 'saturate(2.5) contrast(1.4) brightness(1.1) sepia(0.1)' },
     { name: 'LO-FI-VIBES', f: 'contrast(1.6) saturate(1.8) brightness(0.95) hue-rotate(-5deg)' },
     { name: 'CLEAN-AESTHETIC', f: 'brightness(1.2) contrast(0.85) saturate(1.1) sepia(0.02)' },
@@ -863,8 +1053,6 @@ const magicFilters = [
     { name: 'SNAP-GLOW-VINTAGE', f: 'brightness(1.3) blur(0.4px) saturate(1.2) contrast(0.85)' },
     { name: 'DARK-ACADEMIA-PRO', f: 'sepia(0.4) contrast(1.2) brightness(0.8) saturate(0.6)' },
     { name: 'EARTHY-BOHO', f: 'sepia(0.3) saturate(0.8) contrast(1.1) brightness(0.95)' },
-
-    // --- 🎞️ ORIGINAL SCREENSHOT COLLECTION (Integrated) ---
     { name: 'FILM-1', f: 'contrast(1.1) saturate(1.5) brightness(0.9)' },
     { name: 'FILM-2', f: 'sepia(0.2) contrast(1.2) brightness(1.1)' },
     { name: 'FILM-B&W', f: 'grayscale(1) contrast(1.2)' },
@@ -876,8 +1064,6 @@ const magicFilters = [
     { name: 'VINTAGE-IVORY', f: 'sepia(0.4) contrast(0.9) brightness(1.1)' },
     { name: 'VINTAGE-1970', f: 'sepia(0.5) hue-rotate(-10deg) saturate(1.2)' },
     { name: 'VINTAGE-1990', f: 'contrast(1.1) saturate(0.8) brightness(0.9)' },
-
-    // --- 📸 INSTAGRAM & VSCO CLASSICS ---
     { name: 'CLARENDON', f: 'contrast(1.2) brightness(1.1) saturate(1.1) hue-rotate(5deg)' },
     { name: 'GINGHAM', f: 'brightness(1.05) sepia(0.2) contrast(0.9) saturate(0.9)' },
     { name: 'LARK', f: 'brightness(1.1) contrast(0.9) saturate(1.2) hue-rotate(-5deg)' },
@@ -886,16 +1072,12 @@ const magicFilters = [
     { name: 'VSCO-M5 (Moody)', f: 'contrast(0.9) saturate(0.8) sepia(0.25) brightness(0.95)' },
     { name: 'VSCO-C1 (Vibrant)', f: 'saturate(1.4) contrast(1.1) brightness(1.05) hue-rotate(-2deg)' },
     { name: 'VSCO-B5 (High Contrast BW)', f: 'grayscale(1) contrast(1.4) brightness(0.9)' },
-
-    // --- 🎞️ RARE & COLLECTOR FILM STOCKS ---
     { name: 'KODAK-PORTRA-400', f: 'saturate(1.15) brightness(1.1) contrast(0.95) sepia(0.12)' },
     { name: 'FUJI-VELVIA-50', f: 'saturate(1.6) contrast(1.2) brightness(1.05)' },
     { name: 'KODACHROME-64', f: 'contrast(1.3) saturate(1.4) brightness(1.0) sepia(0.15)' },
     { name: 'CINESTILL-800T', f: 'contrast(1.2) saturate(1.1) brightness(1.1) hue-rotate(-5deg) sepia(0.1)' },
     { name: 'POLAROID-600', f: 'contrast(1.1) brightness(1.1) sepia(0.25) saturate(0.8)' },
     { name: 'LOMOGRAPHY-PURPLE', f: 'hue-rotate(280deg) saturate(1.3) contrast(1.2) brightness(1.1)' },
-
-    // --- 🏁 PRO MONOCHROME & BW FILM ---
     { name: 'BW-SILVER-HALIDE', f: 'grayscale(1) brightness(1.2) contrast(1.5) sepia(0.1)' },
     { name: 'BW-CHARCOAL-DEEP', f: 'grayscale(1) contrast(1.8) brightness(0.65)' },
     { name: 'BW-STREET-STYLE', f: 'grayscale(1) contrast(1.4) brightness(1.0)' },
@@ -905,225 +1087,211 @@ const magicFilters = [
     { name: 'FILM-ILFORD-HP5', f: 'grayscale(1) contrast(1.1) brightness(1.05) blur(0.2px)' },
     { name: 'BW-GRAIN-SENSOR', f: 'grayscale(1) contrast(1.1) brightness(1.05) blur(0.4px)' },
     { name: 'BW-HIGH-KEY-ULTRA', f: 'grayscale(1) brightness(1.4) contrast(0.9)' },
-
-    // --- 📱 UNIVERSAL DEVICE COMPATIBILITY ---
     { name: 'UNI-CLEAN-VIEW', f: 'brightness(1.1) contrast(1.05) saturate(1.05)' },
     { name: 'UNI-SOFT-FOCUS', f: 'blur(0.2px) brightness(1.05) contrast(0.95)' },
     { name: 'UNI-WARM-MOBILE', f: 'sepia(0.15) saturate(1.2) contrast(1.1)' },
     { name: 'UNI-COOL-MOBILE', f: 'hue-rotate(180deg) saturate(0.8) brightness(1.1)' }
 ];
 
+// --- 📸 NEW: PHOTO EDITOR TOOLS UI GENERATOR ---
+function peSetTool(tool) {
+    const menu = document.getElementById('pe-submenu');
+    menu.innerHTML = ''; // Clear previous tools
+    menu.classList.add('open');
+    document.querySelectorAll('.pe-tool').forEach(t => t.classList.remove('active-tool'));
+    document.querySelector(`.pe-tool[onclick="peSetTool('${tool}')"]`).classList.add('active-tool');
 
+    if (tool === 'filters') {
+        const scroll = document.createElement('div');
+        scroll.style.cssText = "display:flex; gap:10px; overflow-x:auto; width:100%; height:100%; align-items:center; scrollbar-width:none;";
+        const thumbSrc = peImg.src; 
+        magicFilters.forEach(mf => {
+            const b = document.createElement('div');
+            b.style.cssText = "flex:0 0 60px; text-align:center; cursor:pointer;";
+            const img = document.createElement('img');
+            img.src = thumbSrc;
+            img.style.cssText = `width:50px; height:50px; border-radius:4px; border:2px solid #333; object-fit:cover; filter:${mf.f}`;
+            const lbl = document.createElement('span');
+            lbl.innerText = mf.name.split(' ')[0]; // Short name
+            lbl.style.cssText = "display:block; font-size:9px; color:#888; margin-top:3px;";
+            b.appendChild(img); b.appendChild(lbl);
+            b.onclick = () => { peCfg.filter = mf.f; peDraw(); };
+            scroll.appendChild(b);
+        });
+        menu.appendChild(scroll);
+    } 
+    else if (tool === 'tune') {
+        menu.style.flexDirection = 'row';
+        menu.style.alignItems = 'center';
+        menu.innerHTML = `
+            <div style="flex:1; padding:0 10px;">
+                <div style="font-size:10px; color:#aaa; margin-bottom:5px;">BRIGHTNESS</div>
+                <input type="range" min="0" max="200" value="100" style="width:100%" oninput="peUpdateOption('brightness', this.value)">
+            </div>
+            <div style="flex:1; padding:0 10px;">
+                <div style="font-size:10px; color:#aaa; margin-bottom:5px;">CONTRAST</div>
+                <input type="range" min="0" max="200" value="100" style="width:100%" oninput="peUpdateOption('contrast', this.value)">
+            </div>
+            <div style="flex:1; padding:0 10px;">
+                <div style="font-size:10px; color:#aaa; margin-bottom:5px;">SATURATION</div>
+                <input type="range" min="0" max="200" value="100" style="width:100%" oninput="peUpdateOption('saturation', this.value)">
+            </div>
+        `;
+    }
+    else if (tool === 'rotate') {
+        menu.innerHTML = `
+            <button class="btn" style="width:auto; padding:5px 15px; margin:0 5px;" onclick="peUpdateOption('rotate', -90)">↺ -90°</button>
+            <button class="btn" style="width:auto; padding:5px 15px; margin:0 5px;" onclick="peUpdateOption('rotate', 90)">↻ +90°</button>
+            <button class="btn" style="width:auto; padding:5px 15px; margin:0 5px;" onclick="peUpdateOption('flipH', -1)">↔ FLIP X</button>
+            <button class="btn" style="width:auto; padding:5px 15px; margin:0 5px;" onclick="peUpdateOption('flipV', -1)">↕ FLIP Y</button>
+        `;
+    }
+    else if (tool === 'crop') {
+        const ratios = ['FREE', '1:1', '4:5', '16:9', '9:16', '3:4'];
+        ratios.forEach(r => {
+            const b = document.createElement('button');
+            b.innerText = r;
+            b.className = 'btn';
+            b.style.cssText = "width:auto; flex:0 0 auto; margin:0 5px; padding:5px 10px; font-size:11px;";
+            b.onclick = () => { /* Crop Logic Placeholder - For now just alert */ alert('Crop presets coming in v2 update!'); };
+            menu.appendChild(b);
+        });
+    }
+    playClick();
+}
 
+function peUpdateOption(key, val) {
+    if(key === 'rotate') peCfg.rotation = (peCfg.rotation + parseInt(val)) % 360;
+    else if(key === 'flipH') peCfg.flipH *= -1;
+    else if(key === 'flipV') peCfg.flipV *= -1;
+    else peCfg[key] = parseInt(val);
+    peDraw();
+}
+
+// --- 📸 NEW: PHOTO EDITOR DRAWING ENGINE (PROFESSIONAL) ---
+function peDraw() {
+    if(!peImg.src) return;
     
-cfg.adj = { b: 100, c: 100, s: 100 };
+    // 1. Setup Canvas Dimensions (Dynamic Resizing to fit screen)
+    // Note: In a real Pro editor, we manipulate the VIEWPORT, but keep full res output.
+    // Here we draw to the visible canvas `peC`.
+    
+    // Clear
+    peX.clearRect(0,0, peC.width, peC.height);
+    
+    peX.save();
+    
+    // Center alignment
+    peX.translate(peC.width/2, peC.height/2);
+    
+    // Transforms
+    peX.rotate(peCfg.rotation * Math.PI / 180);
+    peX.scale(peCfg.flipH, peCfg.flipV);
+    
+    // Filter Construction
+    let fStr = peCfg.filter === 'none' ? '' : peCfg.filter;
+    if(peCfg.brightness !== 100) fStr += ` brightness(${peCfg.brightness}%)`;
+    if(peCfg.contrast !== 100) fStr += ` contrast(${peCfg.contrast}%)`;
+    if(peCfg.saturation !== 100) fStr += ` saturate(${peCfg.saturation}%)`;
+    peX.filter = fStr;
+    
+    // Draw Image (Contain Mode)
+    // We calculate scaling to fit the image inside the canvas while respecting rotation
+    let drawW = peImg.width; 
+    let drawH = peImg.height;
+    
+    // Simple fit logic for preview
+    const scale = Math.min(peC.width / drawW, peC.height / drawH) * 0.9; 
+    
+    peX.drawImage(peImg, -drawW*scale/2, -drawH*scale/2, drawW*scale, drawH*scale);
+    
+    peX.restore();
+}
 
+// --- 🔴 ORIGINAL FRAME STUDIO LOGIC (Legacy) ---
 function toggleFilterUI() {
     const el = document.getElementById('filter-wrapper');
     const btn = document.querySelector("button[onclick='toggleFilterUI()']");
+    const siblings = document.querySelectorAll('#frame-btn-group > label, #frame-btn-group > button:not([onclick="toggleFilterUI()"])');
+
     if(el.style.display === 'flex') {
-        el.style.display = 'none';
-        btn.innerHTML = "MAGIC FILTERS ✨";
-        btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff";
+        el.style.display = 'none'; btn.innerHTML = "MAGIC FILTERS ✨"; btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff"; siblings.forEach(s => s.style.display = '');
     } else {
-        el.style.display = 'flex';
-        el.classList.add('active');
-        btn.innerHTML = "CLOSE FILTERS ✖";
-        btn.style.color = "#ff00ff"; btn.style.borderColor = "#ff00ff";
+        el.style.display = 'flex'; el.classList.add('active'); btn.innerHTML = "CLOSE FILTERS ✖"; btn.style.color = "#ff00ff"; btn.style.borderColor = "#ff00ff";
+        siblings.forEach(s => s.style.display = 'none'); document.getElementById('palette-wrapper').style.display = 'none';
         if(document.getElementById('filter-list').children.length === 0) renderFilters();
         if(!document.getElementById('adj-panel')) createAdjustUI();
         if(!document.getElementById('open-adj-btn')) createSmartEditBtn();
-        document.getElementById('filter-list').style.display = 'flex';
-        document.getElementById('adj-panel').style.display = 'none';
-        document.getElementById('open-adj-btn').style.display = (cfg.filter && cfg.filter !== 'none') ? 'block' : 'none';
+        document.getElementById('filter-list').style.display = 'flex'; document.getElementById('adj-panel').style.display = 'none'; document.getElementById('open-adj-btn').style.display = (cfg.filter && cfg.filter !== 'none') ? 'block' : 'none';
     }
     playClick();
 }
 
-function createSmartEditBtn() {
-    const wrapper = document.getElementById('filter-wrapper');
-    const b = document.createElement('button');
-    b.id = 'open-adj-btn';
-    b.innerHTML = "ADJUST SETTINGS ⚙️";
-    b.style.cssText = "width:100%; background:black; color:#00ffff; border:2px solid #00ffff; font-weight:900; padding:12px; margin-top:10px; border-radius:8px; cursor:pointer; display:none; font-family:'Segoe UI', sans-serif; letter-spacing:1px;";
-    b.onclick = openAdjust;
-    wrapper.insertBefore(b, document.getElementById('filter-list').nextSibling);
-}
-
-function createAdjustUI() {
-    const wrapper = document.getElementById('filter-wrapper');
-    const p = document.createElement('div');
-    p.id = 'adj-panel';
-    p.style.cssText = "display:none; flex-direction:column; width:100%; gap:15px; padding:10px 5px;";
-    const baseStyle = "width:100%; -webkit-appearance:none; height:6px; background:#444; border-radius:3px; outline:none;";
-    const sliderHTML = (id, func, label, color) => `
-        <div style="display:flex; justify-content:space-between; color:${color}; font-family:'Segoe UI', sans-serif; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:5px;">
-            <span>${label}</span><span id="val-${id}" style="color:#fff;">100%</span>
-        </div>
-        <input type="range" id="sl-${id}" min="0" max="200" value="100" class="neon-slider" data-col="${color}" style="${baseStyle}" oninput="${func}">
-    `;
-    p.innerHTML = sliderHTML('b', "adjChange('b', this.value, this)", "BRIGHTNESS", "#ff0055") +
-                  sliderHTML('c', "adjChange('c', this.value, this)", "CONTRAST", "#00ffff") +
-                  sliderHTML('s', "adjChange('s', this.value, this)", "SATURATION", "#ff0055");
-    const doneBtn = document.createElement('button');
-    doneBtn.innerText = "DONE ✓";
-    doneBtn.style.cssText = "width:100%; background:#00ff00; color:#000; font-weight:900; border:none; padding:12px; margin-top:10px; border-radius:4px; cursor:pointer;";
-    doneBtn.onclick = closeAdjust;
-    p.appendChild(doneBtn);
-    wrapper.appendChild(p);
-    setTimeout(() => { ['b','c','s'].forEach(k => { const el = document.getElementById('sl-'+k); if(el) updateSliderColor(el, 100, 200); }); }, 50);
-}
-
-function updateSliderColor(el, val, max) {
-    const percent = (val / max) * 100;
-    const col = el.getAttribute('data-col') || '#00ffff';
-    el.style.background = `linear-gradient(to right, ${col} 0%, ${col} ${percent}%, #444 ${percent}%, #444 100%)`;
-}
-
-function renderFilters() {
-    const list = document.getElementById('filter-list');
-    list.innerHTML = '';
-    const previewSrc = i.src || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; 
-    magicFilters.forEach(mf => {
-        const btn = document.createElement('button');
-        btn.className = 'filter-btn';
-        const img = document.createElement('img');
-        img.className = 'filter-preview';
-        img.src = previewSrc;
-        img.style.filter = mf.f; 
-        const span = document.createElement('span');
-        span.className = 'filter-name';
-        span.innerText = mf.name;
-        btn.appendChild(img);
-        btn.appendChild(span);
-        btn.onclick = () => { applyFilter(mf.f, btn); };
-        list.appendChild(btn);
-    });
-}
-
-function openAdjust() {
-    document.getElementById('filter-list').style.display = 'none';
-    document.getElementById('open-adj-btn').style.display = 'none';
-    document.getElementById('adj-panel').style.display = 'flex';
-    playClick();
-}
-
-function closeAdjust() {
-    document.getElementById('adj-panel').style.display = 'none';
-    document.getElementById('filter-list').style.display = 'flex';
-    document.getElementById('open-adj-btn').style.display = 'block';
-    playClick();
-}
-
-function adjChange(type, val, el) {
-    cfg.adj[type] = parseInt(val);
-    document.getElementById(`val-${type}`).innerText = val + "%";
-    if(el) updateSliderColor(el, val, 200);
-    let finalF = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
-    if(cfg.adj.b !== 100) finalF += ` brightness(${cfg.adj.b}%)`;
-    if(cfg.adj.c !== 100) finalF += ` contrast(${cfg.adj.c}%)`;
-    if(cfg.adj.s !== 100) finalF += ` saturate(${cfg.adj.s}%)`;
-    if(finalF !== '') c.style.filter = finalF; else c.style.filter = 'none';
-    d(); 
-}
-
-function applyFilter(filterVal, btn) {
-    if(cfg.filter !== filterVal) {
-        cfg.adj = { b: 100, c: 100, s: 100 };
-        ['b','c','s'].forEach(k => {
-            const el = document.getElementById('sl-'+k);
-            if(el) { el.value = 100; document.getElementById('val-'+k).innerText = "100%"; updateSliderColor(el, 100, 200); }
-        });
-    }
-    cfg.filter = filterVal;
-    c.style.filter = filterVal; 
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
-    if(btn) btn.classList.add('active-filter');
-    const editBtn = document.getElementById('open-adj-btn');
-    if(editBtn) editBtn.style.display = (filterVal === 'none') ? 'none' : 'block';
-    d(); playClick();
-}
+function createSmartEditBtn() { const w=document.getElementById('filter-wrapper'); const b=document.createElement('button'); b.id='open-adj-btn'; b.innerHTML="ADJUST SETTINGS ⚙️"; b.style.cssText="width:100%; background:black; color:#00ffff; border:2px solid #00ffff; font-weight:900; padding:12px; margin-top:10px; border-radius:8px; cursor:pointer; display:none;"; b.onclick=openAdjust; w.insertBefore(b, document.getElementById('filter-list').nextSibling); }
+function createAdjustUI() { const w=document.getElementById('filter-wrapper'); const p=document.createElement('div'); p.id='adj-panel'; p.style.cssText="display:none; flex-direction:column; width:100%; gap:15px; padding:10px 5px;"; const sHTML=(id,f,l,c)=>`<div style="display:flex; justify-content:space-between; color:${c}; font-size:12px; font-weight:bold;"><span>${l}</span><span id="val-${id}" style="color:#fff;">100%</span></div><input type="range" id="sl-${id}" min="0" max="200" value="100" style="width:100%; -webkit-appearance:none; height:6px; background:#444; border-radius:3px;" oninput="${f}">`; p.innerHTML=sHTML('b',"adjChange('b',this.value,this)","BRIGHTNESS","#ff0055")+sHTML('c',"adjChange('c',this.value,this)","CONTRAST","#00ffff")+sHTML('s',"adjChange('s',this.value,this)","SATURATION","#ff0055"); const dBtn=document.createElement('button'); dBtn.innerText="DONE ✓"; dBtn.style.cssText="width:100%; background:#00ff00; color:#000; font-weight:900; border:none; padding:12px; margin-top:10px; border-radius:4px; cursor:pointer;"; dBtn.onclick=closeAdjust; p.appendChild(dBtn); w.appendChild(p); }
+function renderFilters() { const l=document.getElementById('filter-list'); l.innerHTML=''; const pSrc=i.src||'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; magicFilters.forEach(mf=>{ const b=document.createElement('button'); b.className='filter-btn'; const img=document.createElement('img'); img.className='filter-preview'; img.src=pSrc; img.style.filter=mf.f; const s=document.createElement('span'); s.className='filter-name'; s.innerText=mf.name; b.appendChild(img); b.appendChild(s); b.onclick=()=>{applyFilter(mf.f,b);}; l.appendChild(b); }); }
+function openAdjust(){ document.getElementById('filter-list').style.display='none'; document.getElementById('open-adj-btn').style.display='none'; document.getElementById('adj-panel').style.display='flex'; playClick(); }
+function closeAdjust(){ document.getElementById('adj-panel').style.display='none'; document.getElementById('filter-list').style.display='flex'; document.getElementById('open-adj-btn').style.display='block'; playClick(); }
+function adjChange(t,v,el){ cfg.adj[t]=parseInt(v); document.getElementById(`val-${t}`).innerText=v+"%"; let fStr=(cfg.filter&&cfg.filter!=='none')?cfg.filter:''; if(cfg.adj.b!==100)fStr+=` brightness(${cfg.adj.b}%)`; if(cfg.adj.c!==100)fStr+=` contrast(${cfg.adj.c}%)`; if(cfg.adj.s!==100)fStr+=` saturate(${cfg.adj.s}%)`; if(fStr!=='') c.style.filter=fStr; else c.style.filter='none'; d(); }
+function applyFilter(v,b){ if(cfg.filter!==v){cfg.adj={b:100,c:100,s:100};['b','c','s'].forEach(k=>{const el=document.getElementById('sl-'+k); if(el){el.value=100; document.getElementById('val-'+k).innerText="100%";}});} cfg.filter=v; c.style.filter=v; document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.remove('active-filter')); if(b)b.classList.add('active-filter'); const eBtn=document.getElementById('open-adj-btn'); if(eBtn)eBtn.style.display=(v==='none')?'none':'block'; d(); playClick(); }
 
 let isBoundaryLocked = true;
-function toggleBoundaryLock() {
-    isBoundaryLocked = !isBoundaryLocked;
-    const btn = document.getElementById('lock-btn');
-    if (isBoundaryLocked) { 
-        btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; 
-        if(i.src) {
-            const rad = Math.abs(cfg.r * Math.PI / 180);
-            const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-            const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-            const minS = Math.max(reqW/i.width, reqH/i.height);
-            zSl.min = minS; if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
-        }
-    } else { 
-        btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; 
-        zSl.min = 0.01; // RELEASES ZOOM LIMIT
-    }
-    d(); playClick();
-}
+function toggleBoundaryLock() { isBoundaryLocked = !isBoundaryLocked; const btn = document.getElementById('lock-btn'); if (isBoundaryLocked) { btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; d(); } else { btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; zSl.min = 0.01; } playClick(); }
 
+// --- 🖼️ FRAME STUDIO DRAWING ENGINE (Legacy Circle Logic) ---
 function d(){ 
-  x.clearRect(0,0,800,800); 
-  if(i.src && isBoundaryLocked){
+  x.clearRect(0,0,c.width,c.height); 
+  const cx=c.width/2, cy=c.height/2;
+  if(i.src&&isBoundaryLocked){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-      const w = i.width * cfg.s, h = i.height * cfg.s;
-      const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+      const mSc = (cfg.m / 400) * cx; 
+      const reqW = (mSc*2*cos + mSc*2*sin), reqH = (mSc*2*sin + mSc*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
       if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
-      const rangeX = Math.max(0, (w - reqW)/2), rangeY = Math.max(0, (h - reqH)/2);
-      cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
-      cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
   if(i.src){
-      x.save(); x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.clip(); 
+      x.save(); 
+      const mSc = (cfg.m / 400) * cx;
+      x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.clip(); 
       let w = i.width * cfg.s, h = i.height * cfg.s;
-      x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
-      let finalF = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
-      if(cfg.adj.b !== 100) finalF += ` brightness(${cfg.adj.b}%)`;
-      if(cfg.adj.c !== 100) finalF += ` contrast(${cfg.adj.c}%)`;
-      if(cfg.adj.s !== 100) finalF += ` saturate(${cfg.adj.s}%)`;
-      if(finalF !== '') { x.filter = finalF; c.style.filter = finalF; } else { x.filter = 'none'; c.style.filter = 'none'; }
-      x.drawImage(i, -w/2, -h/2, w, h); x.restore(); 
+      const dx = (cfg.x - 400); const dy = (cfg.y - 400); 
+      x.translate(cx + dx, cy + dy); x.rotate(cfg.r * Math.PI / 180);
+      let fStr = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
+      if(cfg.adj.b !== 100) fStr += ` brightness(${cfg.adj.b}%)`;
+      if(cfg.adj.c !== 100) fStr += ` contrast(${cfg.adj.c}%)`;
+      if(cfg.adj.s !== 100) fStr += ` saturate(${cfg.adj.s}%)`;
+      if(fStr !== '') { x.filter = fStr; c.style.filter = fStr; } else { x.filter = 'none'; c.style.filter = 'none'; }
+      x.drawImage(i, -w/2, -h/2, w, h); 
+      x.restore(); 
   }
   x.filter = 'none'; 
   if (cfg.pColor) {
       x.save(); 
+      const mSc = (cfg.m / 400) * cx; 
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
-          const shadowCol = cfg.pColor; const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = shadowCol; x.shadowBlur = 60; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke(); x.restore();
+          const sC = cfg.pColor; x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
+          x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
+          x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
       } 
-      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      }
       else if (cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
+          x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
+          x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
       }
       else {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
-          if (cfg.pType && gradientDefs[cfg.pType]) { const cols = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]); x.strokeStyle = g; } 
-          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
-              let g = x.createLinearGradient(0, 0, 800, 800);
-              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
-              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
-              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
-              x.strokeStyle = g;
-          } else { x.strokeStyle = cfg.pColor; }
-          x.stroke(); 
+          x.beginPath(); x.arc(cx, cy, mSc, 0, 6.28); x.lineWidth = 25; 
+          applyStrokeStyle(x, cfg.pType, cfg.pColor, c.height); x.stroke(); 
       }
       x.restore();
   }
-  if(f.src) x.drawImage(f,0,0,800,800); 
+  if(f.src) x.drawImage(f,0,0,c.width,c.height); 
 }
 
+function applyStrokeStyle(ctx, type, color, h) {
+    if (type && gradientDefs[type]) { const cols = gradientDefs[type]; let g = ctx.createLinearGradient(0, 0, 0, h); g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]); ctx.strokeStyle = g; } 
+    else if (type && (type === 'gold' || type === 'silver' || type === 'bronze')) { let g = ctx.createLinearGradient(0, 0, 0, h); if (type === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(1, '#FDB931'); } else if (type === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(1, '#B0B0B0'); } else if (type === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(1, '#A0522D'); } ctx.strokeStyle = g; } else { ctx.strokeStyle = color; }
+}
+// --- 🖼️ FRAME STUDIO HANDLERS (Legacy) ---
 function handleFile(e){
     const files = e.target ? e.target.files : e.files; if(!files || !files[0]) return;
     const r = new FileReader();
@@ -1132,11 +1300,13 @@ function handleFile(e){
         n.onload = () => {
             i = n; cfg.x = 400; cfg.y = 400; cfg.r = 0;
             if(isBoundaryLocked) {
-                const reqW = cfg.m * 2, reqH = cfg.m * 2;
-                const minS = Math.max(reqW/i.width, reqH/i.height); cfg.s = minS; zSl.min = minS; zSl.value = minS; zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
-            } else { cfg.s = Math.max(800/i.width, 800/i.height); zSl.min = 0.01; zSl.value = cfg.s; zVal.innerText = "100%"; }
+                d(); 
+                const minS = Math.max(800/i.width, 800/i.height); 
+                cfg.s = minS; zSl.min = minS; zSl.value = minS; zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
+            } else { 
+                cfg.s = Math.max(800/i.width, 800/i.height); zSl.min = 0.01; zSl.value = cfg.s; zVal.innerText = "100%"; 
+            }
             renderFilters(); d(); 
-            const uiPanel = document.querySelector('.ui'); uiPanel.style.paddingBottom = "200px"; 
             const saveBtn = document.getElementById('save'); saveBtn.disabled = false;
         }; n.src = v.target.result;
     }; r.readAsDataURL(files[0]);
@@ -1156,32 +1326,39 @@ function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*
 function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
 function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
 function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
+
 function resetProject(){ 
     i=new Image(); f=new Image(); cfg={s:1,m:375,x:400,y:400,r:0, pColor:null, pType:null, filter:'none', adj:{b:100,c:100,s:100}};
     zSl.value=1; rSl.value=0; mSl.value=375; mLbl.innerText = "CIRCLE SIZE";
     document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
     c.style.filter = 'none'; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
     document.getElementById('filter-list').innerHTML = '';
-    if(document.getElementById('adj-panel')) { document.getElementById('filter-list').style.display = 'flex'; document.getElementById('adj-panel').style.display = 'none'; }
+    document.getElementById('filter-list').style.display = 'flex'; 
+    document.getElementById('adj-panel').style.display = 'none';
     if(document.getElementById('open-adj-btn')) document.getElementById('open-adj-btn').style.display = 'none';
-    d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true; document.querySelector('.ui').style.paddingBottom = "0px"; 
+    document.getElementById('palette-wrapper').style.display = 'none';
+    d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); document.getElementById('save').disabled = true; 
 }
+
 function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
-// --- 🖱️ INTERACTION ENGINE (STRICT PASSIVE: FALSE FIX) ---
+// --- 🖱️ INTERACTION ENGINE (FRAME STUDIO) ---
 let isP=false, tStart={x:0,y:0}, initialDist=0, initialScale=1, initialAngle=0, initialRot=0;
 c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
-c.onmousemove=e=>{ if(!isP)return; let scale = 800 / c.offsetWidth; cfg.x += (e.offsetX - tStart.x) * scale; cfg.y += (e.offsetY - tStart.y) * scale; tStart={x:e.offsetX,y:e.offsetY}; d(); }
+c.onmousemove=e=>{ if(!isP)return; 
+    let scale = c.width / c.offsetWidth; 
+    cfg.x += (e.offsetX - tStart.x) * scale; cfg.y += (e.offsetY - tStart.y) * scale; 
+    tStart={x:e.offsetX,y:e.offsetY}; d(); 
+}
 window.onmouseup=()=>{isP=false;}
 
 c.addEventListener('touchstart', e => { 
     if(i.src) { e.preventDefault(); } 
     const t = e.touches[0];
-    if(e.touches.length===1){ 
-        isP=true; tStart={x:t.pageX, y:t.pageY}; 
-    } else if(e.touches.length===2){ 
+    if(e.touches.length===1){ isP=true; tStart={x:t.pageX, y:t.pageY}; } 
+    else if(e.touches.length===2){ 
         isP=false; 
         const dx = e.touches[0].pageX - e.touches[1].pageX; 
         const dy = e.touches[0].pageY - e.touches[1].pageY; 
@@ -1194,7 +1371,7 @@ c.addEventListener('touchmove', e => {
     if(i.src) { e.preventDefault(); } 
     if(e.touches.length===1 && isP){ 
         const t = e.touches[0];
-        let scale = 800 / c.offsetWidth; 
+        let scale = c.width / c.offsetWidth; 
         let dx = t.pageX - tStart.x; 
         let dy = t.pageY - tStart.y; 
         cfg.x += dx * scale; cfg.y += dy * scale; 
@@ -1224,36 +1401,12 @@ const gfInput = document.getElementById('gfInput'); const upBtn = document.getEl
 let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH, isProcessingGif = false;
 
 function resetGifProject() { 
-    v.pause(); 
-    v.src = ""; 
-    v.load(); 
-    v.style.display = 'none'; 
-    o.src = ''; 
-    o.style.display = 'none'; 
-    dlBox.style.display = 'none'; 
-    
-    // --- 🛡️ FULL RESET & DEACTIVATION ---
-    dl.href = "#"; 
-    dl.removeAttribute('download'); 
-    dl.style.pointerEvents = 'none'; // Prevents any clicking
-    dl.style.opacity = '0.5';        // Visual cue that it is disabled
+    v.pause(); v.src = ""; v.load(); v.style.display = 'none'; o.src = ''; o.style.display = 'none'; 
+    dlBox.style.display = 'none'; dl.href = "#"; dl.removeAttribute('download'); dl.style.pointerEvents = 'none'; dl.style.opacity = '0.5';        
     dl.onclick = (e) => { e.preventDefault(); return false; }; 
-    // ------------------------------------
-    
-    resetBox.style.display = 'none'; 
-    document.getElementById('goBox').style.display = 'inline-block'; 
-    go.disabled = false; 
-    upBtn.disabled = false; 
-    zoom.disabled = false; 
-    zoom.value = 100; 
-    speed.disabled = false; 
-    msg.classList.remove('active'); 
-    zv.innerText = "100%"; 
-    gfInput.value = ''; 
-    gifX = 0; 
-    gifY = 0; 
-    isProcessingGif = false; 
-    vp.style.pointerEvents = 'auto'; 
+    resetBox.style.display = 'none'; document.getElementById('goBox').style.display = 'inline-block'; 
+    go.disabled = false; upBtn.disabled = false; zoom.disabled = false; zoom.value = 100; speed.disabled = false; 
+    msg.classList.remove('active'); zv.innerText = "100%"; gfInput.value = ''; gifX = 0; gifY = 0; isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
 }
 
 gfInput.onchange = (e) => { const file = e.target.files[0]; if (!file) return; v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; v.src = URL.createObjectURL(file); v.playbackRate = parseFloat(speed.value); go.disabled = false; v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); }; };
@@ -1283,21 +1436,25 @@ go.onclick = () => {
         const reader = new FileReader();
         reader.onloadend = () => {
             const finalData = reader.result; v.style.display = 'none'; o.src = finalData; o.style.display = 'block'; 
-            dl.href = finalData; dl.download = `Arcade_GIF_${Date.now()}.gif`; 
-            
-            // --- RE-ACTIVATE DOWNLOAD ---
-            dl.style.pointerEvents = 'auto'; 
-            dl.style.opacity = '1'; 
-            dl.onclick = null; 
-            // ----------------------------
-            
+            dl.href = finalData; dl.download = `Arcade_GIF_${Date.now()}.gif`; dl.style.pointerEvents = 'auto'; dl.style.opacity = '1'; dl.onclick = null; 
             dlBox.style.display = 'block'; resetBox.style.display = 'block'; 
             msg.classList.remove('active'); document.getElementById('goBox').style.display = 'none'; isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
         }; reader.readAsDataURL(blob);
     });
 };
 
-window.onclick = e => { initAudio(); if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; playClick(); } if (thMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { thMenu.style.display = 'none'; playClick(); } const fw = document.getElementById('filter-wrapper'); if (fw.style.display === 'flex' && !fw.contains(e.target) && !e.target.innerText.includes('FILTERS') && !e.target.id.includes('val')) { fw.style.display = 'none'; const btn = document.querySelector("button[onclick='toggleFilterUI()']"); if(btn) { btn.innerHTML = "MAGIC FILTERS ✨"; btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff"; } } };
+window.onclick = e => { 
+    initAudio(); 
+    if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { panel.classList.remove('open'); playClick(); } 
+    if (swMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { swMenu.style.display = 'none'; playClick(); } 
+    if (thMenu.style.display === 'flex' && !document.querySelector('.switch-container').contains(e.target)) { thMenu.style.display = 'none'; playClick(); } 
+    const fw = document.getElementById('filter-wrapper'); 
+    if (fw.style.display === 'flex' && !fw.contains(e.target) && !e.target.innerText.includes('FILTERS') && !e.target.id.includes('val')) { toggleFilterUI(); } 
+    // Close Photo Editor Menus
+    const peMenu = document.getElementById('pe-submenu');
+    const peToolbar = document.querySelector('.pe-toolbar');
+    if (peMenu.classList.contains('open') && !peMenu.contains(e.target) && !peToolbar.contains(e.target)) { peMenu.classList.remove('open'); }
+};
 </script>
 </body>
 </html>
