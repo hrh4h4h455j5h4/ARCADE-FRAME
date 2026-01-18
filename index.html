@@ -1082,10 +1082,9 @@ function toggleBoundaryLock() {
     d(); playClick();
 }
 
+// --- 🛠️ CORE DRAWING ENGINE (STRICT STABILITY RESTORED) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
-  
-  // 1. POSITIONING LOGIC
   if(i.src && isBoundaryLocked){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
@@ -1097,54 +1096,38 @@ function d(){
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
-
-  // 2. DRAW IMAGE (WITH FILTER)
   if(i.src){
       x.save(); 
       x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.clip(); 
-      
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
-      
-      // -- 🔥 THE FIX: APPLY FILTER HERE ONLY --
-      let finalF = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
-      if(cfg.adj.b !== 100) finalF += ` brightness(${cfg.adj.b}%)`;
-      if(cfg.adj.c !== 100) finalF += ` contrast(${cfg.adj.c}%)`;
-      if(cfg.adj.s !== 100) finalF += ` saturate(${cfg.adj.s}%)`;
-      
-      if(finalF !== '') { x.filter = finalF; } else { x.filter = 'none'; }
-      // ---------------------------------------
-      
+      let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
+      if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
+      if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
+      if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
+      x.filter = (fs !== '') ? fs : 'none';
       x.drawImage(i, -w/2, -h/2, w, h); 
       x.restore(); 
   }
-
-  // 3. RESET FILTER (CRITICAL STEP)
-  // Ensure the "pen" is clean before drawing the frame
   x.filter = 'none'; 
-
-  // 4. DRAW STROKE/BORDER
   if (cfg.pColor) {
       x.save(); 
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
-          const shadowCol = cfg.pColor; const innerShadowCol = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = shadowCol; x.shadowBlur = 60; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 18; x.strokeStyle = shadowCol; x.shadowBlur = 10; x.shadowColor = shadowCol; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 2 * Math.PI); x.clip();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, 2 * Math.PI); x.strokeStyle = innerShadowCol; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = shadowCol; x.stroke(); x.restore();
-      } 
-      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      }
-      else if (cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
-      }
-      else {
-          x.beginPath(); x.arc(400, 400, cfg.m, 0, Math.PI * 2); x.lineWidth = 25; 
-          if (cfg.pType && gradientDefs[cfg.pType]) { const cols = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cols[0]); g.addColorStop(1, cols[1]); x.strokeStyle = g; } 
+          const sC = cfg.pColor; const iC = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
+          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 6.28); x.clip();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.strokeStyle = iC; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = sC; x.stroke(); x.restore();
+      } else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
+      } else if (cfg.pType === 'neon') {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
+      } else {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 25; 
+          if (cfg.pType && gradientDefs[cfg.pType]) { const cs = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; } 
           else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
               let g = x.createLinearGradient(0, 0, 800, 800);
               if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
@@ -1156,16 +1139,17 @@ function d(){
       }
       x.restore();
   }
-
-  // 5. DRAW UPLOADED FRAME
   if(f.src) x.drawImage(f,0,0,800,800); 
 }
+
+// --- 📂 FILE HANDLERS (DECODING & BLANK FIX) ---
 function handleFile(e){
     const files = e.target ? e.target.files : e.files; if(!files || !files[0]) return;
     const r = new FileReader();
     r.onload = v => {
         const n = new Image();
-        n.onload = () => {
+        n.onload = async () => {
+            if ('decode' in n) { try { await n.decode(); } catch(err) { } }
             i = n; cfg.x = 400; cfg.y = 400; cfg.r = 0;
             if(isBoundaryLocked) {
                 const reqW = cfg.m * 2, reqH = cfg.m * 2;
@@ -1173,7 +1157,7 @@ function handleFile(e){
             } else { cfg.s = Math.max(800/i.width, 800/i.height); zSl.min = 0.01; zSl.value = cfg.s; zVal.innerText = "100%"; }
             renderFilters(); d(); 
             const uiPanel = document.querySelector('.ui'); uiPanel.style.paddingBottom = "200px"; 
-            const saveBtn = document.getElementById('save'); saveBtn.disabled = false;
+            document.getElementById('save').disabled = false;
         }; n.src = v.target.result;
     }; r.readAsDataURL(files[0]);
 }
@@ -1206,342 +1190,80 @@ function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
-// --- 🖱️ INTERACTION ENGINE (STRICT PASSIVE: FALSE FIX) ---
+// --- 🖱️ INTERACTION ENGINE (STRICT TOUCH REPAIR) ---
 let isP=false, tStart={x:0,y:0}, initialDist=0, initialScale=1, initialAngle=0, initialRot=0;
-c.onmousedown=e=>{isP=true; tStart={x:e.offsetX,y:e.offsetY};}
-c.onmousemove=e=>{ if(!isP)return; let scale = 800 / c.offsetWidth; cfg.x += (e.offsetX - tStart.x) * scale; cfg.y += (e.offsetY - tStart.y) * scale; tStart={x:e.offsetX,y:e.offsetY}; d(); }
-window.onmouseup=()=>{isP=false;}
+let isGifDrag = false, startX = 0, startY = 0, initX = 0, initY = 0;
 
 c.addEventListener('touchstart', e => { 
-    if(i.src) { e.preventDefault(); } 
+    if(!i.src) return; e.preventDefault(); 
     const t = e.touches[0];
-    if(e.touches.length===1){ 
-        isP=true; tStart={x:t.pageX, y:t.pageY}; 
-    } else if(e.touches.length===2){ 
-        isP=false; 
-        const dx = e.touches[0].pageX - e.touches[1].pageX; 
-        const dy = e.touches[0].pageY - e.touches[1].pageY; 
-        initialDist = Math.sqrt(dx*dx + dy*dy); 
-        initialScale = cfg.s; initialAngle = Math.atan2(dy, dx); initialRot = cfg.r; 
+    if(e.touches.length===1){ isP=true; tStart={x:t.pageX, y:t.pageY}; } 
+    else if(e.touches.length===2){ 
+        isP=false; const dx = e.touches[0].pageX - e.touches[1].pageX; const dy = e.touches[0].pageY - e.touches[1].pageY; 
+        initialDist = Math.sqrt(dx*dx + dy*dy); initialScale = cfg.s; initialAngle = Math.atan2(dy, dx); initialRot = cfg.r; 
     } 
 }, { passive: false });
 
 c.addEventListener('touchmove', e => { 
-    if(i.src) { e.preventDefault(); } 
+    if(!i.src) return; e.preventDefault(); 
     if(e.touches.length===1 && isP){ 
-        const t = e.touches[0];
-        let scale = 800 / c.offsetWidth; 
-        let dx = t.pageX - tStart.x; 
-        let dy = t.pageY - tStart.y; 
-        cfg.x += dx * scale; cfg.y += dy * scale; 
+        const t = e.touches[0]; let scale = 800 / c.offsetWidth; 
+        cfg.x += (t.pageX - tStart.x) * scale; cfg.y += (t.pageY - tStart.y) * scale; 
         tStart={x:t.pageX, y:t.pageY}; d(); 
     } else if(e.touches.length===2){ 
-        const dx = e.touches[0].pageX - e.touches[1].pageX; 
-        const dy = e.touches[0].pageY - e.touches[1].pageY; 
-        const dist = Math.sqrt(dx*dx + dy*dy); 
-        const scaleFactor = dist / initialDist; 
-        let newScale = initialScale * scaleFactor; 
-        newScale = Math.max(zSl.min, Math.min(zSl.max, newScale)); 
-        cfg.s = newScale; zSl.value = newScale; 
-        zVal.innerText=Math.round((newScale/zSl.min)*100)+"%"; updS(zSl); 
-        const angle = Math.atan2(dy, dx); 
-        let rotationDiff = (angle - initialAngle) * (180/Math.PI); 
-        cfg.r = (initialRot + rotationDiff) % 360; 
-        rSl.value = (cfg.r % 360 + 360) % 360; 
-        rVal.innerText = Math.round(cfg.r) + "°"; updS(rSl); d(); 
+        const dx = e.touches[0].pageX - e.touches[1].pageX; const dy = e.touches[0].pageY - e.touches[1].pageY; 
+        const dist = Math.sqrt(dx*dx + dy*dy); const scaleFactor = dist / initialDist; 
+        let newScale = initialScale * scaleFactor; cfg.s = Math.max(zSl.min, Math.min(zSl.max, newScale)); 
+        zSl.value = cfg.s; zVal.innerText=Math.round((newScale/zSl.min)*100)+"%"; 
+        const angle = Math.atan2(dy, dx); let rotationDiff = (angle - initialAngle) * (180/Math.PI); 
+        cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; 
+        rVal.innerText = Math.round(cfg.r) + "°"; updS(zSl); updS(rSl); d(); 
     } 
 }, { passive: false });
-window.addEventListener('touchend', () => { isP=false; });
 
-// --- ⚡ NEON GIF ENGINE (FIXED) ---
+// --- ⚡ HYBRID BLOB HD GIF ENGINE (30 WORKERS) ---
 const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
 const workerUrl = URL.createObjectURL(workerBlob);
 
-// Elements
-const gfInput = document.getElementById('gfInput'); 
-const upBtn = document.getElementById('upBtn'); 
-const v = document.getElementById('v'); 
-const o = document.getElementById('o'); 
-const vp = document.getElementById('vp'); 
-const speed = document.getElementById('speed'); 
-const sv = document.getElementById('sv'); 
-const zoom = document.getElementById('zoom'); 
-const zv = document.getElementById('zv'); 
-const go = document.getElementById('go'); 
-const msg = document.getElementById('msg'); 
-const dlBox = document.getElementById('dlBox'); 
-const dl = document.getElementById('dl'); 
-const resetBox = document.getElementById('resetBox');
-
-let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH, isProcessingGif = false;
-
-// Initialize: Keep button disabled until video is truly ready
-go.disabled = true;
-
-function resetGifProject() { 
-    v.pause(); 
-    if (v.src) URL.revokeObjectURL(v.src);
-    v.src = ""; 
-    v.load(); 
-    v.style.display = 'none'; 
-    o.src = ''; 
-    o.style.display = 'none'; 
-    dlBox.style.display = 'none'; 
-    
-    // Deactivate Download
-    dl.href = "#"; 
-    dl.removeAttribute('download'); 
-    dl.style.pointerEvents = 'none'; 
-    dl.style.opacity = '0.5'; 
-    
-    resetBox.style.display = 'none'; 
-    document.getElementById('goBox').style.display = 'inline-block'; 
-    go.disabled = true; // Stay disabled on reset
-    upBtn.disabled = false; 
-    zoom.disabled = false; 
-    zoom.value = 100; 
-    speed.disabled = false; 
-    msg.classList.remove('active'); 
-    msg.innerText = "";
-    zv.innerText = "100%"; 
-    gfInput.value = ''; 
-    gifX = 0; 
-    gifY = 0; 
-    isProcessingGif = false; 
-    vp.style.pointerEvents = 'auto'; 
-}
-
-// Fixed Upload Handler
 gfInput.onchange = (e) => { 
-    const file = e.target.files[0]; 
-    if (!file) return; 
-
-    // Reset UI before new load
-    go.disabled = true;
-    v.style.display = 'none';
-    o.style.display = 'none';
-    dlBox.style.display = 'none';
-    msg.innerText = "Loading video...";
-    msg.classList.add('active');
-
-    const url = URL.createObjectURL(file);
-    v.src = url; 
-    v.playbackRate = parseFloat(speed.value);
-
-    // This event ensures the black screen is gone before showing the video
-    v.oncanplay = () => {
-        v.style.display = 'block';
-        msg.classList.remove('active');
-        msg.innerText = "";
-        go.disabled = false; // ONLY enable once video can actually play
-        v.play();
-    };
-
-    v.onloadedmetadata = () => { 
-        vidW = v.videoWidth; 
-        vidH = v.videoHeight; 
-        setCoverSize(); 
-    }; 
-
-    v.onerror = () => {
-        msg.innerText = "Error: Invalid Video File";
-        go.disabled = true;
-    };
+    const file = e.target.files[0]; if (!file) return; 
+    v.style.display = 'block'; o.style.display = 'none'; dlBox.style.display = 'none'; 
+    v.src = URL.createObjectURL(file); v.playbackRate = parseFloat(speed.value); go.disabled = false; 
+    v.onloadedmetadata = () => { vidW = v.videoWidth; vidH = v.videoHeight; setCoverSize(); v.play(); }; 
 };
-
-function setCoverSize() { 
-    const boxSize = 320; 
-    const aspect = vidW / vidH; 
-    if (aspect > 1) { 
-        renderH = boxSize; 
-        renderW = boxSize * aspect; 
-    } else { 
-        renderW = boxSize; 
-        renderH = boxSize / aspect; 
-    } 
-    v.style.width = renderW + 'px'; 
-    v.style.height = renderH + 'px'; 
-    zoom.min = 100; 
-    updateGifTransform(); 
-    gifX = 0; 
-    gifY = 0; 
-}
-
-function updateGifTransform() { 
-    if (!v.src) return; 
-    const z = parseInt(zoom.value) / 100; 
-    const currentW = renderW * z; 
-    const currentH = renderH * z; 
-    const boxSize = 320; 
-    const maxX = Math.max(0, (currentW - boxSize) / 2); 
-    const maxY = Math.max(0, (currentH - boxSize) / 2); 
-    gifX = Math.max(-maxX, Math.min(maxX, gifX)); 
-    gifY = Math.max(-maxY, Math.min(maxY, gifY)); 
-    v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`; 
-}
-
-zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
-speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
-
-// ... [Keep Touch Interaction Logic same as Part 14] ...
 
 go.onclick = () => {
     if (!v.src || isProcessingGif) return; 
-    go.disabled = true; 
-    upBtn.disabled = true; 
-    zoom.disabled = true; 
-    speed.disabled = true; 
-    msg.innerText = "Processing Frames..."; 
-    msg.classList.add('active'); 
-    isProcessingGif = true; 
-    vp.style.pointerEvents = 'none'; 
-
-    const OUT_SIZE = 480; 
-    const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
-    const canvas = document.createElement('canvas'); 
-    canvas.width = OUT_SIZE; 
-    canvas.height = OUT_SIZE; 
-    const ctx = canvas.getContext('2d');
-    
-    const fps = 15; 
-    const duration = v.duration; 
-    const playbackSpeed = parseFloat(speed.value); 
-    
-    // Create an offline video element for capturing
-    const capVid = document.createElement('video'); 
-    capVid.src = v.src; 
-    capVid.muted = true; 
-// --- ⚡ NEON GIF ENGINE (FINAL REPAIR) ---
-// This version allows selecting GIFs directly and prevents the Black Screen bug.
-
-gfInput.onchange = (e) => { 
-    const file = e.target.files[0]; 
-    if (!file) return; 
-
-    // Reset UI and show loading state
-    go.disabled = true;
-    v.style.display = 'none';
-    o.style.display = 'none';
-    dlBox.style.display = 'none';
-    msg.innerText = "Loading media...";
-    msg.classList.add('active');
-
-    const isGif = file.type === 'image/gif';
-    const url = URL.createObjectURL(file);
-
-    if (isGif) {
-        // Fix for GIF uploads: Show in image tag for preview
-        o.src = url;
-        o.style.display = 'block';
-        v.style.display = 'none';
-        msg.classList.remove('active');
-        msg.innerText = "";
-        go.disabled = false; 
-        v.src = url; // Still set v.src for the processing engine
-    } else {
-        // Handle standard Video files
-        v.src = url; 
-        v.playbackRate = parseFloat(speed.value);
-        v.oncanplay = () => {
-            v.style.display = 'block';
-            o.style.display = 'none';
-            msg.classList.remove('active');
-            msg.innerText = "";
-            go.disabled = false; 
-            v.play();
-        };
-    }
-
-    v.onloadedmetadata = () => { 
-        vidW = v.videoWidth || o.naturalWidth; 
-        vidH = v.videoHeight || o.naturalHeight; 
-        setCoverSize(); 
-    }; 
-
-    v.onerror = () => {
-        msg.innerText = "Error: File unsupported.";
-        go.disabled = true;
-    };
-};
-
-function resetGifProject() { 
-    v.pause(); 
-    if (v.src) URL.revokeObjectURL(v.src);
-    if (o.src) URL.revokeObjectURL(o.src);
-    v.src = ""; o.src = "";
-    v.style.display = 'none'; o.style.display = 'none'; 
-    dlBox.style.display = 'none'; 
-    dl.href = "#"; dl.removeAttribute('download'); 
-    dl.style.pointerEvents = 'none'; dl.style.opacity = '0.5'; 
-    resetBox.style.display = 'none'; 
-    document.getElementById('goBox').style.display = 'inline-block'; 
-    go.disabled = true; 
-    upBtn.disabled = false; 
-    zoom.value = 100; 
-    msg.classList.remove('active'); msg.innerText = "";
-    zv.innerText = "100%"; gfInput.value = ''; 
-    isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
-}
-
-// Processing Engine
-go.onclick = () => {
-    if (!v.src || isProcessingGif) return; 
-    go.disabled = true; upBtn.disabled = true; 
-    zoom.disabled = true; speed.disabled = true; 
-    msg.innerText = "Processing Frames..."; msg.classList.add('active'); 
-    isProcessingGif = true; vp.style.pointerEvents = 'none'; 
-
-    const OUT_SIZE = 480; 
-    const gif = new GIF({ workers: 30, quality: 20, width: OUT_SIZE, height: OUT_SIZE, workerScript: workerUrl, dither: false });
-    const canvas = document.createElement('canvas'); 
-    canvas.width = OUT_SIZE; canvas.height = OUT_SIZE; 
-    const ctx = canvas.getContext('2d');
-    const fps = 15; const duration = v.duration || 2; // Default 2s for static GIFs
-    const playbackSpeed = parseFloat(speed.value); 
-    
-    const capVid = document.createElement('video'); 
-    capVid.src = v.src; capVid.muted = true; capVid.playsInline = true;
-
+    go.disabled = true; upBtn.disabled = true; msg.innerText = "Processing HD GIF..."; msg.classList.add('active'); isProcessingGif = true; 
+    const gif = new GIF({ workers: 30, quality: 20, width: 480, height: 480, workerScript: workerUrl, dither: false });
+    const canvas = document.createElement('canvas'); canvas.width = 480; canvas.height = 480; const ctx = canvas.getContext('2d');
+    const fps = 15; let cTime = 0; const duration = v.duration;
+    const capVid = document.createElement('video'); capVid.src = v.src; capVid.muted = true;
     capVid.onloadeddata = () => {
-        let cTime = 0; 
-        const currentVpSize = 320; 
-        const outputScale = OUT_SIZE / currentVpSize; 
-        const scale = parseInt(zoom.value) / 100; 
-        const aspect = capVid.videoWidth / capVid.videoHeight;
-        let drawW, drawH; 
-        if (aspect > 1) { drawH = currentVpSize; drawW = currentVpSize * aspect; } 
-        else { drawW = currentVpSize; drawH = currentVpSize / aspect; }
-        drawW *= scale * outputScale; drawH *= scale * outputScale; 
-        const finalX = gifX * outputScale; const finalY = gifY * outputScale;
-        let dx = (OUT_SIZE - drawW) / 2 + finalX; let dy = (OUT_SIZE - drawH) / 2 + finalY;
-
-        const captureFrame = () => { 
-            if (cTime >= duration) { msg.innerText = "Encoding HD GIF..."; gif.render(); return; } 
-            capVid.currentTime = cTime; 
-        };
-        capVid.onseeked = () => { 
-            ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, OUT_SIZE, OUT_SIZE); 
-            ctx.drawImage(capVid, dx, dy, drawW, drawH); 
-            gif.addFrame(ctx, { copy: true, delay: (1000 / fps) / playbackSpeed }); 
-            cTime += (1 / fps); setTimeout(captureFrame, 10); 
+        const outputScale = 480 / 320; const scale = parseInt(zoom.value) / 100;
+        const captureFrame = () => { if (cTime >= duration) { msg.innerText = "Encoding..."; gif.render(); return; } capVid.currentTime = cTime; };
+        capVid.onseeked = () => {
+            ctx.fillStyle = '#000'; ctx.fillRect(0,0,480,480);
+            const aspect = capVid.videoWidth / capVid.videoHeight;
+            let dW, dH; if(aspect > 1) { dH = 480; dW = 480 * aspect; } else { dW = 480; dH = 480 / aspect; }
+            dW *= scale; dH *= scale;
+            ctx.drawImage(capVid, (480-dW)/2 + (gifX*outputScale), (480-dH)/2 + (gifY*outputScale), dW, dH);
+            gif.addFrame(ctx, {copy: true, delay: (1000/fps)/parseFloat(speed.value)}); cTime += 1/fps; captureFrame();
         }; captureFrame();
     };
-
     gif.on('finished', blob => { 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const finalData = reader.result; 
-            v.style.display = 'none'; o.src = finalData; o.style.display = 'block'; 
-            dl.href = finalData; dl.download = `Arcade_GIF_${Date.now()}.gif`; 
-            dl.style.pointerEvents = 'auto'; dl.style.opacity = '1'; 
-            dlBox.style.display = 'block'; resetBox.style.display = 'block'; 
-            msg.classList.remove('active'); document.getElementById('goBox').style.display = 'none'; 
-            isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
-        }; reader.readAsDataURL(blob);
+        o.src = URL.createObjectURL(blob); v.style.display = 'none'; o.style.display = 'block';
+        dl.href = o.src; dl.download = `Arcade_${Date.now()}.gif`; dlBox.style.display = 'block'; resetBox.style.display = 'block';
+        msg.classList.remove('active'); isProcessingGif = false;
     });
 };
 
-// Global Click Handlers
+function resetGifProject() { 
+    v.pause(); v.src = ""; o.style.display = 'none'; dlBox.style.display = 'none'; resetBox.style.display = 'none'; 
+    document.getElementById('goBox').style.display = 'inline-block'; go.disabled = true; upBtn.disabled = false; 
+    msg.classList.remove('active'); gfInput.value = ''; gifX = 0; gifY = 0; isProcessingGif = false; 
+}
+
 window.onclick = e => { 
     initAudio(); 
     if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { 
@@ -1552,3 +1274,4 @@ window.onclick = e => {
 </body>
 </html>
 
+            
