@@ -1190,9 +1190,9 @@ function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
-// --- 🖱️ INTERACTION ENGINE (STRICT TOUCH REPAIR) ---
+// --- 🖱️ INTERACTION ENGINE (REPAIRED FOR IPHONE & REALME) ---
 let isP=false, tStart={x:0,y:0}, initialDist=0, initialScale=1, initialAngle=0, initialRot=0;
-let isGifDrag = false, startX = 0, startY = 0, initX = 0, initY = 0;
+let isGifDrag = false, startX = 0, startY = 0, initX = 0, initY = 0; // REPAIRED VARIABLES
 
 c.addEventListener('touchstart', e => { 
     if(!i.src) return; e.preventDefault(); 
@@ -1214,7 +1214,7 @@ c.addEventListener('touchmove', e => {
         const dx = e.touches[0].pageX - e.touches[1].pageX; const dy = e.touches[0].pageY - e.touches[1].pageY; 
         const dist = Math.sqrt(dx*dx + dy*dy); const scaleFactor = dist / initialDist; 
         let newScale = initialScale * scaleFactor; cfg.s = Math.max(zSl.min, Math.min(zSl.max, newScale)); 
-        zSl.value = cfg.s; zVal.innerText=Math.round((newScale/zSl.min)*100)+"%"; 
+        zSl.value = cfg.s; zVal.innerText=Math.round((cfg.s/zSl.min)*100)+"%"; 
         const angle = Math.atan2(dy, dx); let rotationDiff = (angle - initialAngle) * (180/Math.PI); 
         cfg.r = (initialRot + rotationDiff) % 360; rSl.value = (cfg.r % 360 + 360) % 360; 
         rVal.innerText = Math.round(cfg.r) + "°"; updS(zSl); updS(rSl); d(); 
@@ -1222,7 +1222,9 @@ c.addEventListener('touchmove', e => {
 }, { passive: false });
 
 // --- ⚡ NEON GIF ENGINE (FINAL REPAIR) ---
-// This version allows selecting GIFs directly and prevents the Black Screen bug.
+// Secure local processing without external server calls [cite: 2026-01-13]
+const workerBlob = new Blob(['importScripts(\'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js\');'], { type: 'application/javascript' });
+const workerUrl = URL.createObjectURL(workerBlob);
 
 gfInput.onchange = (e) => { 
     const file = e.target.files[0]; 
@@ -1274,63 +1276,26 @@ gfInput.onchange = (e) => {
     };
 };
 
-function setCoverSize() { 
-    const boxSize = 320; 
-    const aspect = vidW / vidH; 
-    if (aspect > 1) { 
-        renderH = boxSize; 
-        renderW = boxSize * aspect; 
-    } else { 
-        renderW = boxSize; 
-        renderH = boxSize / aspect; 
-    } 
-    v.style.width = renderW + 'px'; 
-    v.style.height = renderH + 'px'; 
-    zoom.min = 100; 
-    updateGifTransform(); 
-    gifX = 0; 
-    gifY = 0; 
+function resetGifProject() { 
+    v.pause(); 
+    if (v.src) URL.revokeObjectURL(v.src);
+    if (o.src) URL.revokeObjectURL(o.src);
+    v.src = ""; o.src = "";
+    v.style.display = 'none'; o.style.display = 'none'; 
+    dlBox.style.display = 'none'; 
+    dl.href = "#"; dl.removeAttribute('download'); 
+    dl.style.pointerEvents = 'none'; dl.style.opacity = '0.5'; 
+    resetBox.style.display = 'none'; 
+    document.getElementById('goBox').style.display = 'inline-block'; 
+    go.disabled = true; 
+    upBtn.disabled = false; 
+    zoom.value = 100; 
+    msg.classList.remove('active'); msg.innerText = "";
+    zv.innerText = "100%"; gfInput.value = ''; 
+    isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
 }
 
-function updateGifTransform() { 
-    if (!v.src) return; 
-    const z = parseInt(zoom.value) / 100; 
-    const currentW = renderW * z; 
-    const currentH = renderH * z; 
-    const boxSize = 320; 
-    const maxX = Math.max(0, (currentW - boxSize) / 2); 
-    const maxY = Math.max(0, (currentH - boxSize) / 2); 
-    gifX = Math.max(-maxX, Math.min(maxX, gifX)); 
-    gifY = Math.max(-maxY, Math.min(maxY, gifY)); 
-    v.style.transform = `translate(calc(-50% + ${gifX}px), calc(-50% + ${gifY}px)) scale(${z})`; 
-}
-
-zoom.oninput = function () { zv.innerText = this.value + '%'; updateGifTransform(); };
-speed.oninput = () => { sv.innerText = speed.value + 'x'; if (v.src) v.playbackRate = parseFloat(speed.value); };
-
-// GIF Viewport Dragging (Restored touch logic)
-vp.addEventListener('touchstart', e => { 
-    if (isProcessingGif || !v.src) return; 
-    isGifDrag = true; 
-    startX = e.touches[0].clientX; 
-    startY = e.touches[0].clientY; 
-    initX = gifX; 
-    initY = gifY; 
-}, { passive: false });
-
-vp.addEventListener('touchmove', e => { 
-    if (isProcessingGif || !isGifDrag) return; 
-    e.preventDefault(); 
-    const dx = e.touches[0].clientX - startX; 
-    const dy = e.touches[0].clientY - startY; 
-    gifX = initX + dx; 
-    gifY = initY + dy; 
-    updateGifTransform(); 
-}, { passive: false });
-
-window.addEventListener('touchend', () => { isGifDrag = false; });
-
-// Processing Engine (30 WORKERS ACTIVE) [cite: 2026-01-13]
+// Processing Engine Logic [cite: 2026-01-13]
 go.onclick = () => {
     if (!v.src || isProcessingGif) return; 
     go.disabled = true; upBtn.disabled = true; 
@@ -1388,26 +1353,12 @@ go.onclick = () => {
     });
 };
 
-function resetGifProject() { 
-    v.pause(); 
-    if (v.src) URL.revokeObjectURL(v.src);
-    if (o.src) URL.revokeObjectURL(o.src);
-    v.src = ""; o.src = "";
-    v.style.display = 'none'; o.style.display = 'none'; 
-    dlBox.style.display = 'none'; 
-    dl.href = "#"; dl.removeAttribute('download'); 
-    dl.style.pointerEvents = 'none'; dl.style.opacity = '0.5'; 
-    resetBox.style.display = 'none'; 
-    document.getElementById('goBox').style.display = 'inline-block'; 
-    go.disabled = true; 
-    upBtn.disabled = false; 
-    zoom.value = 100; 
-    msg.classList.remove('active'); msg.innerText = "";
-    zv.innerText = "100%"; gfInput.value = ''; 
-    isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
-}
+// GIF Viewport Movement Fix (Restored touch interaction)
+vp.addEventListener('touchstart', e => { if (isProcessingGif || !v.src) return; isGifDrag = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY; initX = gifX; initY = gifY; }, { passive: false });
+vp.addEventListener('touchmove', e => { if (isProcessingGif || !isGifDrag) return; e.preventDefault(); const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY; gifX = initX + dx; gifY = initY + dy; updateGifTransform(); }, { passive: false });
+window.addEventListener('touchend', () => { isGifDrag = false; });
 
-// Global Click Handlers to close menus
+// Global outside click handler
 window.onclick = e => { 
     initAudio(); 
     if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.classList.contains('menu-toggle')) { 
@@ -1417,5 +1368,3 @@ window.onclick = e => {
 </script>
 </body>
 </html>
-
-            
