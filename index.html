@@ -1101,7 +1101,6 @@ function toggleBoundaryLock() {
         zSl.min = 0.01; // RELEASES ZOOM LIMIT
     }
     d(); playClick();
-}
 // --- 🛠️ CORE DRAWING ENGINE (STRICT STABILITY RESTORED) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
@@ -1131,7 +1130,7 @@ function d(){
       // 1. Apply to Context (For the GIF Engine)
       x.filter = (fs !== '') ? fs : 'none';
       
-      // 2. Apply to CSS (For Instant iPhone Preview) [cite: 2026-01-02]
+      // 2. Apply to CSS (For Instant iPhone Preview)
       if(c) c.style.filter = (fs !== '') ? fs : 'none';
       
       x.drawImage(i, -w/2, -h/2, w, h); 
@@ -1170,7 +1169,7 @@ function d(){
   if(f.src) x.drawImage(f,0,0,800,800); 
 }
 
-// --- 📂 FILE HANDLERS (IPHONE FIX & DECODING) ---
+// --- 📂 FILE HANDLERS (UPDATED: START BIG & FIX RED LINE) ---
 function handleFile(e){
     const files = e.target ? e.target.files : e.files; if(!files || !files[0]) return;
     const r = new FileReader();
@@ -1179,10 +1178,33 @@ function handleFile(e){
         n.onload = async () => {
             if ('decode' in n) { try { await n.decode(); } catch(err) { } }
             i = n; cfg.x = 400; cfg.y = 400; cfg.r = 0;
+            
+            // 🚀 NEW: Calculate "Fill Screen" size (Starts Big)
+            const fillSize = Math.max(800/i.width, 800/i.height);
+            
             if(isBoundaryLocked) {
-                const reqW = cfg.m * 2, reqH = cfg.m * 2;
-                const minS = Math.max(reqW/i.width, reqH/i.height); cfg.s = minS; zSl.min = minS; zSl.value = minS; zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
-            } else { cfg.s = Math.max(800/i.width, 800/i.height); zSl.min = 0.01; zSl.value = cfg.s; zVal.innerText = "100%"; }
+                // Calculate Safety Floor (Minimum Size)
+                const rad = cfg.r * Math.PI / 180;
+                const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+                const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+                const minS = Math.max(reqW/i.width, reqH/i.height);
+                
+                // Set floor, but START at Fill Size
+                zSl.min = minS; 
+                cfg.s = Math.max(minS, fillSize); 
+                
+                zSl.value = cfg.s; 
+                zVal.innerText = Math.round((cfg.s/zSl.min)*100)+"%";
+            } else { 
+                cfg.s = fillSize; 
+                zSl.min = 0.01; 
+                zSl.value = cfg.s; 
+                zVal.innerText = "100%"; 
+            }
+            
+            // 🔥 FIX: Force Red Line to update immediately
+            updS(zSl); 
+            
             if(typeof renderFilters === 'function') renderFilters(); 
             d(); 
             const uiPanel = document.querySelector('.ui'); uiPanel.style.paddingBottom = "200px"; 
@@ -1311,6 +1333,6 @@ window.onclick = e => {
         if(btn) { btn.innerHTML = "MAGIC FILTERS ✨"; btn.style.color = "#00ffff"; btn.style.borderColor = "#00ffff"; }
     }
 };
-</script>
+</script>   
 </body>
 </html>
