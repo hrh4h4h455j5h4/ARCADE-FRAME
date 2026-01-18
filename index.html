@@ -1122,13 +1122,17 @@ function d(){
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
       
-      // --- ✨ FILTER LISTENER (Connects to Upper Code) ---
-      // This part checks the settings from your top block and applies them
+      // --- ✨ IPHONE FILTER FIX (Visual + Logic) ---
       let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
       if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
       if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
       if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
+      
+      // 1. Apply to Context (For the GIF Engine)
       x.filter = (fs !== '') ? fs : 'none';
+      
+      // 2. Apply to CSS (For Instant iPhone Preview) [cite: 2026-01-02]
+      if(c) c.style.filter = (fs !== '') ? fs : 'none';
       
       x.drawImage(i, -w/2, -h/2, w, h); 
       x.restore(); 
@@ -1173,14 +1177,12 @@ function handleFile(e){
     r.onload = v => {
         const n = new Image();
         n.onload = async () => {
-            // 🔥 IPHONE FIX: FORCE DECODE
             if ('decode' in n) { try { await n.decode(); } catch(err) { } }
             i = n; cfg.x = 400; cfg.y = 400; cfg.r = 0;
             if(isBoundaryLocked) {
                 const reqW = cfg.m * 2, reqH = cfg.m * 2;
                 const minS = Math.max(reqW/i.width, reqH/i.height); cfg.s = minS; zSl.min = minS; zSl.value = minS; zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
             } else { cfg.s = Math.max(800/i.width, 800/i.height); zSl.min = 0.01; zSl.value = cfg.s; zVal.innerText = "100%"; }
-            // Note: renderFilters() is assumed to exist above in your code
             if(typeof renderFilters === 'function') renderFilters(); 
             d(); 
             const uiPanel = document.querySelector('.ui'); uiPanel.style.paddingBottom = "200px"; 
@@ -1256,7 +1258,6 @@ let gifX = 0, gifY = 0, vidW = 0, vidH = 0, renderW, renderH, isProcessingGif = 
 
 function resetGifProject() { 
     v.pause(); v.src = ""; v.load(); v.style.display = 'none'; o.src = ''; o.style.display = 'none'; dlBox.style.display = 'none'; 
-    // --- 🛡️ DOWNLOAD BUTTON LOCK ---
     dl.href = "#"; dl.removeAttribute('download'); dl.style.pointerEvents = 'none'; dl.style.opacity = '0.5'; dl.onclick = (e) => { e.preventDefault(); return false; }; 
     resetBox.style.display = 'none'; document.getElementById('goBox').style.display = 'inline-block'; go.disabled = false; upBtn.disabled = false; zoom.disabled = false; zoom.value = 100; speed.disabled = false; msg.classList.remove('active'); zv.innerText = "100%"; gfInput.value = ''; gifX = 0; gifY = 0; isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
 }
@@ -1290,22 +1291,12 @@ go.onclick = () => {
         reader.onloadend = () => {
             const finalData = reader.result; v.style.display = 'none'; o.src = finalData; o.style.display = 'block'; 
             dl.href = finalData; dl.download = `Arcade_GIF_${Date.now()}.gif`; 
-            // --- 🔓 UNLOCK DOWNLOAD BUTTON ---
             dl.style.pointerEvents = 'auto'; dl.style.opacity = '1'; dl.onclick = null; 
             dlBox.style.display = 'block'; resetBox.style.display = 'block'; 
             msg.classList.remove('active'); document.getElementById('goBox').style.display = 'none'; isProcessingGif = false; vp.style.pointerEvents = 'auto'; 
         }; reader.readAsDataURL(blob);
     });
 };
-
-// --- 👻 GHOST MODE ---
-document.querySelectorAll('input[type=range]').forEach(el => {
-    const panels = [document.querySelector('.ui'), document.getElementById('uiPanel'), document.getElementById('adj-panel')];
-    el.addEventListener('touchstart', () => { panels.forEach(p => { if(p) p.style.opacity = '0.1'; }); }, {passive: true});
-    el.addEventListener('touchend', () => { panels.forEach(p => { if(p) p.style.opacity = '1'; }); });
-    el.addEventListener('mousedown', () => { panels.forEach(p => { if(p) p.style.opacity = '0.1'; }); });
-    el.addEventListener('mouseup', () => { panels.forEach(p => { if(p) p.style.opacity = '1'; }); });
-});
 
 // --- 🌐 GLOBAL MENU HANDLER ---
 window.onclick = e => { 
@@ -1323,5 +1314,3 @@ window.onclick = e => {
 </script>
 </body>
 </html>
-
-        
