@@ -1124,7 +1124,7 @@ function toggleBoundaryLock() {
     }
     d(); playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (ULTRA SAFE 360PX + ALL FIXES) ---
+// --- 🛠️ CORE DRAWING ENGINE (LAYER-SPECIFIC FILTERING) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   
@@ -1132,13 +1132,10 @@ function d(){
   // This ensures the filter applies ONLY to the photo, not the frame/neon.
   if(c) c.style.filter = 'none';
 
-  // 2. SMART SIZE LOGIC (ULTRA SAFE FIX)
+  // 2. SMART SIZE LOGIC
   let drawM = cfg.m;
-  
-  // 🔥 FIX: Check 'cfg.pColor' (Covers Pink, Neon, Basic, Gold - EVERYTHING)
-  // 🔥 FIX: Cap at 360px. This gives 40px of safety so the Glow NEVER cuts off.
-  if (cfg.pColor && cfg.m > 360) {
-      drawM = 360;
+  if (cfg.pType === 'neon' && cfg.m > 385) {
+      drawM = 385; 
   }
 
   // 3. Handle Boundary Lock
@@ -1146,11 +1143,7 @@ function d(){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
       
-      // 🔥 SAFETY FIX: Cap the math calculation at 360px to match drawing
-      const calcM = Math.min(drawM, 360);
-      
-      // Use 'calcM' for the requirements
-      const reqW = (calcM*2*cos + calcM*2*sin), reqH = (calcM*2*sin + calcM*2*cos);
+      const reqW = (drawM*2*cos + drawM*2*sin), reqH = (drawM*2*sin + drawM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
       
       if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
@@ -1160,77 +1153,6 @@ function d(){
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
-
-  // 4. Draw User Image (APPLY FILTER HERE)
-  if(i.src){
-      x.save(); 
-      x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.clip(); 
-      let w = i.width * cfg.s, h = i.height * cfg.s;
-      x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
-      
-      // Build the Filter String
-      let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
-      if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
-      if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
-      if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
-      
-      // Apply Filter ONLY to the Context (The Image Layer)
-      x.filter = (fs !== '') ? fs : 'none';
-      
-      x.drawImage(i, -w/2, -h/2, w, h); 
-      x.restore(); 
-  }
-  
-  // 5. RESET FILTER (Crucial Step!)
-  // This ensures the Neon and Custom Frame draw in their original colors
-  x.filter = 'none'; 
-
-  // 6. Draw Neon/Gradient Ring
-  if (cfg.pColor) {
-      x.save(); 
-      
-      // A. Dark Neons (Black/Grey)
-      if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
-          const sC = cfg.pColor; const iC = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } 
-      // B. THIN NEON (Only Second White Button: #FEFEFE)
-      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); 
-          x.lineWidth = 15; // <--- THIN
-          x.strokeStyle = '#FFFFFF'; 
-          x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      }
-      // C. THICK NEON (Standard Colors + First White)
-      else if (cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); 
-          x.lineWidth = 25; // <--- THICK
-          x.strokeStyle = cfg.pColor; 
-          x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } 
-      // D. Gradients / Metallics / Basic Colors (Pink, etc.)
-      else {
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; 
-          if (cfg.pType && gradientDefs[cfg.pType]) { const cs = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; } 
-          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
-              let g = x.createLinearGradient(0, 0, 800, 800);
-              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
-              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
-              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
-              x.strokeStyle = g;
-          } else { x.strokeStyle = cfg.pColor; }
-          x.stroke(); 
-      }
-      x.restore();
-  }
-  
-  // 7. Draw Custom Frame (Will be unaffected by filter)
-  if(f.src) x.drawImage(f,0,0,800,800); 
-}
 
   // 4. Draw User Image (APPLY FILTER HERE)
   if(i.src){
@@ -1746,5 +1668,3 @@ setInterval(() => {
 </script>
 </body>
 </html>
-
-
