@@ -1158,6 +1158,7 @@ function d(){
       // Even if cfg.m is 400, we calculate the required zoom based on a maximum of 385.
       // This prevents extreme zooming/cropping when the slider hits max.
       let calculationM = Math.min(cfg.m, 385); 
+}
 
       // Use calculationM instead of cfg.m for requirements
       const reqW = (calculationM*2*cos + calculationM*2*sin), reqH = (calculationM*2*sin + calculationM*2*cos);
