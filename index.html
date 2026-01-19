@@ -1102,59 +1102,141 @@ function toggleBoundaryLock() {
     }
     d(); playClick();
 }
-// --- 🎨 PALETTE ENGINE (NON-DESTRUCTIVE AUTO-SIZE) ---
-function renderCat(cat) {
-    playClick();
-    document.querySelectorAll('.cat-btn').forEach(b => {
-        b.classList.remove('active-cat');
-        if(b.innerText === cat.toUpperCase()) b.classList.add('active-cat');
-    });
+// --- 🛠️ CORE DRAWING ENGINE (STRICT STABILITY RESTORED) ---
+function d(){ 
+  x.clearRect(0,0,800,800); 
+  if(i.src && isBoundaryLocked){
+      const rad = cfg.r * Math.PI / 180;
+      const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+      const w = i.width * cfg.s, h = i.height * cfg.s;
+      const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+      const minS = Math.max(reqW/i.width, reqH/i.height);
+      if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
+      const rangeX = Math.max(0, (w - reqW)/2), rangeY = Math.max(0, (h - reqH)/2);
+      cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
+      cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
+  }
+  if(i.src){
+      x.save(); 
+      x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.clip(); 
+      let w = i.width * cfg.s, h = i.height * cfg.s;
+      x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
+      
+      // --- ✨ IPHONE FILTER FIX ---
+      let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
+      if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
+      if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
+      if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
+      
+      x.filter = (fs !== '') ? fs : 'none';
+      if(c) c.style.filter = (fs !== '') ? fs : 'none';
+      
+      x.drawImage(i, -w/2, -h/2, w, h); 
+      x.restore(); 
+  }
+  x.filter = 'none'; 
+  if (cfg.pColor) {
+      x.save(); 
+      if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
+          const sC = cfg.pColor; const iC = (cfg.pColor === '#000000') ? 'rgba(0,0,0,0.7)' : 'rgba(128,128,128,0.7)';
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
+          x.save(); x.beginPath(); x.arc(400, 400, cfg.m - 3, 0, 6.28); x.clip();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.strokeStyle = iC; x.lineWidth = 30; x.shadowBlur = 25; x.shadowColor = sC; x.stroke(); x.restore();
+      } else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
+      } else if (cfg.pType === 'neon') {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
+      } else {
+          x.beginPath(); x.arc(400, 400, cfg.m, 0, 6.28); x.lineWidth = 25; 
+          if (cfg.pType && gradientDefs[cfg.pType]) { const cs = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; } 
+          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
+              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
+              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
+              x.strokeStyle = g;
+          } else { x.strokeStyle = cfg.pColor; }
+          x.stroke(); 
+      }
+      x.restore();
+  }
+  if(f.src) x.drawImage(f,0,0,800,800); 
+}
 
-    const grid = document.getElementById('color-grid');
-    grid.innerHTML = '';
-    grid.classList.remove('show');
-
-    setTimeout(() => {
-        const list = colorData[cat];
-        list.forEach(item => {
-            const d = document.createElement('div');
-            d.className = 'c-sq';
-
-            if(item.t === 'neon') {
-                d.style.backgroundColor = item.c;
-                d.style.boxShadow = `0 0 10px ${item.c}`;
-                d.style.border = '2px solid white';
-            } else if (item.t && gradientDefs[item.t]) {
-                d.classList.add('is-metal');
-                const cols = gradientDefs[item.t];
-                d.style.background = `linear-gradient(135deg, ${cols[0]}, ${cols[1]})`;
-            } else if (item.t) {
-                d.classList.add('is-metal');
-                if(item.t==='gold') d.style.background = 'linear-gradient(135deg, #FFD700, #FDB931)';
-                if(item.t==='silver') d.style.background = 'linear-gradient(135deg, #E0E0E0, #B0B0B0)';
-                if(item.t==='bronze') d.style.background = 'linear-gradient(135deg, #CD7F32, #A0522D)';
-            } else {
-                d.style.backgroundColor = item.c;
+// --- 📂 FILE HANDLERS (SMART AUTO-SIZING) ---
+function handleFile(e){
+    const files = e.target ? e.target.files : e.files; if(!files || !files[0]) return;
+    const r = new FileReader();
+    r.onload = v => {
+        const n = new Image();
+        n.onload = async () => {
+            if ('decode' in n) { try { await n.decode(); } catch(err) { } }
+            i = n; cfg.x = 400; cfg.y = 400; cfg.r = 0;
+            if(!f.src) { cfg.m = 400; mSl.value = 400; mVal.innerText = "400px"; }
+            const fillSize = Math.max(800/i.width, 800/i.height);
+            if(isBoundaryLocked) {
+                const rad = cfg.r * Math.PI / 180;
+                const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+                const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+                const minS = Math.max(reqW/i.width, reqH/i.height);
+                zSl.min = minS; 
+                cfg.s = Math.max(minS, fillSize); 
+                zSl.value = cfg.s; 
+                zVal.innerText = Math.round((cfg.s/zSl.min)*100)+"%";
+            } else { 
+                cfg.s = fillSize; zSl.min = 0.01; zSl.value = cfg.s; zVal.innerText = "100%"; 
             }
+            updS(zSl); updS(mSl);
+            if(typeof renderFilters === 'function') renderFilters(); 
+            d(); 
+            const uiPanel = document.querySelector('.ui'); uiPanel.style.paddingBottom = "200px"; 
+            document.getElementById('save').disabled = false;
+        }; n.src = v.target.result;
+    }; r.readAsDataURL(files[0]);
+}
 
-            d.onclick = () => {
-                cfg.pColor = item.c;
-                cfg.pType = item.t || 'neon';
-                
-                // 🔥 LOGIC: Set to 365px for Neon, but DON'T remove custom frame
-                cfg.m = 365;
-                mSl.value = 365;
-                mVal.innerText = "365px";
-                
-                updS(mSl);
-                renderFilters(); 
-                d(); 
-                playClick();
-            };
-            grid.appendChild(d);
-        });
-        grid.classList.add('show');
-    }, 10);
+function handleFrame(e){
+    const files = e.target ? e.target.files : e.files; if(!files || !files[0]) return;
+    const r = new FileReader();
+    r.onload = v => {
+        const n = new Image();
+        n.onload = () => { 
+            f.src = n.src; 
+            cfg.m = 375; mSl.value = 375; mVal.innerText = "375px";
+            cfg.pColor = null; cfg.pType = null; mLbl.innerText = "FRAME OPENING SIZE"; 
+            updS(mSl); d(); 
+        };
+        n.src = v.target.result;
+    }; r.readAsDataURL(files[0]);
+}
+
+function updateZ(v){ cfg.s=parseFloat(v); zVal.innerText=Math.round((v/zSl.min)*100)+"%"; d(); }
+function updateR(v){ cfg.r=parseInt(v); rVal.innerText=v+"°"; d(); }
+function updateM(v){ cfg.m=parseInt(v); mVal.innerText=v+"px"; d(); }
+function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playShutter(); }
+
+function resetProject(){ 
+    i=new Image(); f=new Image(); 
+    cfg={s:1, m:400, x:400, y:400, r:0, pColor:null, pType:null, filter:'none', adj:{b:100,c:100,s:100}};
+    zSl.value=1; rSl.value=0; mSl.value=400; mVal.innerText="400px"; mLbl.innerText = "CIRCLE SIZE";
+    document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
+    c.style.filter = 'none'; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+    if(document.getElementById('filter-list')) document.getElementById('filter-list').innerHTML = '';
+    
+    // Close Adjustment Panel if open (and restore buttons)
+    if(document.getElementById('adj-panel')) { 
+        document.getElementById('filter-list').style.display = 'flex'; 
+        document.getElementById('adj-panel').style.display = 'none'; 
+        closeAdjust(); // 🔥 FORCE RESTORE BUTTONS
+    }
+    if(document.getElementById('open-adj-btn')) document.getElementById('open-adj-btn').style.display = 'none';
+    
+    d(); playShutter(); updS(zSl); updS(rSl); updS(mSl); 
+    document.getElementById('save').disabled = true; document.querySelector('.ui').style.paddingBottom = "0px"; 
 }
 
 function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
@@ -1534,3 +1616,4 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
