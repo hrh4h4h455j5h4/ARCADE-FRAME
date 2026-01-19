@@ -761,24 +761,25 @@ function renderCat(cat) {
     });
 
     const grid = document.getElementById('color-grid');
-    grid.innerHTML = ''; 
+    grid.innerHTML = '';
     grid.classList.remove('show');
-    
+
     setTimeout(() => {
         const list = colorData[cat];
         list.forEach(item => {
             const d = document.createElement('div');
             d.className = 'c-sq';
-            
+
+            // 1. Visual Styles (Neon vs Metal vs Basic)
             if(item.t === 'neon') {
                 d.style.backgroundColor = item.c;
                 d.style.boxShadow = `0 0 10px ${item.c}`;
                 d.style.border = '2px solid white';
             } else if (item.t && gradientDefs[item.t]) {
-                d.classList.add('is-metal'); 
+                d.classList.add('is-metal');
                 const cols = gradientDefs[item.t];
                 d.style.background = `linear-gradient(135deg, ${cols[0]}, ${cols[1]})`;
-            } else if(item.t) {
+            } else if (item.t) {
                 d.classList.add('is-metal');
                 if(item.t==='gold') d.style.background = 'linear-gradient(135deg, #FFD700, #FDB931)';
                 if(item.t==='silver') d.style.background = 'linear-gradient(135deg, #E0E0E0, #B0B0B0)';
@@ -787,7 +788,28 @@ function renderCat(cat) {
                 d.style.backgroundColor = item.c;
             }
 
-            d.onclick = () => { setPlainFrame(item.c, item.t || null); };
+            // 2. Click Handler (The Fix is Here)
+            d.onclick = () => {
+                // Apply Color
+                if(typeof setPlainFrame === 'function') {
+                    setPlainFrame(item.c, item.t || null);
+                } else {
+                    cfg.pColor = item.c;
+                    cfg.pType = item.t || null;
+                    document.getElementById('u2').value = '';
+                    f = new Image(); 
+                }
+
+                // 🔥 FORCE SIZE TO 375px (Fixes the bug)
+                cfg.m = 375;
+                mSl.value = 375;
+                mVal.innerText = "375px";
+                if(typeof updS === 'function') updS(mSl);
+
+                d(); // Redraw
+                playClick();
+            };
+            
             grid.appendChild(d);
         });
         grid.classList.add('show');
