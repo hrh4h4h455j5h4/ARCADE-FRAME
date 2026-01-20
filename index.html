@@ -1403,43 +1403,6 @@ function downloadPic() {
     playShutter();
 }
 
-    // 2. PREPARE
-    d();
-
-    // 3. SMART DETECT (Fixes iPhone vs Android issues)
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    if (isIOS) {
-        // 🍎 IPHONE MODE (Instant Save)
-        // This method works best for iOS Safari & Plato
-        const data = c.toDataURL("image/png");
-        const a = document.createElement('a');
-        a.href = data;
-        a.download = `Arcade_${Date.now()}.png`; 
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    } else {
-        // 🤖 ANDROID MODE (Blob Save)
-        // This method fixes the "download(1)" name bug on Android
-        c.toBlob(function(blob) {
-            let uniqueName = `Arcade_${Date.now()}_${Math.floor(Math.random() * 10000)}.png`;
-            let url = URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = uniqueName;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        }, 'image/png');
-    }
-    
-    playShutter();
-}
-
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
