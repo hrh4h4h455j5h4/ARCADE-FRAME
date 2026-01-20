@@ -1132,7 +1132,7 @@ function d(){
   // This ensures the filter applies ONLY to the photo, not the frame/neon.
   if(c) c.style.filter = 'none';
 
-        // 2. SMART SIZE LOGIC (BUFFER FIX)
+          // 2. SMART SIZE LOGIC (AGGRESSIVE BUFFER FIX)
   let drawM = cfg.m;
   
   // 🔥 FIX: Check 'cfg.pColor' (Covers Pink, Neon, Basic, Gold - EVERYTHING)
@@ -1146,13 +1146,13 @@ function d(){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
       
-      // 🔥 MASTER FIX: The "+1 Pixel Buffer"
-      // We calculate the zoom based on 'drawM + 1'.
-      // This forces the image to be slightly larger than the cut-out,
-      // ensuring NO white gaps ever appear at the edges.
-      const mathM = drawM + 1;
+      // 🔥 MASTER FIX: The "Over-Zoom" Buffer (+15px)
+      // We tell the math engine the hole is 15px bigger than it is.
+      // This forces the image to tuck DEEP under the frame edge.
+      // The gap will simply cease to exist.
+      const mathM = drawM + 15; 
       
-      // We use 'mathM' (361px) for the zoom calculation
+      // We use 'mathM' (375px) for the zoom calculation
       const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
       
@@ -1163,7 +1163,6 @@ function d(){
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
-
 
   // 4. Draw User Image (APPLY FILTER HERE)
   if(i.src){
