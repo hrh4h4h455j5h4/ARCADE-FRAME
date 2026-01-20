@@ -1188,9 +1188,20 @@ function d(){
       x.restore(); 
   }
  
-  // 5. RESET FILTER (Crucial Step!)
-  // This ensures the Neon and Custom Frame draw in their original colors
+    // 5. RESET FILTER & SEAL THE GAP
   x.filter = 'none'; 
+  
+  // 🛡️ SEAM SEALER: Fills the tiny white crack between image and frame
+  if (cfg.pColor && i.src) {
+      x.save();
+      x.beginPath(); 
+      // We draw a solid line exactly where the gap is
+      x.arc(400, 400, drawM, 0, 6.28); 
+      x.lineWidth = 5; // Thick enough to plug the hole
+      x.strokeStyle = cfg.pColor; // Same color as the frame
+      x.stroke();
+      x.restore();
+  }
 
   // 6. Draw Neon/Gradient Ring
   if (cfg.pColor) {
