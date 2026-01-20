@@ -1193,7 +1193,7 @@ function d(){
       x.restore();
   }
 
-  // 6. Draw Neon/Gradient Ring (Top Layer)
+    // 6. Draw Neon/Gradient Ring (Top Layer)
   if (cfg.pColor) {
       x.save(); 
       
@@ -1214,24 +1214,40 @@ function d(){
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
       } 
-      // D. Gradients / Metallics
+      // D. Gradients / Metallics (EXPANDED TO PREVENT ERRORS)
       else {
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; 
-          if (cfg.pType && gradientDefs[cfg.pType]) { const cs = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; } 
-          else if (cfg.pType && (cfg.pType === 'gold' || cfg.pType === 'silver' || cfg.pType === 'bronze')) {
+          
+          if (cfg.pType && gradientDefs && gradientDefs[cfg.pType]) { 
+              const cs = gradientDefs[cfg.pType]; 
+              let g = x.createLinearGradient(0, 0, 800, 800); 
+              g.addColorStop(0, cs[0]); 
+              g.addColorStop(1, cs[1]); 
+              x.strokeStyle = g; 
+          } 
+          else if (cfg.pType === 'gold') {
               let g = x.createLinearGradient(0, 0, 800, 800);
-              if (cfg.pType === 'gold') { g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); }
-              else if (cfg.pType === 'silver') { g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); }
-              else if (cfg.pType === 'bronze') { g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); }
+              g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); 
               x.strokeStyle = g;
-          } else { x.strokeStyle = cfg.pColor; }
+          }
+          else if (cfg.pType === 'silver') { 
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); 
+              x.strokeStyle = g;
+          }
+          else if (cfg.pType === 'bronze') { 
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); 
+              x.strokeStyle = g;
+          } 
+          else { 
+              x.strokeStyle = cfg.pColor; 
+          }
           x.stroke(); 
       }
       x.restore();
   }
-  
-  if(f.src) x.drawImage(f,0,0,800,800); 
-}
+
 
   // 7. Draw Custom Frame (Will be unaffected by filter)
   if(f.src) x.drawImage(f,0,0,800,800); 
