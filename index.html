@@ -1164,10 +1164,14 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. Draw User Image (APPLY FILTER HERE)
+    // 4. Draw User Image (APPLY FILTER HERE)
   if(i.src){
       x.save(); 
-      x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.clip(); 
+      // 🔥 BLEED FIX: drawM + 2
+      // We cut the image 2px larger than the frame.
+      // This forces the image to tuck UNDER the border. No more gaps!
+      x.beginPath(); x.arc(400, 400, drawM + 2, 0, 6.28); x.clip(); 
+      
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
       
@@ -1183,7 +1187,7 @@ function d(){
       x.drawImage(i, -w/2, -h/2, w, h); 
       x.restore(); 
   }
-  
+ 
   // 5. RESET FILTER (Crucial Step!)
   // This ensures the Neon and Custom Frame draw in their original colors
   x.filter = 'none'; 
