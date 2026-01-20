@@ -1607,6 +1607,24 @@ function createGalleryUI() {
     document.body.appendChild(div);
 }
 
+    // 🔥 PASTE THIS RIGHT ABOVE function renderGallery()
+function toggleFav(index) {
+    if (myGallery[index]) {
+        myGallery[index].fav = !myGallery[index].fav;
+
+        // Move to top if favorited
+        if (myGallery[index].fav) {
+            const item = myGallery.splice(index, 1)[0];
+            myGallery.unshift(item);
+        }
+        
+        localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
+        renderGallery();
+        
+        if (typeof playClick === 'function') playClick();
+    }
+}
+
 function renderGallery() {
     const grid = document.getElementById('gallery-grid');
     const empty = document.getElementById('empty-msg');
@@ -1618,9 +1636,9 @@ function renderGallery() {
     }
     empty.style.display = 'none';
 
-    myGallery.forEach(item => {
+    // 🔥 FIX: We now use 'index' to track the exact position
+    myGallery.forEach((item, index) => {
         const card = document.createElement('div');
-        // Card Styling
         card.style.cssText = "position:relative; border-radius:16px; overflow:hidden; background:linear-gradient(145deg, #1a1a1a, #0d0d0d); display:flex; flex-direction:column; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border:1px solid #333; transition: transform 0.2s;";
         
         // Content
@@ -1634,11 +1652,7 @@ function renderGallery() {
             const img = document.createElement('img');
             img.src = item.data || item.img; 
             img.style.cssText = "width:100%; height:auto; display:block; aspect-ratio:1/1; object-fit:cover;";
-            
-            // ✅ "OLD VIEW" RESTORED: 
-            // I removed the 'oncontextmenu' block. 
-            // Now holding the image shows the standard phone menu.
-            
+            // Native Long-Press Menu is active (No blocker)
             card.appendChild(img);
         }
         
@@ -1651,14 +1665,15 @@ function renderGallery() {
         leftGrp.style.alignItems = 'center'; 
         leftGrp.style.gap = '20px'; 
 
-        // 1. Fav Button
+        // 1. Fav Button (Now uses Index)
         const favBtn = document.createElement('span');
         favBtn.innerHTML = item.fav ? "★" : "☆"; 
         favBtn.style.cssText = item.fav ? "color:#ffff00; font-size:22px; cursor:pointer; text-shadow:0 0 8px #ffff00;" : "color:#555; font-size:22px; cursor:pointer;";
-        favBtn.onclick = (e) => { e.stopPropagation(); toggleFav(item.id); };
+        // 🔥 THIS IS THE FIX: toggleFav(index)
+        favBtn.onclick = (e) => { e.stopPropagation(); toggleFav(index); };
         leftGrp.appendChild(favBtn);
 
-        // 2. Download Button (The Anti-Duplicate Arrow)
+        // 2. Download Button (The Clean Saver)
         if(item.type !== 'text') {
             const dlBtn = document.createElement('span');
             dlBtn.innerHTML = "⬇️";
@@ -1667,7 +1682,7 @@ function renderGallery() {
             leftGrp.appendChild(dlBtn);
         }
 
-        // 3. Copy Button
+        // 3. Copy Button (Text)
         if(item.type === 'text') {
             const copyBtn = document.createElement('span');
             copyBtn.innerHTML = "📋";
