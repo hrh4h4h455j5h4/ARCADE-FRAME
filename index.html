@@ -1124,7 +1124,8 @@ function toggleBoundaryLock() {
     }
     d(); playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (MASTER RE-DO: 365PX + 5PX OVERLAP) ---
+
+    // --- 🛠️ CORE DRAWING ENGINE (375PX + GAP DESTROYER) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   
@@ -1132,14 +1133,13 @@ function d(){
   // This ensures the filter applies ONLY to the photo, not the frame/neon.
   if(c) c.style.filter = 'none';
 
-  // 2. SMART SIZE LOGIC (USER REQUEST: 365PX)
+  // 2. SMART SIZE LOGIC (RESTORED TO 375PX)
   let drawM = cfg.m;
   
-  // 🔥 FIX: Cap at 365px.
-  // This is "tighter" than 360, but safe enough for most phones.
-  // It applies to EVERYTHING (Neon, Pink, Gold, etc.)
-  if (cfg.pColor && cfg.m > 365) {
-      drawM = 365;
+  // 🔥 USER REQUEST: Cap at 375px.
+  // This gives you the larger image look you prefer.
+  if (cfg.pColor && cfg.m > 375) {
+      drawM = 375;
   }
 
   // 3. Handle Boundary Lock
@@ -1148,8 +1148,7 @@ function d(){
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
       
       // 🔥 MATH BUFFER: Force logic to think hole is 20px bigger
-      // This ensures the zoom is calculated for a much larger area (+20px).
-      // This forces the user to zoom in enough to cover the bleed.
+      // This guarantees the zoom calculation covers the edges safely.
       const mathM = drawM + 20; 
       
       const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
@@ -1163,14 +1162,23 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. Draw User Image (APPLY FILTER HERE)
+  // 4. Draw User Image (WITH GAP DESTROYER)
   if(i.src){
       x.save(); 
-      // 🔥 AGGRESSIVE BLEED FIX: drawM + 5
-      // We cut the image 5px LARGER than the frame (370px if frame is 365px).
-      // This forces the image to tuck 5px underneath the border.
-      // It is mathematically impossible for a gap to show now.
-      x.beginPath(); x.arc(400, 400, drawM + 5, 0, 6.28); x.clip(); 
+
+      // 🛑 GAP DESTROYER: The "Primer" Layer
+      // We paint a solid circle of the frame's color BEHIND the image.
+      // If the image has microscopic gaps (anti-aliasing), the color shows through, not white.
+      if (cfg.pColor) {
+          x.beginPath(); 
+          x.arc(400, 400, drawM + 2, 0, 6.28); 
+          x.fillStyle = cfg.pColor; 
+          x.fill();
+      }
+
+      // Now Cut the Image 
+      // We cut exactly where we painted (+2) so they match perfectly.
+      x.beginPath(); x.arc(400, 400, drawM + 2, 0, 6.28); x.clip(); 
       
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
@@ -1223,7 +1231,7 @@ function d(){
       else {
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; 
           
-          // Expanded Logic to Prevent Syntax Errors
+          // Fully Expanded Logic to prevent Syntax Errors
           if (cfg.pType && typeof gradientDefs !== 'undefined' && gradientDefs[cfg.pType]) { 
               const cs = gradientDefs[cfg.pType]; 
               let g = x.createLinearGradient(0, 0, 800, 800); 
