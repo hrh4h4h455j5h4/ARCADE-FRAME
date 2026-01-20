@@ -1660,15 +1660,59 @@ function toggleFav(id) {
     }
 }
 
-// 🔥 FIX: The '!=' check here fixes the Delete Bug
+// --- 🗑️ CUSTOM DELETE MODAL LOGIC (NEON THEME) ---
+let deleteTargetId = null;
+
+// 1. Trigger the Modal (Replaces standard alert)
 function deleteItem(id) {
-    if(confirm("Delete this item permanently?")) {
-        myGallery = myGallery.filter(x => x.id != id);
+    deleteTargetId = id;
+    createDeleteModal(); // Make sure the modal HTML exists
+    toggleDeleteModal(true); // Show it
+}
+
+// 2. Show/Hide Logic
+function toggleDeleteModal(show) {
+    const m = document.getElementById('del-modal');
+    if(m) m.style.display = show ? 'flex' : 'none';
+    if(show && typeof playClick === 'function') playClick();
+}
+
+// 3. The Actual Delete Action (Happens when you click RED button)
+function executeDelete() {
+    if(deleteTargetId !== null) {
+        // Loose equality check != fixes the matching bug
+        myGallery = myGallery.filter(x => x.id != deleteTargetId);
         localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
-        renderGallery(); 
+        renderGallery();
         showToast("ITEM DELETED", "#ff4444");
-        if(typeof playClick === 'function') playClick();
+        toggleDeleteModal(false);
+        if(typeof playShutter === 'function') playShutter();
     }
+}
+
+// 4. Build the UI (Creates the Neon Box)
+function createDeleteModal() {
+    if(document.getElementById('del-modal')) return;
+    
+    const d = document.createElement('div');
+    d.id = 'del-modal';
+    // Glassmorphism Dark Overlay
+    d.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; justify-content:center; align-items:center; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);";
+    
+    // The Neon Box HTML
+    d.innerHTML = `
+        <div style="background:#0a0a0c; border:2px solid #ff0000; padding:25px; border-radius:20px; width:280px; text-align:center; box-shadow:0 0 40px rgba(255,0,0,0.4); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <div style="font-size:50px; margin-bottom:15px; text-shadow:0 0 20px rgba(255,0,0,0.5);">🗑️</div>
+            <h3 style="color:#fff; font-family:'Courier New', monospace; margin:0 0 10px 0; text-transform:uppercase; font-weight:900; letter-spacing:1px; font-size:20px;">DELETE ITEM?</h3>
+            <p style="color:#888; font-size:12px; margin-bottom:25px; font-weight:bold; font-family:sans-serif;">THIS ACTION CANNOT BE UNDONE.</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button onclick="toggleDeleteModal(false)" style="background:#222; color:#aaa; border:1px solid #444; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; flex:1; font-size:12px;">CANCEL</button>
+                <button onclick="executeDelete()" style="background:#ff0000; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow:0 0 15px #ff0000; flex:1; font-size:12px;">DELETE</button>
+            </div>
+        </div>
+        <style>@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }</style>
+    `;
+    document.body.appendChild(d);
 }
 
 // --- 🤖 AUTO-INJECT (STYLED BUTTONS) ---
