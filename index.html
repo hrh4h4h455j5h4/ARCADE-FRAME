@@ -1088,25 +1088,36 @@ function adjChange(type, val, el) {
     d(); 
 }
 function applyFilter(filterVal, btn) {
+    // 1. Check if we are actually changing the filter
     if (cfg.filter !== filterVal) {
-        // 1. Reset adjustment sliders to 100%
+        
+        // 2. Reset adjustment sliders to standard (100%)
         cfg.adj = { b: 100, c: 100, s: 100 };
         
+        // Reset the slider UI elements
         ['b', 'c', 's'].forEach(k => {
             const el = document.getElementById('sl-' + k);
             if (el) { 
                 el.value = 100; 
                 const valDisplay = document.getElementById('val-' + k);
                 if (valDisplay) valDisplay.innerText = "100%"; 
+                
+                // Keep the slider gradient logic if you use it
+                if(typeof updateSliderColor === 'function') {
+                    updateSliderColor(el, 100, 200);
+                }
             }
         });
         
-        // 2. Save the filter to the config
+        // 3. Update the Data Configuration
         cfg.filter = filterVal;
         
-        // 🛡️ ANDROID PROTECTION: We never use c.style.filter here.
+        // 🛡️ THE OLD ANDROID PROTECTION:
+        // We do absolutely NOTHING to c.style.filter here.
+        // We do not touch the canvas CSS. 
+        // We only save the data to 'cfg' and let 'd()' handle the rest.
         
-        // 3. Update UI Button Highlights
+        // 4. Update UI Button Highlights
         document.querySelectorAll('.filter-btn').forEach(b => {
             b.classList.remove('active-filter');
         });
@@ -1114,9 +1125,13 @@ function applyFilter(filterVal, btn) {
             btn.classList.add('active-filter');
         }
         
-        // 4. Trigger the optimized engine
+        // 5. Trigger the Drawing Engine (The one we did surgery on)
         d(); 
-        if (typeof playClick === 'function') playClick();
+        
+        // 6. Sound Effect
+        if (typeof playClick === 'function') {
+            playClick();
+        }
     }
 }
 
@@ -1141,100 +1156,98 @@ function toggleBoundaryLock() {
     d();
     if(typeof playClick === 'function') playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (MEMORY-SAFE IPHONE BAKE) ---
+// --- 🛠️ CORE DRAWING ENGINE (MERGED: IPHONE FIX + ANDROID PROTECTION) ---
 function d(){ 
   if(!x) return;
-  x.clearRect(0, 0, 800, 800); 
+  x.clearRect(0,0,800,800); 
 
-  // 1. SIZE CAP (360px logic for Neon Frames)
-  let drawM = cfg.m;
-  if (cfg.pColor && cfg.m > 360) {
-      drawM = 360;
+  // 1. CALCULATE FILTER STRING
+  // We build the filter string here for both devices
+  let cssFilter = '';
+  if(cfg.filter && cfg.filter !== 'none') cssFilter += cfg.filter;
+  if(cfg.adj.b !== 100) cssFilter += ` brightness(${cfg.adj.b}%)`;
+  if(cfg.adj.c !== 100) cssFilter += ` contrast(${cfg.adj.c}%)`;
+  if(cfg.adj.s !== 100) cssFilter += ` saturate(${cfg.adj.s}%)`;
+
+  // 🧠 SMART DEVICE DETECTION
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+  // 🔥 THE CONDITIONAL MERGE:
+  if (isIOS) {
+      // 🍎 IPHONE ONLY (The Fix): 
+      // We apply the filter to the CSS style. 
+      // This makes it visible on iPhone, even if it colors the frame (as you accepted).
+      if(c) {
+          c.style.filter = (cssFilter !== '') ? cssFilter : 'none';
+          c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none';
+      }
+  } else {
+      // 🤖 ANDROID PROTECTION (The Shield):
+      // We FORCE the CSS filter to 'none'.
+      // This ensures the frame color NEVER changes on Android.
+      if(c) {
+          c.style.filter = 'none';
+          c.style.webkitFilter = 'none';
+      }
   }
 
-  // 2. FULL BOUNDARY LOCK MATH (Restored & Untouched)
+  // 2. SIZE CAP (Protects Neon Glow)
+  let drawM = cfg.m;
+  if (cfg.pColor && cfg.m > 360) { drawM = 360; }
+
+  // 3. BOUNDARY LOCK MATH
   if(i.src && isBoundaryLocked){
       const rad = cfg.r * Math.PI / 180;
-      const cos = Math.abs(Math.cos(rad));
-      const sin = Math.abs(Math.sin(rad));
+      const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+      
+      // Math buffer logic for the gap
       const mathM = drawM + 15; 
-      const reqW = (mathM * 2 * cos + mathM * 2 * sin);
-      const reqH = (mathM * 2 * sin + mathM * 2 * cos);
-      const minS = Math.max(reqW / i.width, reqH / i.height);
+      const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
+      const minS = Math.max(reqW/i.width, reqH/i.height);
+      
       if(cfg.s < minS) { 
           cfg.s = minS; 
           if(window.zSl) zSl.value = minS; 
-          if(window.zVal) zVal.innerText = Math.round((minS / zSl.min) * 100) + "%";
+          if(window.zVal) zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
       }
-      const w = i.width * cfg.s;
-      const h = i.height * cfg.s;
-      const rangeX = Math.max(0, (w - reqW) / 2);
-      const rangeY = Math.max(0, (h - reqH) / 2);
+      
+      const w = i.width * cfg.s, h = i.height * cfg.s;
+      const rangeX = Math.max(0, (w - reqW)/2), rangeY = Math.max(0, (h - reqH)/2);
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 3. DRAW USER IMAGE (IPHONE BAKE vs ANDROID NATIVE)
+  // 4. DRAW USER IMAGE
   if(i.src){
       x.save(); 
-      x.beginPath(); 
-      x.arc(400, 400, drawM + 2, 0, Math.PI * 2); 
-      x.clip(); 
+      // Circle Fix: Math.PI * 2
+      x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
       
-      let w = i.width * cfg.s;
-      let h = i.height * cfg.s;
+      let w = i.width * cfg.s, h = i.height * cfg.s;
       
-      // Calculate Filter String (Cleaned up formatting)
-      let filters = [];
-      if(cfg.filter && cfg.filter !== 'none') filters.push(cfg.filter);
-      if(cfg.adj.b !== 100) filters.push(`brightness(${cfg.adj.b}%)`);
-      if(cfg.adj.c !== 100) filters.push(`contrast(${cfg.adj.c}%)`);
-      if(cfg.adj.s !== 100) filters.push(`saturate(${cfg.adj.s}%)`);
-      let fs = filters.join(' ');
-
-      // 🧠 ROBUST IPHONE DETECTION
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-      if (isIOS && fs !== '') {
-          // 🍎 OPTIMIZED IPHONE "OVEN"
-          // We use a global variable to reuse the canvas instead of creating new ones
-          if(!window.ovenC) {
-              window.ovenC = document.createElement('canvas');
-              window.ox = window.ovenC.getContext('2d');
-          }
-          
-          // CAP RESOLUTION: Prevents high-res 4K photos from crashing iPhone RAM
-          const maxDim = 1200; 
-          let scale = Math.min(1, maxDim / Math.max(i.width, i.height));
-          window.ovenC.width = i.width * scale;
-          window.ovenC.height = i.height * scale;
-          
-          window.ox.filter = fs;
-          window.ox.drawImage(i, 0, 0, window.ovenC.width, window.ovenC.height);
-          
-          x.translate(cfg.x, cfg.y); 
-          x.rotate(cfg.r * Math.PI / 180);
-          x.drawImage(window.ovenC, -w/2, -h/2, w, h);
-      } else {
-          // 🤖 ANDROID / PC NATIVE PATH
-          x.translate(cfg.x, cfg.y); 
-          x.rotate(cfg.r * Math.PI / 180);
-          x.filter = fs || 'none';
-          x.drawImage(i, -w/2, -h/2, w, h);
-      }
+      x.translate(cfg.x, cfg.y); 
+      x.rotate(cfg.r * Math.PI / 180);
+      
+      // We apply the context filter for everyone (Android needs this to work)
+      // iOS users will get this AND the CSS filter, which ensures it shows up.
+      let fs = (cssFilter !== '') ? cssFilter : 'none';
+      x.filter = fs;
+      
+      x.drawImage(i, -w/2, -h/2, w, h);
       x.restore(); 
   }
   
-  // 🛡️ THE PROTECTION WALL
+  // 🔥 FINAL ANDROID PROTECTION WALL:
+  // We reset the context filter so the frame drawing below is clean.
   x.filter = 'none'; 
 
-  // 4. SEAM SEALER
+  // 5. SEAM SEALER
   if (cfg.pColor) {
       x.save(); x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
       x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke(); x.restore();
   }
 
-  // 5. FULL NEON / GRADIENT / METALLIC FRAME LOGIC (Untouched & Uncompressed)
+  // 6. FULL NEON / GRADIENT FRAME LOGIC
   if (cfg.pColor) {
       x.save(); 
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
@@ -1259,7 +1272,7 @@ function d(){
       }
       x.restore();
   }
-  if(f.src) x.drawImage(f, 0, 0, 800, 800); 
+  if(f.src) x.drawImage(f,0,0,800,800); 
 }
 
 // --- 📂 FILE HANDLERS (SMART AUTO-SIZING: 400px vs 375px) ---
