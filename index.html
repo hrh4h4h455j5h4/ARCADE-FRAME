@@ -1620,9 +1620,10 @@ function renderGallery() {
 
     myGallery.forEach(item => {
         const card = document.createElement('div');
+        // Card Styling
         card.style.cssText = "position:relative; border-radius:16px; overflow:hidden; background:linear-gradient(145deg, #1a1a1a, #0d0d0d); display:flex; flex-direction:column; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border:1px solid #333; transition: transform 0.2s;";
         
-        // Handle Text vs Image
+        // Content
         if(item.type === 'text') {
             const textBox = document.createElement('div');
             textBox.style.cssText = "padding:20px; color:#00ffcc; font-family:'Courier New', monospace; font-size:14px; line-height:1.4; word-break:break-word; background:rgba(0,0,0,0.3); flex-grow:1; min-height:120px; white-space: pre-wrap; display:flex; align-items:center; justify-content:center; text-align:center;";
@@ -1634,13 +1635,9 @@ function renderGallery() {
             img.src = item.data || item.img; 
             img.style.cssText = "width:100%; height:auto; display:block; aspect-ratio:1/1; object-fit:cover;";
             
-            // 🔥 ANDROID FIX: Block the native "Hold" menu
-            img.oncontextmenu = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                downloadFromGallery(item.data); 
-                return false;
-            };
+            // ✅ "OLD VIEW" RESTORED: 
+            // I removed the 'oncontextmenu' block. 
+            // Now holding the image shows the standard phone menu.
             
             card.appendChild(img);
         }
@@ -1651,7 +1648,7 @@ function renderGallery() {
         
         const leftGrp = document.createElement('div');
         leftGrp.style.display = 'flex';
-        leftGrp.style.alignItems = 'center'; // <--- THIS IS THE ALIGNMENT FIX 📏
+        leftGrp.style.alignItems = 'center'; 
         leftGrp.style.gap = '20px'; 
 
         // 1. Fav Button
@@ -1661,11 +1658,10 @@ function renderGallery() {
         favBtn.onclick = (e) => { e.stopPropagation(); toggleFav(item.id); };
         leftGrp.appendChild(favBtn);
 
-        // 2. Download Button (Arrow)
+        // 2. Download Button (The Anti-Duplicate Arrow)
         if(item.type !== 'text') {
             const dlBtn = document.createElement('span');
             dlBtn.innerHTML = "⬇️";
-            // Added 2px margin-top to visually balance it with the star
             dlBtn.style.cssText = "font-size:18px; cursor:pointer; opacity:0.8; color:#00ffff; margin-top:2px;"; 
             dlBtn.onclick = (e) => { e.stopPropagation(); downloadFromGallery(item.data); };
             leftGrp.appendChild(dlBtn);
@@ -1675,7 +1671,6 @@ function renderGallery() {
         if(item.type === 'text') {
             const copyBtn = document.createElement('span');
             copyBtn.innerHTML = "📋";
-            // Added margin-top here too for perfect alignment
             copyBtn.style.cssText = "font-size:18px; cursor:pointer; opacity:0.7; margin-top:2px;";
             copyBtn.onclick = (e) => { e.stopPropagation(); navigator.clipboard.writeText(item.data); showToast("COPIED!", "#fff"); };
             leftGrp.appendChild(copyBtn);
@@ -1695,7 +1690,6 @@ function renderGallery() {
     });
 }
 
-
 function showToast(text, color) {
     const existingToast = document.getElementById('my-toast');
     if(existingToast) existingToast.remove();
@@ -1708,29 +1702,35 @@ function showToast(text, color) {
     requestAnimationFrame(() => { t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(0)"; });
     setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%) translateY(20px)"; setTimeout(() => t.remove(), 300); }, 2000);
 }
+    
 function downloadFromGallery(base64Data) {
-    // 1. Convert the saved Base64 string back into a File Blob
     fetch(base64Data)
     .then(res => res.blob())
     .then(blob => {
-        // 2. Generate Unique Name
+        // 1. Generate a 100% Unique Name (Prevents "download (1)")
+        // Format: Arcade_Backup_Timestamp_Random.png
         const uniqueName = `Arcade_Backup_${Date.now()}_${Math.floor(Math.random() * 9999)}.png`;
         const file = new File([blob], uniqueName, { type: "image/png" });
 
-        // 3. iPhone Share Sheet / Android Download
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        // 2. Check Device
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+        // 3. iPhone: Needs Share Menu (To save to Photos)
+        if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
             navigator.share({
                 files: [file],
                 title: 'Arcade Studio',
                 text: 'Saved from my backups'
             }).catch(e => console.log('Cancelled'));
-        } else {
+        } 
+        // 4. Android: INSTANT DOWNLOAD (No Menu!)
+        else {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = uniqueName;
+            a.download = uniqueName; // <--- This forces the unique name
             document.body.appendChild(a);
-            a.click();
+            a.click(); // <--- This triggers the auto-download
             setTimeout(() => {
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
@@ -1738,29 +1738,9 @@ function downloadFromGallery(base64Data) {
         }
     });
     
-    // 4. Sound
     if(typeof playClick === 'function') playClick();
 }
 
-function toggleFav(id) {
-    // 🔥 FIX: Use loose equality (==) to match string/number IDs
-    const idx = myGallery.findIndex(x => x.id == id);
-    
-    if(idx > -1) {
-        myGallery[idx].fav = !myGallery[idx].fav;
-        
-        // Move favorites to top
-        if(myGallery[idx].fav) { 
-            const item = myGallery.splice(idx, 1)[0]; 
-            myGallery.unshift(item); 
-        }
-        
-        localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
-        renderGallery();
-        
-        if(typeof playClick === 'function') playClick();
-    }
-}
 
 // --- 🗑️ CUSTOM DELETE MODAL LOGIC (NEON THEME) ---
 let deleteTargetId = null;
