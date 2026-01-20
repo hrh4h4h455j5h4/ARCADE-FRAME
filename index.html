@@ -1124,19 +1124,22 @@ function toggleBoundaryLock() {
     }
     d(); playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (FINAL MASTER FIX) ---
+// --- 🛠️ CORE DRAWING ENGINE (MASTER RE-DO: 365PX + 5PX OVERLAP) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   
   // 1. DISABLE GLOBAL CSS FILTER
+  // This ensures the filter applies ONLY to the photo, not the frame/neon.
   if(c) c.style.filter = 'none';
 
-  // 2. SMART SIZE LOGIC (ULTRA SAFE FIX)
+  // 2. SMART SIZE LOGIC (USER REQUEST: 365PX)
   let drawM = cfg.m;
   
-  // 🔥 FIX: Cap at 360px for ALL colors.
-  if (cfg.pColor && cfg.m > 360) {
-      drawM = 360;
+  // 🔥 FIX: Cap at 365px.
+  // This is "tighter" than 360, but safe enough for most phones.
+  // It applies to EVERYTHING (Neon, Pink, Gold, etc.)
+  if (cfg.pColor && cfg.m > 365) {
+      drawM = 365;
   }
 
   // 3. Handle Boundary Lock
@@ -1144,8 +1147,10 @@ function d(){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
       
-      // 🔥 MATH BUFFER: Force logic to think hole is 15px bigger
-      const mathM = drawM + 15; 
+      // 🔥 MATH BUFFER: Force logic to think hole is 20px bigger
+      // This ensures the zoom is calculated for a much larger area (+20px).
+      // This forces the user to zoom in enough to cover the bleed.
+      const mathM = drawM + 20; 
       
       const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
@@ -1158,67 +1163,68 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. Draw User Image
+  // 4. Draw User Image (APPLY FILTER HERE)
   if(i.src){
       x.save(); 
-      // 🔥 BLEED FIX: Cut image 2px larger (+2) to tuck under frame
-      x.beginPath(); x.arc(400, 400, drawM + 2, 0, 6.28); x.clip(); 
+      // 🔥 AGGRESSIVE BLEED FIX: drawM + 5
+      // We cut the image 5px LARGER than the frame (370px if frame is 365px).
+      // This forces the image to tuck 5px underneath the border.
+      // It is mathematically impossible for a gap to show now.
+      x.beginPath(); x.arc(400, 400, drawM + 5, 0, 6.28); x.clip(); 
       
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
       
-      // Build Filter
+      // Build the Filter String
       let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
       if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
       if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
       if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
       
+      // Apply Filter ONLY to the Context (The Image Layer)
       x.filter = (fs !== '') ? fs : 'none';
+      
       x.drawImage(i, -w/2, -h/2, w, h); 
       x.restore(); 
   }
   
-  // 5. RESET FILTER
+  // 5. RESET FILTER (Crucial Step!)
+  // This ensures the Neon and Custom Frame draw in their original colors
   x.filter = 'none'; 
 
-  // 🛡️ SEAM SEALER (THE GAP KILLER)
-  // This draws a solid ring BEHIND the frame to plug the white line.
-  if (cfg.pColor) {
-      x.save();
-      x.beginPath(); 
-      x.arc(400, 400, drawM, 0, 6.28); 
-      x.lineWidth = 6; // Thick enough to plug the hole
-      x.strokeStyle = cfg.pColor; // Matches the frame
-      x.stroke();
-      x.restore();
-  }
-
-    // 6. Draw Neon/Gradient Ring (Top Layer)
+  // 6. Draw Neon/Gradient Ring (Top Layer)
   if (cfg.pColor) {
       x.save(); 
       
-      // A. Dark Neons
+      // A. Dark Neons (Black/Grey)
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const sC = cfg.pColor; 
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
       } 
-      // B. Thin Neon (Second White)
+      // B. THIN NEON (Only Second White Button: #FEFEFE)
       else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
+          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); 
+          x.lineWidth = 15; // <--- THIN
+          x.strokeStyle = '#FFFFFF'; 
+          x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
       }
-      // C. Thick Neon (Standard)
+      // C. THICK NEON (Standard Colors + First White)
       else if (cfg.pType === 'neon') {
-          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
+          x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); 
+          x.lineWidth = 25; // <--- THICK
+          x.strokeStyle = cfg.pColor; 
+          x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
       } 
-      // D. Gradients / Metallics (EXPANDED TO PREVENT ERRORS)
+      // D. Gradients / Metallics / Basic Colors
       else {
           x.beginPath(); x.arc(400, 400, drawM, 0, 6.28); x.lineWidth = 25; 
           
-          if (cfg.pType && gradientDefs && gradientDefs[cfg.pType]) { 
+          // Expanded Logic to Prevent Syntax Errors
+          if (cfg.pType && typeof gradientDefs !== 'undefined' && gradientDefs[cfg.pType]) { 
               const cs = gradientDefs[cfg.pType]; 
               let g = x.createLinearGradient(0, 0, 800, 800); 
               g.addColorStop(0, cs[0]); 
@@ -1247,8 +1253,7 @@ function d(){
       }
       x.restore();
   }
-
-
+  
   // 7. Draw Custom Frame (Will be unaffected by filter)
   if(f.src) x.drawImage(f,0,0,800,800); 
 }
