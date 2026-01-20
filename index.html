@@ -1087,10 +1087,9 @@ function adjChange(type, val, el) {
     // REMOVED c.style.filter here to prevent global filter application
     d(); 
 }
-
+// --- 📱 1. FILTER APPLICATION (IPHONE CSS FIX) ---
 function applyFilter(filterVal, btn) {
     if(cfg.filter !== filterVal) {
-        // 1. Reset adjustment sliders
         cfg.adj = { b: 100, c: 100, s: 100 };
         ['b','c','s'].forEach(k => {
             const el = document.getElementById('sl-'+k);
@@ -1103,87 +1102,53 @@ function applyFilter(filterVal, btn) {
         
         cfg.filter = filterVal;
         
-        // 🍎 THE IPHONE FORCE: Apply filter directly to the canvas style
-        // This is the only way to ensure Safari doesn't ignore the filter
+        // 🍎 FORCE IPHONE PREVIEW: Directly updates the canvas element style
         if(c) {
             let fs = (filterVal && filterVal !== 'none') ? filterVal : '';
             c.style.filter = fs || 'none';
-            c.style.webkitFilter = fs || 'none'; // Safari fallback
+            c.style.webkitFilter = fs || 'none'; 
         }
         
-        // 2. UI Updates
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
         if(btn) btn.classList.add('active-filter');
         
-        // 3. Redraw the canvas
         d(); 
         if(typeof playClick === 'function') playClick();
     }
 }
 
-        // 2. UI Updates
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
-        if(btn) btn.classList.add('active-filter');
-        
-        // 3. Redraw the canvas
-        d(); 
-        if(typeof playClick === 'function') playClick();
-    }
-}
-
-// Helper to make filters visible on iPhone screen
-function updateiPhoneVisuals() {
-    if(!c) return;
-    let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
-    if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
-    if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
-    if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
-    
-    c.style.filter = fs || 'none';
-    c.style.webkitFilter = fs || 'none';
-}
-
-    cfg.filter = filterVal;
-    // REMOVED c.style.filter here too. Filters are now handled ONLY in d()
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
-    if(btn) btn.classList.add('active-filter');
-    const editBtn = document.getElementById('open-adj-btn');
-    if(editBtn) editBtn.style.display = (filterVal === 'none') ? 'none' : 'block';
-    d(); playClick();
-}
-
+// --- 🔒 2. BOUNDARY LOCK LOGIC ---
 let isBoundaryLocked = true;
 function toggleBoundaryLock() {
     isBoundaryLocked = !isBoundaryLocked;
     const btn = document.getElementById('lock-btn');
-    if (isBoundaryLocked) { 
-        btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; 
-        if(i.src) {
-            const rad = Math.abs(cfg.r * Math.PI / 180);
-            const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
-            const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
-            const minS = Math.max(reqW/i.width, reqH/i.height);
-            zSl.min = minS; if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
+    if (isBoundaryLocked) {
+        if(btn) {
+            btn.innerHTML = "BOUNDARY LOCK: ON 🔒";
+            btn.style.borderColor = "#00ff00";
+            btn.style.color = "#00ff00";
         }
-    } else { 
-        btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; 
-        zSl.min = 0.01; // RELEASES ZOOM LIMIT
+    } else {
+        if(btn) {
+            btn.innerHTML = "BOUNDARY LOCK: OFF 🔓";
+            btn.style.borderColor = "#ff0000";
+            btn.style.color = "#ff0000";
+        }
     }
-    d(); playClick();
+    d();
+    if(typeof playClick === 'function') playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (FULL UNCOMPRESSED RESTORE VERSION) ---
+
+// --- 🛠️ 3. CORE DRAWING ENGINE (FULL UNCOMPRESSED) ---
 function d(){ 
   if(!x) return;
   x.clearRect(0,0,800,800); 
 
-  // 1. SMART SIZE LOGIC
   let drawM = cfg.m;
-  // 🔥 FIX: Cap at 360px for ALL colors so glow doesn't cut
-  if (cfg.pColor && cfg.m > 360) {
-      drawM = 360;
-  }
+  // Cap at 360px for ALL colors so neon glow doesn't cut
+  if (cfg.pColor && cfg.m > 360) { drawM = 360; }
 
-  // 2. FULL BOUNDARY LOCK MATH
+  // Boundary Lock Math
   if(i.src && isBoundaryLocked){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
@@ -1201,7 +1166,7 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 3. DRAW USER IMAGE
+  // Draw User Image
   if(i.src){
       x.save(); 
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
@@ -1211,18 +1176,15 @@ function d(){
       x.restore(); 
   }
   
-  // 4. RESET INTERNAL FILTER (Ensures frame colors aren't double-filtered)
-  x.filter = 'none'; 
+  x.filter = 'none'; // Protecs frame color
 
-  // 5. SEAM SEALER
+  // Seam Sealer
   if (cfg.pColor) {
-      x.save();
-      x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
-      x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke();
-      x.restore();
+      x.save(); x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
+      x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke(); x.restore();
   }
 
-  // 6. FULL NEON / GRADIENT / METALLIC FRAME LOGIC
+  // Full Neon / Gradient / Metallic Frame Logic
   if (cfg.pColor) {
       x.save(); 
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
@@ -1239,19 +1201,11 @@ function d(){
       } else {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; 
           if (cfg.pType && typeof gradientDefs !== 'undefined' && gradientDefs[cfg.pType]) { 
-              const cs = gradientDefs[cfg.pType]; 
-              let g = x.createLinearGradient(0, 0, 800, 800); 
-              g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; 
+              const cs = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; 
           } else if (cfg.pType === 'gold') {
-              let g = x.createLinearGradient(0, 0, 800, 800);
-              g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); 
-              x.strokeStyle = g;
+              let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, '#FFD700'); g.addColorStop(0.5, '#FDB931'); g.addColorStop(1, '#FFD700'); x.strokeStyle = g;
           } else if (cfg.pType === 'silver') { 
-              let g = x.createLinearGradient(0, 0, 800, 800);
-              g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); x.strokeStyle = g;
-          } else if (cfg.pType === 'bronze') { 
-              let g = x.createLinearGradient(0, 0, 800, 800);
-              g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); x.strokeStyle = g;
+              let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); x.strokeStyle = g;
           } else { x.strokeStyle = cfg.pColor; }
           x.stroke(); 
       }
