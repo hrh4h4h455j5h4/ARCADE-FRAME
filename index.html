@@ -1090,7 +1090,7 @@ function adjChange(type, val, el) {
 
 function applyFilter(filterVal, btn) {
     if(cfg.filter !== filterVal) {
-        // 1. Reset adjustment sliders when changing presets
+        // 1. Reset adjustment sliders
         cfg.adj = { b: 100, c: 100, s: 100 };
         ['b','c','s'].forEach(k => {
             const el = document.getElementById('sl-'+k);
@@ -1103,13 +1103,24 @@ function applyFilter(filterVal, btn) {
         
         cfg.filter = filterVal;
         
-        // 🍎 THE IPHONE FORCE: Apply filter directly to the canvas element style
+        // 🍎 THE IPHONE FORCE: Apply filter directly to the canvas style
+        // This is the only way to ensure Safari doesn't ignore the filter
         if(c) {
             let fs = (filterVal && filterVal !== 'none') ? filterVal : '';
             c.style.filter = fs || 'none';
             c.style.webkitFilter = fs || 'none'; // Safari fallback
         }
         
+        // 2. UI Updates
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+        if(btn) btn.classList.add('active-filter');
+        
+        // 3. Redraw the canvas
+        d(); 
+        if(typeof playClick === 'function') playClick();
+    }
+}
+
         // 2. UI Updates
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
         if(btn) btn.classList.add('active-filter');
