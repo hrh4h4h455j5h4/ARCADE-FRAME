@@ -1132,11 +1132,11 @@ function d(){
   // This ensures the filter applies ONLY to the photo, not the frame/neon.
   if(c) c.style.filter = 'none';
 
-      // 2. SMART SIZE LOGIC (SYNCHRONIZED FIX)
+        // 2. SMART SIZE LOGIC (BUFFER FIX)
   let drawM = cfg.m;
   
   // 🔥 FIX: Check 'cfg.pColor' (Covers Pink, Neon, Basic, Gold - EVERYTHING)
-  // 🔥 FIX: Cap at 360px. This affects BOTH the drawing AND the lock math.
+  // 🔥 FIX: Cap at 360px so the Glow NEVER gets cut off.
   if (cfg.pColor && cfg.m > 360) {
       drawM = 360;
   }
@@ -1146,9 +1146,14 @@ function d(){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
       
-      // 🔥 SYNCHRONIZATION: Use 'drawM' directly. 
-      // This guarantees the Lock Math matches the Visual Circle exactly.
-      const reqW = (drawM*2*cos + drawM*2*sin), reqH = (drawM*2*sin + drawM*2*cos);
+      // 🔥 MASTER FIX: The "+1 Pixel Buffer"
+      // We calculate the zoom based on 'drawM + 1'.
+      // This forces the image to be slightly larger than the cut-out,
+      // ensuring NO white gaps ever appear at the edges.
+      const mathM = drawM + 1;
+      
+      // We use 'mathM' (361px) for the zoom calculation
+      const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
       
       if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
@@ -1158,6 +1163,7 @@ function d(){
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
+
 
   // 4. Draw User Image (APPLY FILTER HERE)
   if(i.src){
