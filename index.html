@@ -1331,30 +1331,7 @@ function resetProject(){
     document.getElementById('save').disabled = true; document.querySelector('.ui').style.paddingBottom = "0px"; 
 }
 
-function downloadPic(){ 
-    if(!i.src) return; 
-    
-    // 1. BACKUP STEP: Automatically save to My Studio first
-    if(typeof saveToGallery === 'function') {
-        saveToGallery();
-    }
-
-    // 2. DOWNLOAD STEP: Save to your Phone
-    d(); 
-    let a = document.createElement('a');
-    // 🔥 Random Number = Always a new file (No "download (1)")
-    let uniqueName = `Arcade_${Date.now()}_${Math.floor(Math.random() * 10000)}.png`;
-    a.download = uniqueName;
-    a.href = c.toDataURL();
-    
-    // Attach to body to ensure Android respects the filename
-    document.body.appendChild(a); 
-    a.click(); 
-    document.body.removeChild(a); 
-    
-    playShutter(); 
-}
-
+function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
@@ -1485,34 +1462,32 @@ window.onclick = e => {
     }
 };
 
-// --- 💎 DESIGNER EDITION GALLERY (MASTER FIX: UNLIMITED SAVES & INSTANT DELETE) ---
+
+// --- 💎 DESIGNER EDITION GALLERY (NEON AESTHETICS) ---
 
 // 1. Data Structure
 let myGallery = JSON.parse(localStorage.getItem('arcadeGallery')) || [];
 
-// 2. Save Logic (Images) - ALLOWS DUPLICATES
+// 2. Save Logic (Images)
 function saveToGallery() {
     if(!c) return; 
     const data = c.toDataURL();
-    // 🔥 RANDOM ID: Allows you to save the exact same image multiple times
-    const id = Date.now() + Math.floor(Math.random() * 10000); 
+    const id = Date.now();
     const item = { id: id, type: 'img', data: data, fav: false, date: new Date().toLocaleDateString() };
     myGallery.unshift(item); 
     localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
     refreshGalleryIfOpen();
-    // Toast notification to confirm backup
-    showToast("💾 BACKUP SAVED TO STUDIO", "#00ff00");
 }
 
-// 3. Save Logic (Text)
+// 3. Save Logic (Text/Symbols/Fonts)
 function saveTextToGallery(text) {
     if(!text || text.trim() === "") return showToast("⚠️ TYPE SOMETHING FIRST!", "#ff0055");
-    const id = Date.now() + Math.floor(Math.random() * 10000);
+    const id = Date.now();
     const item = { id: id, type: 'text', data: text, fav: false, date: new Date().toLocaleDateString() };
     myGallery.unshift(item);
     localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
     refreshGalleryIfOpen();
-    showToast("💾 TEXT SAVED", "#00ff00");
+    showToast("💾 SAVED TO STUDIO", "#00ff00");
 }
 
 function refreshGalleryIfOpen() {
@@ -1542,7 +1517,8 @@ function createGalleryUI() {
     
     const div = document.createElement('div');
     div.id = 'gallery-wrapper';
-    div.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10, 10, 16, 0.95); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); z-index:9999; flex-direction:column; padding:20px; box-sizing:border-box; overflow-y:auto; transition: opacity 0.3s ease;";
+    // Glassmorphism Background
+    div.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10, 10, 16, 0.85); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); z-index:9999; flex-direction:column; padding:20px; box-sizing:border-box; overflow-y:auto; transition: opacity 0.3s ease;";
     
     div.innerHTML = `
         <div style="display:flex; justify-content:center; align-items:center; margin-bottom:25px; position:sticky; top:0; z-index:10;">
@@ -1563,7 +1539,7 @@ function createGalleryUI() {
 function renderGallery() {
     const grid = document.getElementById('gallery-grid');
     const empty = document.getElementById('empty-msg');
-    grid.innerHTML = ''; 
+    grid.innerHTML = '';
     
     if(myGallery.length === 0) {
         empty.style.display = 'block';
@@ -1573,22 +1549,26 @@ function renderGallery() {
 
     myGallery.forEach(item => {
         const card = document.createElement('div');
+        // Neon Card Style
         card.style.cssText = "position:relative; border-radius:16px; overflow:hidden; background:linear-gradient(145deg, #1a1a1a, #0d0d0d); display:flex; flex-direction:column; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border:1px solid #333; transition: transform 0.2s;";
         
+        // --- 🅰️ TEXT ITEM RENDER ---
         if(item.type === 'text') {
             const textBox = document.createElement('div');
             textBox.style.cssText = "padding:20px; color:#00ffcc; font-family:'Courier New', monospace; font-size:14px; line-height:1.4; word-break:break-word; background:rgba(0,0,0,0.3); flex-grow:1; min-height:120px; white-space: pre-wrap; display:flex; align-items:center; justify-content:center; text-align:center;";
             textBox.innerText = item.data;
             card.appendChild(textBox);
-            card.style.border = "1px solid #00ffcc44";
-        } else {
+            card.style.border = "1px solid #00ffcc44"; // Cyan hint for text
+        } 
+        // --- 🖼️ IMAGE ITEM RENDER ---
+        else {
             const img = document.createElement('img');
             img.src = item.data || item.img; 
             img.style.cssText = "width:100%; height:auto; display:block; aspect-ratio:1/1; object-fit:cover;";
             card.appendChild(img);
         }
         
-        // Toolbar
+        // --- TOOLBAR ---
         const bar = document.createElement('div');
         bar.style.cssText = "width:100%; background:#000; display:flex; justify-content:space-between; align-items:center; padding:10px 15px; box-sizing:border-box; border-top:1px solid #222;";
         
@@ -1596,20 +1576,26 @@ function renderGallery() {
         leftGrp.style.display = 'flex';
         leftGrp.style.gap = '15px';
 
+        // Fav Button
         const favBtn = document.createElement('span');
         favBtn.innerHTML = item.fav ? "★" : "☆"; 
         favBtn.style.cssText = item.fav ? "color:#ffff00; font-size:18px; cursor:pointer; text-shadow:0 0 8px #ffff00;" : "color:#555; font-size:18px; cursor:pointer;";
         favBtn.onclick = () => toggleFav(item.id);
         leftGrp.appendChild(favBtn);
 
+        // Copy Button (Text Only)
         if(item.type === 'text') {
             const copyBtn = document.createElement('span');
             copyBtn.innerHTML = "📋";
             copyBtn.style.cssText = "font-size:16px; cursor:pointer; opacity:0.7;";
-            copyBtn.onclick = () => { navigator.clipboard.writeText(item.data); showToast("COPIED!", "#fff"); };
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(item.data);
+                showToast("COPIED TO CLIPBOARD!", "#fff");
+            };
             leftGrp.appendChild(copyBtn);
         }
 
+        // Delete Button
         const delBtn = document.createElement('span');
         delBtn.innerHTML = "🗑️";
         delBtn.style.cssText = "font-size:16px; cursor:pointer; opacity:0.6; color:#ff4444;";
@@ -1624,36 +1610,50 @@ function renderGallery() {
     });
 }
 
+// 5. Beautiful Toast Notification
 function showToast(text, color) {
-    const existingToast = document.getElementById('my-toast');
-    if(existingToast) existingToast.remove();
-
     const t = document.createElement('div');
-    t.id = 'my-toast';
     t.innerHTML = text;
     t.style.cssText = `position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,0.9); border:1px solid ${color}; color:${color}; padding:12px 24px; border-radius:50px; font-family:sans-serif; font-weight:bold; font-size:14px; z-index:10001; opacity:0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 5px 20px rgba(0,0,0,0.5); display:flex; align-items:center; gap:8px; white-space:nowrap;`;
+    
     document.body.appendChild(t);
-    requestAnimationFrame(() => { t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(0)"; });
-    setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%) translateY(20px)"; setTimeout(() => t.remove(), 300); }, 2000);
+    
+    // Animate In
+    requestAnimationFrame(() => {
+        t.style.opacity = "1";
+        t.style.transform = "translateX(-50%) translateY(0)";
+    });
+
+    // Animate Out
+    setTimeout(() => {
+        t.style.opacity = "0";
+        t.style.transform = "translateX(-50%) translateY(20px)";
+        setTimeout(() => t.remove(), 300);
+    }, 2000);
 }
 
+// 6. Actions
 function toggleFav(id) {
     const idx = myGallery.findIndex(x => x.id === id);
     if(idx > -1) {
         myGallery[idx].fav = !myGallery[idx].fav;
-        if(myGallery[idx].fav) { const item = myGallery.splice(idx, 1)[0]; myGallery.unshift(item); }
+        if(myGallery[idx].fav) {
+            const item = myGallery.splice(idx, 1)[0];
+            myGallery.unshift(item);
+        }
         localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
         renderGallery();
         if(typeof playClick === 'function') playClick();
     }
 }
 
-// 🔥 FIX: Instant Delete Refresh
 function deleteItem(id) {
+    // Custom Confirmation Toast instead of ugly alert? 
+    // For safety, let's keep native confirm but style the result
     if(confirm("Delete this item permanently?")) {
         myGallery = myGallery.filter(x => x.id !== id);
         localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
-        renderGallery(); // Forces the list to update immediately
+        renderGallery();
         showToast("ITEM DELETED", "#ff4444");
         if(typeof playClick === 'function') playClick();
     }
@@ -1708,3 +1708,4 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
