@@ -1087,9 +1087,9 @@ function adjChange(type, val, el) {
     // REMOVED c.style.filter here to prevent global filter application
     d(); 
 }
-// --- 📱 1. FILTER APPLICATION (IPHONE CSS FIX) ---
 function applyFilter(filterVal, btn) {
     if(cfg.filter !== filterVal) {
+        // 1. Reset sliders for a clean start
         cfg.adj = { b: 100, c: 100, s: 100 };
         ['b','c','s'].forEach(k => {
             const el = document.getElementById('sl-'+k);
@@ -1102,20 +1102,16 @@ function applyFilter(filterVal, btn) {
         
         cfg.filter = filterVal;
         
-        // 🍎 FORCE IPHONE PREVIEW: Directly updates the canvas element style
-        if(c) {
-            let fs = (filterVal && filterVal !== 'none') ? filterVal : '';
-            c.style.filter = fs || 'none';
-            c.style.webkitFilter = fs || 'none'; 
-        }
-        
+        // 2. UI Updates
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
         if(btn) btn.classList.add('active-filter');
         
+        // 3. Redraw (This triggers the Android filter logic)
         d(); 
         if(typeof playClick === 'function') playClick();
     }
 }
+
 
 // --- 🔒 2. BOUNDARY LOCK LOGIC ---
 let isBoundaryLocked = true;
@@ -1138,79 +1134,127 @@ function toggleBoundaryLock() {
     d();
     if(typeof playClick === 'function') playClick();
 }
-
-// --- 🛠️ 3. CORE DRAWING ENGINE (FULL UNCOMPRESSED) ---
+// --- 🛠️ CORE DRAWING ENGINE (FULL UNCOMPRESSED RESTORE VERSION) ---
 function d(){ 
   if(!x) return;
   x.clearRect(0,0,800,800); 
 
+  // 1. SMART SIZE LOGIC (360px Cap for Neon Glow)
   let drawM = cfg.m;
-  // Cap at 360px for ALL colors so neon glow doesn't cut
-  if (cfg.pColor && cfg.m > 360) { drawM = 360; }
+  if (cfg.pColor && cfg.m > 360) {
+      drawM = 360;
+  }
 
-  // Boundary Lock Math
+  // 2. FULL BOUNDARY LOCK MATH
   if(i.src && isBoundaryLocked){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+      
+      // Math Buffer: Logic thinks the hole is 15px bigger to protect edges
       const mathM = drawM + 15; 
+      
       const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
+      
       if(cfg.s < minS) { 
           cfg.s = minS; 
           if(window.zSl) zSl.value = minS; 
           if(window.zVal) zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
       }
+      
       const w = i.width * cfg.s, h = i.height * cfg.s;
       const rangeX = Math.max(0, (w - reqW)/2), rangeY = Math.max(0, (h - reqH)/2);
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // Draw User Image
+  // 3. DRAW USER IMAGE WITH FILTERS
   if(i.src){
       x.save(); 
+      // Bleed Fix (+2) and Circle Fix (Math.PI * 2)
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
+      
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
+      
+      // Calculate Filter String
+      let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
+      if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
+      if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
+      if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
+      
+      // APPLY FILTER ONLY TO PHOTO
+      x.filter = fs || 'none';
       x.drawImage(i, -w/2, -h/2, w, h); 
       x.restore(); 
   }
   
-  x.filter = 'none'; // Protecs frame color
+  // 🔥 THE FIX: RESET INTERNAL FILTER COMPLETELY BEFORE DRAWING FRAME
+  x.filter = 'none'; 
 
-  // Seam Sealer
+  // 4. SEAM SEALER (Closes gaps between photo and frame)
   if (cfg.pColor) {
-      x.save(); x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
-      x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke(); x.restore();
+      x.save();
+      x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
+      x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke();
+      x.restore();
   }
 
-  // Full Neon / Gradient / Metallic Frame Logic
+  // 5. FULL NEON / GRADIENT / METALLIC FRAME LOGIC
   if (cfg.pColor) {
       x.save(); 
+      
+      // A. Dark Neons (Black/Grey Logic)
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const sC = cfg.pColor; 
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
+      } 
+      // B. Thin White Neon logic
+      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } else if (cfg.pType === 'neon') {
+      }
+      // C. Standard Neon Glow logic
+      else if (cfg.pType === 'neon') {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } else {
+      } 
+      // D. Gradients & Metallics logic
+      else {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; 
+          
           if (cfg.pType && typeof gradientDefs !== 'undefined' && gradientDefs[cfg.pType]) { 
-              const cs = gradientDefs[cfg.pType]; let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); x.strokeStyle = g; 
-          } else if (cfg.pType === 'gold') {
-              let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, '#FFD700'); g.addColorStop(0.5, '#FDB931'); g.addColorStop(1, '#FFD700'); x.strokeStyle = g;
-          } else if (cfg.pType === 'silver') { 
-              let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); x.strokeStyle = g;
-          } else { x.strokeStyle = cfg.pColor; }
+              const cs = gradientDefs[cfg.pType]; 
+              let g = x.createLinearGradient(0, 0, 800, 800); 
+              g.addColorStop(0, cs[0]); g.addColorStop(1, cs[1]); 
+              x.strokeStyle = g; 
+          } 
+          else if (cfg.pType === 'gold') {
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); 
+              x.strokeStyle = g;
+          }
+          else if (cfg.pType === 'silver') { 
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); 
+              x.strokeStyle = g;
+          }
+          else if (cfg.pType === 'bronze') { 
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); 
+              x.strokeStyle = g;
+          } 
+          else { 
+              x.strokeStyle = cfg.pColor; 
+          }
           x.stroke(); 
       }
       x.restore();
   }
+  
+  // Overlay top frame if active
   if(f.src) x.drawImage(f,0,0,800,800); 
 }
 
