@@ -1228,7 +1228,10 @@ function handleFile(e){
         n.onload = async () => {
             if ('decode' in n) { try { await n.decode(); } catch(err) { } }
             i = n; cfg.x = 400; cfg.y = 400; cfg.r = 0;
-            if(!f.src) { cfg.m = 400; mSl.value = 400; mVal.innerText = "400px"; }
+            
+            // 🔥 FIX: Default to 375px so it matches the Frame Size
+            if(!f.src) { cfg.m = 375; mSl.value = 375; mVal.innerText = "375px"; }
+            
             const fillSize = Math.max(800/i.width, 800/i.height);
             if(isBoundaryLocked) {
                 const rad = cfg.r * Math.PI / 180;
@@ -1273,8 +1276,10 @@ function centerSubject(){ cfg.x=400; cfg.y=400; cfg.r=0; rSl.value=0; d(); playS
 
 function resetProject(){ 
     i=new Image(); f=new Image(); 
-    cfg={s:1, m:400, x:400, y:400, r:0, pColor:null, pType:null, filter:'none', adj:{b:100,c:100,s:100}};
-    zSl.value=1; rSl.value=0; mSl.value=400; mVal.innerText="400px"; mLbl.innerText = "CIRCLE SIZE";
+    // 🔥 FIX: Defaulting everything to 375px to match Frame Size
+    cfg={s:1, m:375, x:400, y:400, r:0, pColor:null, pType:null, filter:'none', adj:{b:100,c:100,s:100}};
+    zSl.value=1; rSl.value=0; mSl.value=375; mVal.innerText="375px"; mLbl.innerText = "CIRCLE SIZE";
+    
     document.getElementById('u1').value = ''; document.getElementById('u2').value = '';
     c.style.filter = 'none'; document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
     if(document.getElementById('filter-list')) document.getElementById('filter-list').innerHTML = '';
