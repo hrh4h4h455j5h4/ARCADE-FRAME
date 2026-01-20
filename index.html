@@ -1124,28 +1124,21 @@ function toggleBoundaryLock() {
     }
     d(); playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (FINAL FIX: CLOSED CIRCLE MATH + IPHONE FILTERS) ---
+// --- 🛠️ CORE DRAWING ENGINE (FIXED: FILTER AFFECTS PHOTO ONLY, NOT FRAME) ---
 function d(){ 
   x.clearRect(0,0,800,800); 
   
-  // 1. IOS FILTER FIX (FORCE VISIBILITY ON SCREEN)
-  // We calculate the filter string here and apply it to the CSS so iPhone users see it.
-  let cssFilter = '';
-  if(cfg.filter && cfg.filter !== 'none') cssFilter += cfg.filter;
-  if(cfg.adj.b !== 100) cssFilter += ` brightness(${cfg.adj.b}%)`;
-  if(cfg.adj.c !== 100) cssFilter += ` contrast(${cfg.adj.c}%)`;
-  if(cfg.adj.s !== 100) cssFilter += ` saturate(${cfg.adj.s}%)`;
-
+  // 1. DISABLE GLOBAL CSS FILTER (Crucial Fix)
+  // We disable this so the Frame stays colorful even if the photo is B&W
   if(c) {
-      c.style.filter = (cssFilter !== '') ? cssFilter : 'none';
-      c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none'; // Safari Backup
+      c.style.filter = 'none';
+      c.style.webkitFilter = 'none';
   }
 
   // 2. SMART SIZE LOGIC
   let drawM = cfg.m;
   
   // 🔥 FIX: Cap at 360px for ALL colors so glow doesn't cut
-  // Even if the slider says 375, we draw at 360 to keep the glow safe.
   if (cfg.pColor && cfg.m > 360) {
       drawM = 360;
   }
@@ -1169,34 +1162,35 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. Draw User Image
+  // 4. Draw User Image (WITH FILTERS APPLIED HERE ONLY)
   if(i.src){
       x.save(); 
-      // 🔥 BLEED FIX: Cut image 2px larger (+2)
-      // 🔥 CIRCLE FIX: Use Math.PI * 2 to close the loop perfectly
+      // 🔥 BLEED FIX & CIRCLE FIX
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
       
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
       
+      // PREPARE FILTER
       let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
       if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
       if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
       if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
       
+      // 🔥 APPLY FILTER TO IMAGE LAYER ONLY
       x.filter = (fs !== '') ? fs : 'none';
+      
       x.drawImage(i, -w/2, -h/2, w, h); 
-      x.restore(); 
+      x.restore(); // This automatically clears the filter for the next steps!
   }
   
-  // 5. RESET FILTER
+  // 5. SAFETY RESET (Double check filter is off before drawing frame)
   x.filter = 'none'; 
 
   // 🛡️ SEAM SEALER (THE GAP KILLER)
   if (cfg.pColor) {
       x.save();
       x.beginPath(); 
-      // 🔥 CIRCLE FIX: Use Math.PI * 2
       x.arc(400, 400, drawM, 0, Math.PI * 2); 
       x.lineWidth = 6; 
       x.strokeStyle = cfg.pColor; 
@@ -1204,7 +1198,7 @@ function d(){
       x.restore();
   }
 
-  // 6. Draw Neon/Gradient Ring (Top Layer)
+  // 6. Draw Neon/Gradient Ring (Top Layer - REMAINS COLORFUL)
   if (cfg.pColor) {
       x.save(); 
       // A. Dark Neons
