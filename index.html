@@ -1720,39 +1720,22 @@ function showToast(text, color) {
 }
     
 function downloadFromGallery(base64Data) {
-    fetch(base64Data)
-    .then(res => res.blob())
-    .then(blob => {
-        // 1. Generate a 100% Unique Name (Prevents "download (1)")
-        // Format: Arcade_Backup_Timestamp_Random.png
-        const uniqueName = `Arcade_Backup_${Date.now()}_${Math.floor(Math.random() * 9999)}.png`;
-        const file = new File([blob], uniqueName, { type: "image/png" });
+    // 1. Generate Unique Name
+    const uniqueName = `Arcade_${Date.now()}_${Math.floor(Math.random() * 9999)}.png`;
 
-        // 2. Check Device
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    // 2. INSTANT DOWNLOAD (No Fetch, No Lag)
+    // We use the image data directly to force the save.
+    const a = document.createElement('a');
+    a.href = base64Data; 
+    a.download = uniqueName;
+    document.body.appendChild(a);
+    a.click(); // Triggers the Android download immediately
 
-        // 3. iPhone: Needs Share Menu (To save to Photos)
-        if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-                files: [file],
-                title: 'Arcade Studio',
-                text: 'Saved from my backups'
-            }).catch(e => console.log('Cancelled'));
-        } 
-        // 4. Android: INSTANT DOWNLOAD (No Menu!)
-        else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = uniqueName; // <--- This forces the unique name
-            document.body.appendChild(a);
-            a.click(); // <--- This triggers the auto-download
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        }
-    });
+    // 3. Cleanup
+    setTimeout(() => {
+        document.body.removeChild(a);
+    }, 100);
+}
     
     if(typeof playClick === 'function') playClick();
 }
