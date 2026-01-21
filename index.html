@@ -1861,91 +1861,90 @@ setInterval(() => {
        
 }, 1000);
   // ------------------------------------------------------------------
-// 🍏 iPHONE FILTER FIX (STRICTLY PROTECTED)
-// 1. Checks if device is iPhone/iPad. If not, STOPS immediately.
-// 2. Bakes the filter into the image pixels so it saves correctly.
-// 3. Prevents double-downloads by running inside the main function.
+// 🍏 STRICT iPHONE FILTER FIX (Anti-Double Download)
 // ------------------------------------------------------------------
-function applyiPhoneFix() {
-    // 🛡️ 1. STRICT ANDROID PROTECTION
-    // This regex guarantees this code ONLY runs on Apple devices.
-    // If it is Android, Windows, or Mac, it quits instantly.
-    const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent) || 
-                          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    
-    if (!isAppleMobile) {
-        console.log("🛡️ Android detected - iOS Fix disabled.");
-        return; 
-    }
+(function fixiPhoneLogic() {
+    // 1. SAFETY CHECK: If Android/PC, EXIT IMMEDIATELY.
+    // This ensures we never touch Android logic.
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isIOS) return;
 
-    // ⏳ 2. Wait for your app to load the download function
-    if (typeof downloadPic === 'undefined') {
-        setTimeout(applyiPhoneFix, 500);
+    console.log("🍏 iPhone Detected: Overriding Download Logic...");
+
+    // 2. Find the crucial elements
+    const canvas = document.querySelector('canvas');
+    // Try to find the download button by ID or Text
+    const downloadBtn = document.getElementById('save-btn') || 
+                        Array.from(document.querySelectorAll('button'))
+                             .find(b => b.innerText && b.innerText.includes('DOWNLOAD'));
+
+    // If elements aren't ready, wait and try again
+    if (!canvas || !downloadBtn) {
+        setTimeout(fixiPhoneLogic, 500);
         return;
     }
 
-    // Prevent running this script twice
-    if (window.isIOSFixActive) return;
-    window.isIOSFixActive = true;
+    // 3. REMOVE OLD LISTENERS (The "Double Download" Fix)
+    // We clone the button to strip all existing event listeners (like the Android one)
+    const newBtn = downloadBtn.cloneNode(true);
+    downloadBtn.parentNode.replaceChild(newBtn, downloadBtn);
 
-    console.log("🍏 iPhone detected - Applying Filter Patch...");
+    // 4. ADD NEW iPHONE-ONLY LISTENER
+    newBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Stop any other scripts from seeing this click
 
-    // 💾 3. Hijack the Download Function
-    const originalDownloader = downloadPic;
-
-    downloadPic = function() {
-        const canvas = document.querySelector('canvas');
-        if (!canvas) {
-            originalDownloader(); // Fallback if no canvas
-            return;
-        }
-
-        // Check if a filter (like grayscale, contrast) is active
+        // CHECK FILTERS
         const style = window.getComputedStyle(canvas);
         const filter = style.filter;
+        const hasFilter = filter && filter !== 'none';
 
-        // IF FILTER EXISTS: Bake it!
-        if (filter && filter !== 'none') {
-            const ctx = canvas.getContext('2d');
-            const w = canvas.width;
-            const h = canvas.height;
+        const ctx = canvas.getContext('2d');
+        let rawData = null;
 
-            // A. Save the original "Clean" pixels
-            const rawData = ctx.getImageData(0, 0, w, h);
+        // A. BAKE FILTER (If exists)
+        if (hasFilter) {
+            // Save original pixels
+            rawData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
-            // B. Create a temporary copy to draw from
+            // Create temp canvas to draw filter
             const temp = document.createElement('canvas');
-            temp.width = w; temp.height = h;
+            temp.width = canvas.width;
+            temp.height = canvas.height;
             temp.getContext('2d').drawImage(canvas, 0, 0);
 
-            // C. Draw the filter onto the REAL canvas
+            // Draw filtered image onto main canvas
             ctx.save();
-            ctx.filter = filter; 
-            ctx.clearRect(0, 0, w, h);
+            ctx.filter = filter;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(temp, 0, 0);
             ctx.restore();
-
-            // D. Run the download (It will now see the filter!)
-            // We use a tiny delay to ensure the graphics card is ready
-            setTimeout(() => {
-                originalDownloader(); // <--- This runs your normal download ONCE
-
-                // E. Restore the clean pixels immediately
-                // (Otherwise the screen looks "Double Filtered")
-                setTimeout(() => {
-                    ctx.putImageData(rawData, 0, 0);
-                }, 50); 
-            }, 10);
-
-        } else {
-            // NO FILTER? Just run normal download.
-            originalDownloader();
         }
-    };
-}
 
-// Run the Fix
-applyiPhoneFix();
+        // B. TRIGGER DOWNLOAD (iOS Way)
+        // We use .toBlob which works best on Safari for saving images
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = `Arcade_${Date.now()}.png`;
+            document.body.appendChild(anchor);
+            anchor.click(); // Click the invisible link
+            
+            setTimeout(() => {
+                document.body.removeChild(anchor);
+                URL.revokeObjectURL(url);
+
+                // C. RESTORE ORIGINAL PIXELS (If we baked a filter)
+                if (hasFilter && rawData) {
+                    ctx.putImageData(rawData, 0, 0);
+                }
+            }, 100);
+        }, 'image/png');
+
+    }, { once: false });
+
+})();
 
 </script>
 </body>
