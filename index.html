@@ -1720,27 +1720,28 @@ function showToast(text, color) {
 }
     
 function downloadFromGallery(base64Data) {
-    // 1. Convert Base64 to Blob (Fixes "File Too Big" issue)
+    // 1. Generate Unique Name
+    const uniqueName = `Arcade_${Date.now()}.png`;
+
+    // 2. Convert to Blob for SAFE Android Download (Prevents Freezing)
     fetch(base64Data)
     .then(res => res.blob())
     .then(blob => {
-        const uniqueName = `Arcade_${Date.now()}.png`;
-        
-        // 2. Create a URL for the Blob object
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = uniqueName;
         document.body.appendChild(a);
-        a.click(); // Triggers the Android download
+        a.click(); // Triggers Android Download
 
         // 3. Cleanup
         setTimeout(() => {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
         }, 100);
-    }); 
+    });
 }
+
 
 // 🔊 Play Sound (Moved safely outside the function)
 if(typeof playClick === 'function') playClick();
@@ -1835,30 +1836,36 @@ setInterval(() => {
         btn.style.cssText = "width:100%; background:linear-gradient(180deg, #1a1a1a, #000); color:#fff; border:1px solid #333; margin-bottom:10px; padding:14px; font-weight:bold; border-radius:10px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.5); letter-spacing:1px; font-family:sans-serif;";
         btn.onclick = toggleGalleryUI;
         menu.insertBefore(btn, menu.firstChild);
-        
-                // Hook Download Button Logic (Fixed: Studio + Android Gallery)
+            // Hook Download Button Logic (Fixed: Studio + Gallery)
     if(typeof downloadPic !== 'undefined') {
         downloadPic = function() {
-            // 1. Save to My Studio (Backup)
+            // 1. Save to My Studio (Internal Backup)
             if(typeof saveToGallery === 'function') saveToGallery();
 
             // 2. Download to Android Gallery (Directly)
-            const canvas = document.querySelector('canvas');
+            const canvas = document.getElementById('c');
             if(canvas) {
-                // Create the link and click it immediately
-                const link = document.createElement('a');
-                link.download = `Arcade_${Date.now()}.png`;
-                link.href = canvas.toDataURL(); // Converts image for download
-                document.body.appendChild(link);
-                link.click(); // Triggers the Android download
+                // Ensure filters are baked in
+                if(typeof d === 'function') d();
                 
-                // Cleanup
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                }, 100);
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Arcade_${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click(); // <--- Forces the download to your Phone Gallery
+                    
+                    // Cleanup to prevent memory leaks
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }, 100);
+                });
             }
         }
-      
+    }
+
 }, 1000);
 </script>
 </body>
