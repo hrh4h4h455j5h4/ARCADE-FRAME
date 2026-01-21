@@ -675,9 +675,8 @@ const symData = {
     "Chess & Cards": ["♔","♕","♖","♗","♘","♙","♚","♛","♜","♝","♞","♟","♠","♡","♢","♣","♤","♥","♦","♧"],
     "Others": ["ﾒ૦ﾒ૦💋","⋆.˚🦋༘⋆","⭑.ᐟ","༘⋆✿","𔓎","࣪ ִֶָ☾.","ᯓᡣ𐭩","⛈","ּ ֶָ֢.𓂃☂♡","ꫂ❁","☔︎︎","⋆｡ﾟ☁︎｡⋆","⛆","𖠚","⛾","♨","𓐐","☕︎","𓊤","‧₊˚ ⋅","𓐐𓎩","‧₊˚ ⋅","⋆˚✿˖°","🤎ྀིྀི☕︎ᝰ.ᐟ","⋆☕︎","˙✧˖°☕","༘ ⋆｡","‧₊˚ ⋅","☕︎","𓎩","‧₊˚ ⋅"]
 };
-   function renderSymbols(){ const b=document.getElementById('sym-container'); b.innerHTML=""; for(const[c,s]of Object.entries(symData)){ let t=document.createElement('div'); t.className="cat-title"; t.innerText=c; b.appendChild(t); let g=document.createElement('div'); g.className="sym-grid"; s.forEach(sym=>{ let btn=document.createElement('div'); btn.className="sym-btn"; btn.innerText=sym; btn.onclick=()=>{ const tb=document.getElementById('sym-box'), st=tb.selectionStart, en=tb.selectionEnd; tb.value=tb.value.substring(0,st)+sym+tb.value.substring(en); tb.selectionStart=tb.selectionEnd=st+sym.length; playClick(); }; g.appendChild(btn); }); b.appendChild(g); } }
+function renderSymbols(){ const b=document.getElementById('sym-container'); b.innerHTML=""; for(const[c,s]of Object.entries(symData)){ let t=document.createElement('div'); t.className="cat-title"; t.innerText=c; b.appendChild(t); let g=document.createElement('div'); g.className="sym-grid"; s.forEach(sym=>{ let btn=document.createElement('div'); btn.className="sym-btn"; btn.innerText=sym; btn.onclick=()=>{ const tb=document.getElementById('sym-box'), st=tb.selectionStart, en=tb.selectionEnd; tb.value=tb.value.substring(0,st)+sym+tb.value.substring(en); tb.selectionStart=tb.selectionEnd=st+sym.length; playClick(); }; g.appendChild(btn); }); b.appendChild(g); } }
 renderSymbols();
-
 // --- 🌈 GRADIENT DEFINITIONS ---
 const gradientDefs = {
     'grad-ruby': ['#FF512F', '#DD2476'], 'grad-red': ['#FF4B4B', '#C00000'], 'grad-crimson': ['#DC143C', '#8B0000'],
@@ -1088,129 +1087,71 @@ function adjChange(type, val, el) {
     // REMOVED c.style.filter here to prevent global filter application
     d(); 
 }
+
 function applyFilter(filterVal, btn) {
-    // 1. Check if we are actually changing the filter
-    if (cfg.filter !== filterVal) {
-        
-        // 2. Reset adjustment sliders to standard (100%)
+    if(cfg.filter !== filterVal) {
         cfg.adj = { b: 100, c: 100, s: 100 };
-        
-        // Reset the slider UI elements
-        ['b', 'c', 's'].forEach(k => {
-            const el = document.getElementById('sl-' + k);
-            if (el) { 
-                el.value = 100; 
-                const valDisplay = document.getElementById('val-' + k);
-                if (valDisplay) valDisplay.innerText = "100%"; 
-                
-                // Keep the slider gradient logic if you use it
-                if(typeof updateSliderColor === 'function') {
-                    updateSliderColor(el, 100, 200);
-                }
-            }
+        ['b','c','s'].forEach(k => {
+            const el = document.getElementById('sl-'+k);
+            if(el) { el.value = 100; document.getElementById('val-'+k).innerText = "100%"; updateSliderColor(el, 100, 200); }
         });
-        
-        // 3. Update the Data Configuration
-        cfg.filter = filterVal;
-        
-        // 🛡️ THE OLD ANDROID PROTECTION:
-        // We do absolutely NOTHING to c.style.filter here.
-        // We do not touch the canvas CSS. 
-        // We only save the data to 'cfg' and let 'd()' handle the rest.
-        
-        // 4. Update UI Button Highlights
-        document.querySelectorAll('.filter-btn').forEach(b => {
-            b.classList.remove('active-filter');
-        });
-        if (btn) {
-            btn.classList.add('active-filter');
-        }
-        
-        // 5. Trigger the Drawing Engine (The one we did surgery on)
-        d(); 
-        
-        // 6. Sound Effect
-        if (typeof playClick === 'function') {
-            playClick();
-        }
     }
+    cfg.filter = filterVal;
+    // REMOVED c.style.filter here too. Filters are now handled ONLY in d()
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+    if(btn) btn.classList.add('active-filter');
+    const editBtn = document.getElementById('open-adj-btn');
+    if(editBtn) editBtn.style.display = (filterVal === 'none') ? 'none' : 'block';
+    d(); playClick();
 }
 
-// --- 🔒 2. BOUNDARY LOCK LOGIC ---
 let isBoundaryLocked = true;
 function toggleBoundaryLock() {
     isBoundaryLocked = !isBoundaryLocked;
     const btn = document.getElementById('lock-btn');
-    if (isBoundaryLocked) {
-        if(btn) {
-            btn.innerHTML = "BOUNDARY LOCK: ON 🔒";
-            btn.style.borderColor = "#00ff00";
-            btn.style.color = "#00ff00";
+    if (isBoundaryLocked) { 
+        btn.innerHTML = "BOUNDARY LOCK: ON 🔒"; btn.style.borderColor = "#00ff00"; btn.style.color = "#00ff00"; 
+        if(i.src) {
+            const rad = Math.abs(cfg.r * Math.PI / 180);
+            const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
+            const reqW = (cfg.m*2*cos + cfg.m*2*sin), reqH = (cfg.m*2*sin + cfg.m*2*cos);
+            const minS = Math.max(reqW/i.width, reqH/i.height);
+            zSl.min = minS; if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
         }
-    } else {
-        if(btn) {
-            btn.innerHTML = "BOUNDARY LOCK: OFF 🔓";
-            btn.style.borderColor = "#ff0000";
-            btn.style.color = "#ff0000";
-        }
+    } else { 
+        btn.innerHTML = "BOUNDARY LOCK: OFF 🔓"; btn.style.borderColor = "#ff0000"; btn.style.color = "#ff0000"; 
+        zSl.min = 0.01; // RELEASES ZOOM LIMIT
     }
-    d();
-    if(typeof playClick === 'function') playClick();
+    d(); playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (MERGED: IPHONE FIX + ANDROID PROTECTION) ---
+// --- 🛠️ CORE DRAWING ENGINE (FINAL FIX: CLOSED CIRCLE MATH) ---
 function d(){ 
-  if(!x) return;
   x.clearRect(0,0,800,800); 
+  
+  // 1. DISABLE GLOBAL CSS FILTER
+  if(c) c.style.filter = 'none';
 
-  // 1. CALCULATE FILTER STRING
-  // We build the filter string here for both devices
-  let cssFilter = '';
-  if(cfg.filter && cfg.filter !== 'none') cssFilter += cfg.filter;
-  if(cfg.adj.b !== 100) cssFilter += ` brightness(${cfg.adj.b}%)`;
-  if(cfg.adj.c !== 100) cssFilter += ` contrast(${cfg.adj.c}%)`;
-  if(cfg.adj.s !== 100) cssFilter += ` saturate(${cfg.adj.s}%)`;
-
-  // 🧠 SMART DEVICE DETECTION
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-  // 🔥 THE CONDITIONAL MERGE:
-  if (isIOS) {
-      // 🍎 IPHONE ONLY (The Fix): 
-      // We apply the filter to the CSS style. 
-      // This makes it visible on iPhone, even if it colors the frame (as you accepted).
-      if(c) {
-          c.style.filter = (cssFilter !== '') ? cssFilter : 'none';
-          c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none';
-      }
-  } else {
-      // 🤖 ANDROID PROTECTION (The Shield):
-      // We FORCE the CSS filter to 'none'.
-      // This ensures the frame color NEVER changes on Android.
-      if(c) {
-          c.style.filter = 'none';
-          c.style.webkitFilter = 'none';
-      }
+  // 2. SMART SIZE LOGIC
+  let drawM = cfg.m;
+  
+  // 🔥 FIX: Cap at 360px for ALL colors so glow doesn't cut
+  // Even if the slider says 375, we draw at 360 to keep the glow safe.
+  if (cfg.pColor && cfg.m > 360) {
+      drawM = 360;
   }
 
-  // 2. SIZE CAP (Protects Neon Glow)
-  let drawM = cfg.m;
-  if (cfg.pColor && cfg.m > 360) { drawM = 360; }
-
-  // 3. BOUNDARY LOCK MATH
+  // 3. Handle Boundary Lock
   if(i.src && isBoundaryLocked){
       const rad = cfg.r * Math.PI / 180;
       const cos = Math.abs(Math.cos(rad)), sin = Math.abs(Math.sin(rad));
       
-      // Math buffer logic for the gap
+      // 🔥 MATH BUFFER: Force logic to think hole is 15px bigger
       const mathM = drawM + 15; 
+      
       const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
       
-      if(cfg.s < minS) { 
-          cfg.s = minS; 
-          if(window.zSl) zSl.value = minS; 
-          if(window.zVal) zVal.innerText = Math.round((minS/zSl.min)*100)+"%";
-      }
+      if(cfg.s < minS) { cfg.s = minS; zSl.value = minS; zVal.innerText=Math.round((minS/zSl.min)*100)+"%"; }
       
       const w = i.width * cfg.s, h = i.height * cfg.s;
       const rangeX = Math.max(0, (w - reqW)/2), rangeY = Math.max(0, (h - reqH)/2);
@@ -1218,61 +1159,96 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. DRAW USER IMAGE
+  // 4. Draw User Image
   if(i.src){
       x.save(); 
-      // Circle Fix: Math.PI * 2
+      // 🔥 BLEED FIX: Cut image 2px larger (+2)
+      // 🔥 CIRCLE FIX: Use Math.PI * 2 to close the loop perfectly
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
       
       let w = i.width * cfg.s, h = i.height * cfg.s;
+      x.translate(cfg.x, cfg.y); x.rotate(cfg.r * Math.PI / 180);
       
-      x.translate(cfg.x, cfg.y); 
-      x.rotate(cfg.r * Math.PI / 180);
+      let fs = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
+      if(cfg.adj.b !== 100) fs += ` brightness(${cfg.adj.b}%)`;
+      if(cfg.adj.c !== 100) fs += ` contrast(${cfg.adj.c}%)`;
+      if(cfg.adj.s !== 100) fs += ` saturate(${cfg.adj.s}%)`;
       
-      // We apply the context filter for everyone (Android needs this to work)
-      // iOS users will get this AND the CSS filter, which ensures it shows up.
-      let fs = (cssFilter !== '') ? cssFilter : 'none';
-      x.filter = fs;
-      
-      x.drawImage(i, -w/2, -h/2, w, h);
+      x.filter = (fs !== '') ? fs : 'none';
+      x.drawImage(i, -w/2, -h/2, w, h); 
       x.restore(); 
   }
   
-  // 🔥 FINAL ANDROID PROTECTION WALL:
-  // We reset the context filter so the frame drawing below is clean.
+  // 5. RESET FILTER
   x.filter = 'none'; 
 
-  // 5. SEAM SEALER
+  // 🛡️ SEAM SEALER (THE GAP KILLER)
   if (cfg.pColor) {
-      x.save(); x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
-      x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke(); x.restore();
+      x.save();
+      x.beginPath(); 
+      // 🔥 CIRCLE FIX: Use Math.PI * 2
+      x.arc(400, 400, drawM, 0, Math.PI * 2); 
+      x.lineWidth = 6; 
+      x.strokeStyle = cfg.pColor; 
+      x.stroke();
+      x.restore();
   }
 
-  // 6. FULL NEON / GRADIENT FRAME LOGIC
+  // 6. Draw Neon/Gradient Ring (Top Layer)
   if (cfg.pColor) {
       x.save(); 
+      
+      // A. Dark Neons
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const sC = cfg.pColor; 
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = sC; x.shadowBlur = 60; x.shadowColor = sC; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 18; x.strokeStyle = sC; x.shadowBlur = 10; x.shadowColor = sC; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
+      } 
+      // B. Thin Neon (Second White)
+      else if (cfg.pColor === '#FEFEFE' && cfg.pType === 'neon') {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 15; x.strokeStyle = '#FFFFFF'; x.shadowBlur = 60; x.shadowColor = '#FFFFFF'; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 6; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } else if (cfg.pType === 'neon') {
+      }
+      // C. Thick Neon (Standard)
+      else if (cfg.pType === 'neon') {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; x.strokeStyle = cfg.pColor; x.shadowBlur = 30; x.shadowColor = cfg.pColor; x.stroke();
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 8; x.strokeStyle = '#FFFFFF'; x.stroke();
-      } else {
+      } 
+      // D. Gradients / Metallics
+      else {
           x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); x.lineWidth = 25; 
-          if (cfg.pType === 'gold') {
-              let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, '#FFD700'); g.addColorStop(0.5, '#FDB931'); g.addColorStop(1, '#FFD700'); x.strokeStyle = g;
-          } else if (cfg.pType === 'silver') { 
-              let g = x.createLinearGradient(0, 0, 800, 800); g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); x.strokeStyle = g;
-          } else { x.strokeStyle = cfg.pColor; }
+          
+          if (cfg.pType && typeof gradientDefs !== 'undefined' && gradientDefs[cfg.pType]) { 
+              const cs = gradientDefs[cfg.pType]; 
+              let g = x.createLinearGradient(0, 0, 800, 800); 
+              g.addColorStop(0, cs[0]); 
+              g.addColorStop(1, cs[1]); 
+              x.strokeStyle = g; 
+          } 
+          else if (cfg.pType === 'gold') {
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#FFD700'); g.addColorStop(0.25, '#FDB931'); g.addColorStop(0.5, '#FFD700'); g.addColorStop(0.75, '#FDB931'); g.addColorStop(1, '#FFD700'); 
+              x.strokeStyle = g;
+          }
+          else if (cfg.pType === 'silver') { 
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#E0E0E0'); g.addColorStop(0.5, '#B0B0B0'); g.addColorStop(1, '#E0E0E0'); 
+              x.strokeStyle = g;
+          }
+          else if (cfg.pType === 'bronze') { 
+              let g = x.createLinearGradient(0, 0, 800, 800);
+              g.addColorStop(0, '#CD7F32'); g.addColorStop(0.5, '#A0522D'); g.addColorStop(1, '#CD7F32'); 
+              x.strokeStyle = g;
+          } 
+          else { 
+              x.strokeStyle = cfg.pColor; 
+          }
           x.stroke(); 
       }
       x.restore();
   }
+  
   if(f.src) x.drawImage(f,0,0,800,800); 
 }
 
@@ -1355,55 +1331,7 @@ function resetProject(){
     document.getElementById('save').disabled = true; document.querySelector('.ui').style.paddingBottom = "0px"; 
 }
 
-function downloadPic() {
-    if (!i.src) return;
-
-    // 1. Internal Backup (Keeps your 'My Studio' working)
-    if (typeof saveToGallery === 'function') {
-        saveToGallery();
-    }
-
-    // 2. Refresh the canvas to ensure filters are baked
-    d();
-
-    // 3. Generate a 100% Unique Name
-    // Format: Arcade_Timestamp_RandomNumber.png
-    const uniqueName = `Arcade_${Date.now()}_${Math.floor(Math.random() * 99999)}.png`;
-
-    // 4. Create the file blob
-    c.toBlob(function(blob) {
-        // Create a virtual file with the Unique Name
-        const file = new File([blob], uniqueName, { type: "image/png" });
-
-        // 🧠 SMART SHARE (iPhone Fix)
-        // This opens the iPhone menu so you can "Save Image" to Photos
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-                files: [file],
-                title: 'Arcade Studio',
-                text: 'My new design'
-            }).catch(console.error); // Ignore if user closes menu
-        } 
-        // 🤖 ANDROID / PC FALLBACK
-        // This forces the browser to download with the Unique Name
-        else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = uniqueName; // <--- This prevents "download (1)"
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        }
-    }, 'image/png');
-    
-    // 5. Sound Effect
-    playShutter();
-}
-
+function downloadPic(){ if(!i.src) return; d(); let a=document.createElement('a'); a.download=`Arcade_${Date.now()}.png`; a.href=c.toDataURL(); a.click(); playShutter(); }
 function updS(el){ if(el.parentElement.classList.contains('ui-gif')) return; const val = (el.value-el.min)/(el.max-el.min)*100; el.style.setProperty('--v', val + '%'); }
 document.querySelectorAll('input[type=range]').forEach(el => { el.addEventListener('input', () => updS(el)); updS(el); });
 
@@ -1534,33 +1462,32 @@ window.onclick = e => {
     }
 };
 
-// --- 💎 DESIGNER EDITION GALLERY (MASTER FIX: UNLIMITED SAVES & INSTANT DELETE) ---
+
+// --- 💎 DESIGNER EDITION GALLERY (NEON AESTHETICS) ---
 
 // 1. Data Structure
 let myGallery = JSON.parse(localStorage.getItem('arcadeGallery')) || [];
 
-// 2. Save Logic (Images) - ALLOWS DUPLICATES
+// 2. Save Logic (Images)
 function saveToGallery() {
     if(!c) return; 
     const data = c.toDataURL();
-    // 🔥 RANDOM ID: Ensures every save is unique
-    const id = Date.now() + Math.floor(Math.random() * 100000); 
+    const id = Date.now();
     const item = { id: id, type: 'img', data: data, fav: false, date: new Date().toLocaleDateString() };
     myGallery.unshift(item); 
     localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
     refreshGalleryIfOpen();
-    showToast("💾 BACKUP SAVED", "#00ff00");
 }
 
-// 3. Save Logic (Text)
+// 3. Save Logic (Text/Symbols/Fonts)
 function saveTextToGallery(text) {
     if(!text || text.trim() === "") return showToast("⚠️ TYPE SOMETHING FIRST!", "#ff0055");
-    const id = Date.now() + Math.floor(Math.random() * 100000);
+    const id = Date.now();
     const item = { id: id, type: 'text', data: text, fav: false, date: new Date().toLocaleDateString() };
     myGallery.unshift(item);
     localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
     refreshGalleryIfOpen();
-    showToast("💾 TEXT SAVED", "#00ff00");
+    showToast("💾 SAVED TO STUDIO", "#00ff00");
 }
 
 function refreshGalleryIfOpen() {
@@ -1590,7 +1517,8 @@ function createGalleryUI() {
     
     const div = document.createElement('div');
     div.id = 'gallery-wrapper';
-    div.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10, 10, 16, 0.95); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); z-index:9999; flex-direction:column; padding:20px; box-sizing:border-box; overflow-y:auto; transition: opacity 0.3s ease;";
+    // Glassmorphism Background
+    div.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10, 10, 16, 0.85); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); z-index:9999; flex-direction:column; padding:20px; box-sizing:border-box; overflow-y:auto; transition: opacity 0.3s ease;";
     
     div.innerHTML = `
         <div style="display:flex; justify-content:center; align-items:center; margin-bottom:25px; position:sticky; top:0; z-index:10;">
@@ -1608,28 +1536,10 @@ function createGalleryUI() {
     document.body.appendChild(div);
 }
 
-    // 🔥 PASTE THIS RIGHT ABOVE function renderGallery()
-function toggleFav(index) {
-    if (myGallery[index]) {
-        myGallery[index].fav = !myGallery[index].fav;
-
-        // Move to top if favorited
-        if (myGallery[index].fav) {
-            const item = myGallery.splice(index, 1)[0];
-            myGallery.unshift(item);
-        }
-        
-        localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
-        renderGallery();
-        
-        if (typeof playClick === 'function') playClick();
-    }
-}
-
 function renderGallery() {
     const grid = document.getElementById('gallery-grid');
     const empty = document.getElementById('empty-msg');
-    grid.innerHTML = ''; 
+    grid.innerHTML = '';
     
     if(myGallery.length === 0) {
         empty.style.display = 'block';
@@ -1637,23 +1547,24 @@ function renderGallery() {
     }
     empty.style.display = 'none';
 
-    // 🔥 FIX: We now use 'index' to track the exact position
-    myGallery.forEach((item, index) => {
+    myGallery.forEach(item => {
         const card = document.createElement('div');
+        // Neon Card Style
         card.style.cssText = "position:relative; border-radius:16px; overflow:hidden; background:linear-gradient(145deg, #1a1a1a, #0d0d0d); display:flex; flex-direction:column; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border:1px solid #333; transition: transform 0.2s;";
         
-        // Content
+        // --- 🅰️ TEXT ITEM RENDER ---
         if(item.type === 'text') {
             const textBox = document.createElement('div');
             textBox.style.cssText = "padding:20px; color:#00ffcc; font-family:'Courier New', monospace; font-size:14px; line-height:1.4; word-break:break-word; background:rgba(0,0,0,0.3); flex-grow:1; min-height:120px; white-space: pre-wrap; display:flex; align-items:center; justify-content:center; text-align:center;";
             textBox.innerText = item.data;
             card.appendChild(textBox);
-            card.style.border = "1px solid #00ffcc44";
-        } else {
+            card.style.border = "1px solid #00ffcc44"; // Cyan hint for text
+        } 
+        // --- 🖼️ IMAGE ITEM RENDER ---
+        else {
             const img = document.createElement('img');
             img.src = item.data || item.img; 
             img.style.cssText = "width:100%; height:auto; display:block; aspect-ratio:1/1; object-fit:cover;";
-            // Native Long-Press Menu is active (No blocker)
             card.appendChild(img);
         }
         
@@ -1663,39 +1574,32 @@ function renderGallery() {
         
         const leftGrp = document.createElement('div');
         leftGrp.style.display = 'flex';
-        leftGrp.style.alignItems = 'center'; 
-        leftGrp.style.gap = '20px'; 
+        leftGrp.style.gap = '15px';
 
-        // 1. Fav Button (Now uses Index)
+        // Fav Button
         const favBtn = document.createElement('span');
         favBtn.innerHTML = item.fav ? "★" : "☆"; 
-        favBtn.style.cssText = item.fav ? "color:#ffff00; font-size:22px; cursor:pointer; text-shadow:0 0 8px #ffff00;" : "color:#555; font-size:22px; cursor:pointer;";
-        // 🔥 THIS IS THE FIX: toggleFav(index)
-        favBtn.onclick = (e) => { e.stopPropagation(); toggleFav(index); };
+        favBtn.style.cssText = item.fav ? "color:#ffff00; font-size:18px; cursor:pointer; text-shadow:0 0 8px #ffff00;" : "color:#555; font-size:18px; cursor:pointer;";
+        favBtn.onclick = () => toggleFav(item.id);
         leftGrp.appendChild(favBtn);
 
-        // 2. Download Button (The Clean Saver)
-        if(item.type !== 'text') {
-            const dlBtn = document.createElement('span');
-            dlBtn.innerHTML = "⬇️";
-            dlBtn.style.cssText = "font-size:18px; cursor:pointer; opacity:0.8; color:#00ffff; margin-top:2px;"; 
-            dlBtn.onclick = (e) => { e.stopPropagation(); downloadFromGallery(item.data); };
-            leftGrp.appendChild(dlBtn);
-        }
-
-        // 3. Copy Button (Text)
+        // Copy Button (Text Only)
         if(item.type === 'text') {
             const copyBtn = document.createElement('span');
             copyBtn.innerHTML = "📋";
-            copyBtn.style.cssText = "font-size:18px; cursor:pointer; opacity:0.7; margin-top:2px;";
-            copyBtn.onclick = (e) => { e.stopPropagation(); navigator.clipboard.writeText(item.data); showToast("COPIED!", "#fff"); };
+            copyBtn.style.cssText = "font-size:16px; cursor:pointer; opacity:0.7;";
+            copyBtn.onclick = () => {
+                navigator.clipboard.writeText(item.data);
+                showToast("COPIED TO CLIPBOARD!", "#fff");
+            };
             leftGrp.appendChild(copyBtn);
         }
 
+        // Delete Button
         const delBtn = document.createElement('span');
         delBtn.innerHTML = "🗑️";
-        delBtn.style.cssText = "font-size:18px; cursor:pointer; opacity:0.6; color:#ff4444;";
-        delBtn.onclick = function(e) { e.stopPropagation(); deleteItem(item.id); };
+        delBtn.style.cssText = "font-size:16px; cursor:pointer; opacity:0.6; color:#ff4444;";
+        delBtn.onclick = () => deleteItem(item.id);
 
         bar.appendChild(leftGrp);
         bar.appendChild(delBtn);
@@ -1706,111 +1610,53 @@ function renderGallery() {
     });
 }
 
+// 5. Beautiful Toast Notification
 function showToast(text, color) {
-    const existingToast = document.getElementById('my-toast');
-    if(existingToast) existingToast.remove();
-
     const t = document.createElement('div');
-    t.id = 'my-toast';
     t.innerHTML = text;
     t.style.cssText = `position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(20px); background:rgba(0,0,0,0.9); border:1px solid ${color}; color:${color}; padding:12px 24px; border-radius:50px; font-family:sans-serif; font-weight:bold; font-size:14px; z-index:10001; opacity:0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 5px 20px rgba(0,0,0,0.5); display:flex; align-items:center; gap:8px; white-space:nowrap;`;
+    
     document.body.appendChild(t);
-    requestAnimationFrame(() => { t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(0)"; });
-    setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%) translateY(20px)"; setTimeout(() => t.remove(), 300); }, 2000);
-}
     
-function downloadFromGallery(base64Data) {
-    fetch(base64Data)
-    .then(res => res.blob())
-    .then(blob => {
-        // 1. Generate a 100% Unique Name (Prevents "download (1)")
-        // Format: Arcade_Backup_Timestamp_Random.png
-        const uniqueName = `Arcade_Backup_${Date.now()}_${Math.floor(Math.random() * 9999)}.png`;
-        const file = new File([blob], uniqueName, { type: "image/png" });
-
-        // 2. Check Device
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-        // 3. iPhone: Needs Share Menu (To save to Photos)
-        if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-                files: [file],
-                title: 'Arcade Studio',
-                text: 'Saved from my backups'
-            }).catch(e => console.log('Cancelled'));
-        } 
-        // 4. Android: INSTANT DOWNLOAD (No Menu!)
-        else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = uniqueName; // <--- This forces the unique name
-            document.body.appendChild(a);
-            a.click(); // <--- This triggers the auto-download
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        }
+    // Animate In
+    requestAnimationFrame(() => {
+        t.style.opacity = "1";
+        t.style.transform = "translateX(-50%) translateY(0)";
     });
-    
-    if(typeof playClick === 'function') playClick();
+
+    // Animate Out
+    setTimeout(() => {
+        t.style.opacity = "0";
+        t.style.transform = "translateX(-50%) translateY(20px)";
+        setTimeout(() => t.remove(), 300);
+    }, 2000);
 }
 
-
-// --- 🗑️ CUSTOM DELETE MODAL LOGIC (NEON THEME) ---
-let deleteTargetId = null;
-
-// 1. Trigger the Modal (Replaces standard alert)
-function deleteItem(id) {
-    deleteTargetId = id;
-    createDeleteModal(); // Make sure the modal HTML exists
-    toggleDeleteModal(true); // Show it
-}
-
-// 2. Show/Hide Logic
-function toggleDeleteModal(show) {
-    const m = document.getElementById('del-modal');
-    if(m) m.style.display = show ? 'flex' : 'none';
-    if(show && typeof playClick === 'function') playClick();
-}
-
-// 3. The Actual Delete Action (Happens when you click RED button)
-function executeDelete() {
-    if(deleteTargetId !== null) {
-        // Loose equality check != fixes the matching bug
-        myGallery = myGallery.filter(x => x.id != deleteTargetId);
+// 6. Actions
+function toggleFav(id) {
+    const idx = myGallery.findIndex(x => x.id === id);
+    if(idx > -1) {
+        myGallery[idx].fav = !myGallery[idx].fav;
+        if(myGallery[idx].fav) {
+            const item = myGallery.splice(idx, 1)[0];
+            myGallery.unshift(item);
+        }
         localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
         renderGallery();
-        showToast("ITEM DELETED", "#ff4444");
-        toggleDeleteModal(false);
-        if(typeof playShutter === 'function') playShutter();
+        if(typeof playClick === 'function') playClick();
     }
 }
 
-// 4. Build the UI (Creates the Neon Box)
-function createDeleteModal() {
-    if(document.getElementById('del-modal')) return;
-    
-    const d = document.createElement('div');
-    d.id = 'del-modal';
-    // Glassmorphism Dark Overlay
-    d.style.cssText = "display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100000; justify-content:center; align-items:center; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);";
-    
-    // The Neon Box HTML
-    d.innerHTML = `
-        <div style="background:#0a0a0c; border:2px solid #ff0000; padding:25px; border-radius:20px; width:280px; text-align:center; box-shadow:0 0 40px rgba(255,0,0,0.4); animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <div style="font-size:50px; margin-bottom:15px; text-shadow:0 0 20px rgba(255,0,0,0.5);">🗑️</div>
-            <h3 style="color:#fff; font-family:'Courier New', monospace; margin:0 0 10px 0; text-transform:uppercase; font-weight:900; letter-spacing:1px; font-size:20px;">DELETE ITEM?</h3>
-            <p style="color:#888; font-size:12px; margin-bottom:25px; font-weight:bold; font-family:sans-serif;">THIS ACTION CANNOT BE UNDONE.</p>
-            <div style="display:flex; gap:10px; justify-content:center;">
-                <button onclick="toggleDeleteModal(false)" style="background:#222; color:#aaa; border:1px solid #444; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; flex:1; font-size:12px;">CANCEL</button>
-                <button onclick="executeDelete()" style="background:#ff0000; color:#fff; border:none; padding:12px 20px; border-radius:8px; font-weight:bold; cursor:pointer; box-shadow:0 0 15px #ff0000; flex:1; font-size:12px;">DELETE</button>
-            </div>
-        </div>
-        <style>@keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }</style>
-    `;
-    document.body.appendChild(d);
+function deleteItem(id) {
+    // Custom Confirmation Toast instead of ugly alert? 
+    // For safety, let's keep native confirm but style the result
+    if(confirm("Delete this item permanently?")) {
+        myGallery = myGallery.filter(x => x.id !== id);
+        localStorage.setItem('arcadeGallery', JSON.stringify(myGallery));
+        renderGallery();
+        showToast("ITEM DELETED", "#ff4444");
+        if(typeof playClick === 'function') playClick();
+    }
 }
 
 // --- 🤖 AUTO-INJECT (STYLED BUTTONS) ---
@@ -1858,9 +1704,7 @@ setInterval(() => {
              }
         }
     }
-       
 }, 1000);
 </script>
 </body>
 </html>
-
