@@ -1170,36 +1170,38 @@ function applyFilter(filterVal, btn) {
         }
     }
 }
-// --- 🔒 BOUNDARY LOCK LOGIC (FIXES 2-FINGER ZOOM) ---
+/// --- 🔒 BOUNDARY LOCK LOGIC (FIXES STUCK SLIDER) ---
 let isBoundaryLocked = true;
 function toggleBoundaryLock() {
     isBoundaryLocked = !isBoundaryLocked;
     const btn = document.getElementById('lock-btn');
     
     if (isBoundaryLocked) {
-        // 🔒 LOCK ON
+        // 🔒 LOCK MODE
         if(btn) {
             btn.innerHTML = "BOUNDARY LOCK: ON 🔒";
             btn.style.borderColor = "#00ff00";
             btn.style.color = "#00ff00";
         }
     } else {
-        // 🔓 LOCK OFF
+        // 🔓 FREEDOM MODE
         if(btn) {
             btn.innerHTML = "BOUNDARY LOCK: OFF 🔓";
             btn.style.borderColor = "#ff0000";
             btn.style.color = "#ff0000";
         }
         
-        // 🔥 THIS IS THE KEY FOR FINGERS 🔥
-        // This removes the "invisible wall" so you can pinch as small as you want.
-        if(window.zSl) zSl.min = 0.01;
+        // 🔥 THE FIX: FORCE SLIDER TO UNSTICK
+        // We set the minimum to 0.01 so it can slide all the way down.
+        if(window.zSl) {
+            zSl.min = "0.01";
+            zSl.value = cfg.s; // Make sure the handle stays with the image
+        }
     }
     
-    d();
+    d(); // Update the canvas
     if(typeof playClick === 'function') playClick();
 }
-
 
 // --- 🛠️ CORE DRAWING ENGINE (ANDROID RESTORED) ---
 function d(){ 
