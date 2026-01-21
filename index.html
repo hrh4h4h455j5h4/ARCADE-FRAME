@@ -1159,7 +1159,7 @@ function toggleBoundaryLock() {
     d();
     if(typeof playClick === 'function') playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (JAN 16th FIX: IPHONE HARD BAKE + ANDROID SHIELD) ---
+// --- 🛠️ CORE DRAWING ENGINE (SEGREGATED: IPHONE FIX vs ANDROID SHIELD) ---
 function d(){ 
   if(!x) return;
   x.clearRect(0,0,800,800); 
@@ -1174,16 +1174,21 @@ function d(){
   // 🧠 SMART DEVICE DETECTION
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-  // 2. SCREEN PREVIEW (VISUALS)
+  // 2. SCREEN PREVIEW (CSS)
   if (isIOS) {
-      // 🍎 IPHONE: Apply CSS so the user sees changes instantly on screen
+      // 🍎 IPHONE: Show CSS filter for Live Preview
       if(c) {
-          c.style.filter = (cssFilter !== '') ? cssFilter : 'none';
-          c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none';
+          if(!window.isSaving) {
+              c.style.filter = (cssFilter !== '') ? cssFilter : 'none';
+              c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none';
+          } else {
+              c.style.filter = 'none';
+              c.style.webkitFilter = 'none';
+          }
       }
   } else {
-      // 🤖 ANDROID SHIELD: Force CSS to 'none'.
-      // This protects Android from the "Double Filter" and "Tinted Frame" glitches.
+      // 🤖 ANDROID PROTECTION: STRICTLY 'none'
+      // Android does not participate in the iPhone logic.
       if(c) {
           c.style.filter = 'none';
           c.style.webkitFilter = 'none';
@@ -1207,7 +1212,7 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. IMAGE DRAWING (THE SAVE FIX)
+  // 4. IMAGE DRAWING
   if(i.src){
       x.save(); 
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
@@ -1216,14 +1221,18 @@ function d(){
       x.translate(cfg.x, cfg.y); 
       x.rotate(cfg.r * Math.PI / 180);
       
-      // 🔥 THE IPHONE FIX (Hard Bake)
-      // This is the Jan 16th Logic:
+      // 🔥 THE SEGREGATED FIX 🔥
       if (isIOS) {
-          // Force filter into pixels for iPhone download
-          x.filter = (cssFilter !== '') ? cssFilter : 'none';
+          // 🍎 IPHONE ONLY: 
+          // If 'isSaving' is true (triggered by download button), Hard Bake the filter.
+          if (window.isSaving) {
+              x.filter = (cssFilter !== '') ? cssFilter : 'none';
+          } else {
+              x.filter = 'none';
+          }
       } else {
-          // 🛡️ ANDROID PROTECTION
-          // Force none to prevent double-filtering/tinting
+          // 🛡️ ANDROID SHIELD: 
+          // Strictly 'none'. It completely ignores the 'isSaving' flag.
           x.filter = 'none'; 
       }
       
@@ -1231,7 +1240,7 @@ function d(){
       x.restore(); 
   }
   
-  // 5. RESET FILTER (Crucial: Protects Frames from being colored on Android)
+  // 5. RESET FILTER (Prevents Frame Tinting)
   x.filter = 'none'; 
 
   // 6. FRAME DRAWING
@@ -1346,20 +1355,20 @@ function resetProject(){
 function downloadPic() {
     if (!i.src) return;
 
-    // 1. Internal Backup (Keeps your 'My Studio' working)
+    // 1. Internal Backup
     if (typeof saveToGallery === 'function') {
         saveToGallery();
     }
 
-    // 2. TRIGGER ENGINE FIX
-    // - On iPhone: calling d() applies the Hard Bake (x.filter).
-    // - On Android: calling d() applies the Shield (x.filter = 'none').
-    d();
+    // 2. ENABLE SAVE MODE (Triggers iPhone Hard Bake)
+    // Android ignores this flag completely.
+    window.isSaving = true;
+    d(); 
 
-    // 3. Generate a 100% Unique Name
+    // 3. Generate Unique Name
     const uniqueName = `Arcade_${Date.now()}_${Math.floor(Math.random() * 99999)}.png`;
 
-    // 4. Create the file blob and Force Download (No Share Sheet)
+    // 4. Create Blob & Download
     c.toBlob(function(blob) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1367,13 +1376,19 @@ function downloadPic() {
         a.download = uniqueName; 
         document.body.appendChild(a);
         a.click();
+        
+        // 5. CLEANUP & RESTORE
+        // We wait 100ms, then turn off Save Mode so the screen goes back to normal.
         setTimeout(() => {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
+            
+            window.isSaving = false;
+            d(); 
         }, 100);
     }, 'image/png');
     
-    // 5. Sound Effect
+    // 6. Sound Effect
     playShutter();
 }
 
