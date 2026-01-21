@@ -1720,19 +1720,21 @@ function showToast(text, color) {
 }
     
 function downloadFromGallery(base64Data) {
-    // 1. Generate Unique Name
-    const uniqueName = `Arcade_${Date.now()}.png`;
-
-    // 2. Convert to Blob for SAFE Android Download (Prevents Freezing)
     fetch(base64Data)
     .then(res => res.blob())
     .then(blob => {
-        const url = window.URL.createObjectURL(blob);
+        // 1. Generate Unique Name
+        const uniqueName = `Arcade_Backup_${Date.now()}_${Math.floor(Math.random() * 9999)}.png`;
+
+        // 2. FORCE DIRECT DOWNLOAD (Android Style)
+        // This method creates an invisible link and clicks it, forcing a download
+        // without opening any share menus.
+        const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = uniqueName;
         document.body.appendChild(a);
-        a.click(); // Triggers Android Download
+        a.click(); 
 
         // 3. Cleanup
         setTimeout(() => {
