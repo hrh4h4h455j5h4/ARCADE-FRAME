@@ -1723,37 +1723,27 @@ function downloadFromGallery(base64Data) {
     fetch(base64Data)
     .then(res => res.blob())
     .then(blob => {
-        // 1. Generate a 100% Unique Name (Prevents "download (1)")
-        // Format: Arcade_Backup_Timestamp_Random.png
+        // 1. Generate Unique Name
         const uniqueName = `Arcade_Backup_${Date.now()}_${Math.floor(Math.random() * 9999)}.png`;
-        const file = new File([blob], uniqueName, { type: "image/png" });
 
-        // 2. Check Device
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        // 2. FORCE DIRECT DOWNLOAD (Android Style)
+        // This method creates an invisible link and clicks it, forcing a download
+        // without opening any share menus.
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = uniqueName;
+        document.body.appendChild(a);
+        a.click(); 
 
-        // 3. iPhone: Needs Share Menu (To save to Photos)
-        if (isIOS && navigator.canShare && navigator.canShare({ files: [file] })) {
-            navigator.share({
-                files: [file],
-                title: 'Arcade Studio',
-                text: 'Saved from my backups'
-            }).catch(e => console.log('Cancelled'));
-        } 
-        // 4. Android: INSTANT DOWNLOAD (No Menu!)
-        else {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = uniqueName; // <--- This forces the unique name
-            document.body.appendChild(a);
-            a.click(); // <--- This triggers the auto-download
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 100);
-        }
+        // 3. Cleanup
+        setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 100);
     });
-    
+}
+   
     if(typeof playClick === 'function') playClick();
 }
 
