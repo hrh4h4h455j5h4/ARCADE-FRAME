@@ -559,13 +559,24 @@ function toggleThemeMenu(e) { e.stopPropagation(); thMenu.style.display = thMenu
 const playlist = ["jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ", "MedT9ECothA", "eAdtqDV06Ho", "2kzQ272Le8Q", "0qCL3Sz1--M", "2UN1ZVbBelU", "iDVKMdnvgl8", "9JMjZbIpmS8", "TNGsftqag6M", "GedLli_YXEI"];
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
 function onYouTubeIframeAPIReady(){ 
+    // 🔥 FIREFOX FIX: 
+    // We must force the player to "exist" in the layout, or Firefox blocks it.
+    // We switch it from "display:none" to "visibility:hidden".
+    const pDiv = document.getElementById('yt-player');
+    if(pDiv) {
+        pDiv.style.display = 'block';     
+        pDiv.style.visibility = 'hidden'; 
+        pDiv.style.position = 'absolute'; 
+        pDiv.style.opacity = '0';
+    }
+
     const rId = playlist[Math.floor(Math.random() * playlist.length)]; 
     const sel = document.querySelector('.station-select'); 
     if(sel) sel.value = rId; 
     
     player = new YT.Player('yt-player', {
-        height: '0',
-        width: '0',
+        height: '1',   // Fix: 1px size (0px is often blocked)
+        width: '1',    // Fix: 1px size
         videoId: rId,
         host: 'https://www.youtube-nocookie.com',
         playerVars: {
