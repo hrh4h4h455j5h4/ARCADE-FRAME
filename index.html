@@ -1836,17 +1836,30 @@ setInterval(() => {
         btn.onclick = toggleGalleryUI;
         menu.insertBefore(btn, menu.firstChild);
         
-            // Hook Download Button Logic (Simple Single Download)
+                // Hook Download Button Logic (Fixed: Studio + Android Gallery)
     if(typeof downloadPic !== 'undefined') {
-        // We override the download function to ONLY save to your gallery.
-        // This prevents the original download function from running a second time.
         downloadPic = function() {
-            saveToGallery(); 
+            // 1. Save to My Studio (Backup)
+            if(typeof saveToGallery === 'function') saveToGallery();
+
+            // 2. Download to Android Gallery (Directly)
+            const canvas = document.querySelector('canvas');
+            if(canvas) {
+                // Create the link and click it immediately
+                const link = document.createElement('a');
+                link.download = `Arcade_${Date.now()}.png`;
+                link.href = canvas.toDataURL(); // Converts image for download
+                document.body.appendChild(link);
+                link.click(); // Triggers the Android download
+                
+                // Cleanup
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                }, 100);
+            }
         }
     }
-
-    }
-       
+      
 }, 1000);
 </script>
 </body>
