@@ -1159,7 +1159,7 @@ function toggleBoundaryLock() {
     d();
     if(typeof playClick === 'function') playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (JAN 16th FIX: IPHONE HARD BAKE + ANDROID SHIELD) ---
+// --- 🛠️ CORE DRAWING ENGINE (ANDROID RESTORED) ---
 function d(){ 
   if(!x) return;
   x.clearRect(0,0,800,800); 
@@ -1171,23 +1171,10 @@ function d(){
   if(cfg.adj.c !== 100) cssFilter += ` contrast(${cfg.adj.c}%)`;
   if(cfg.adj.s !== 100) cssFilter += ` saturate(${cfg.adj.s}%)`;
 
-  // 🧠 SMART DEVICE DETECTION
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-  // 2. SCREEN PREVIEW (VISUALS)
-  if (isIOS) {
-      // 🍎 IPHONE: Apply CSS so the user sees changes instantly on screen
-      if(c) {
-          c.style.filter = (cssFilter !== '') ? cssFilter : 'none';
-          c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none';
-      }
-  } else {
-      // 🤖 ANDROID SHIELD: Force CSS to 'none'.
-      // This protects Android from the "Double Filter" and "Tinted Frame" glitches.
-      if(c) {
-          c.style.filter = 'none';
-          c.style.webkitFilter = 'none';
-      }
+  // 2. DISABLE CSS FILTERS (Prevents "Double Filter" glitch on Android)
+  if(c) {
+      c.style.filter = 'none';
+      c.style.webkitFilter = 'none';
   }
 
   // 3. SIZE & BOUNDARY LOGIC
@@ -1207,7 +1194,7 @@ function d(){
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. IMAGE DRAWING (THE SAVE FIX)
+  // 4. IMAGE DRAWING (FILTERS ACTIVE FOR ANDROID)
   if(i.src){
       x.save(); 
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
@@ -1216,22 +1203,14 @@ function d(){
       x.translate(cfg.x, cfg.y); 
       x.rotate(cfg.r * Math.PI / 180);
       
-      // 🔥 THE IPHONE FIX (Hard Bake)
-      // This is the Jan 16th Logic:
-      if (isIOS) {
-          // Force filter into pixels for iPhone download
-          x.filter = (cssFilter !== '') ? cssFilter : 'none';
-      } else {
-          // 🛡️ ANDROID PROTECTION
-          // Force none to prevent double-filtering/tinting
-          x.filter = 'none'; 
-      }
+      // ✅ APPLY FILTER (Standard for Android)
+      x.filter = (cssFilter !== '') ? cssFilter : 'none';
       
       x.drawImage(i, -w/2, -h/2, w, h);
       x.restore(); 
   }
   
-  // 5. RESET FILTER (Crucial: Protects Frames from being colored on Android)
+  // 5. RESET FILTER (CRITICAL: Protects the Frame from being colored)
   x.filter = 'none'; 
 
   // 6. FRAME DRAWING
