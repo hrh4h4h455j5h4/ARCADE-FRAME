@@ -1207,7 +1207,7 @@ function toggleBoundaryLock() {
     if(typeof playClick === 'function') playClick();
 }
 
-// --- 🛠️ CORE DRAWING ENGINE (ANDROID RESTORED) ---
+// --- 🛠️ CORE DRAWING ENGINE (FINAL UNIFIED FIX) ---
 function d(){ 
   if(!x) return;
   x.clearRect(0,0,800,800); 
@@ -1219,7 +1219,14 @@ function d(){
   if(cfg.adj.c !== 100) cssFilter += ` contrast(${cfg.adj.c}%)`;
   if(cfg.adj.s !== 100) cssFilter += ` saturate(${cfg.adj.s}%)`;
 
-  // 2. DISABLE CSS FILTERS (Prevents "Double Filter" glitch on Android)
+  // 🧠 SMART DEVICE DETECTION (Friend's Fix)
+  // This helps us know if it's an Apple device.
+  const isIOS = /AppleWebKit/.test(navigator.userAgent) && !/Chrome|Chromium|Android/.test(navigator.userAgent);
+
+  // 2. DISABLE CSS PREVIEW (SOLVES DOUBLE FILTERS)
+  // We turn off CSS for EVERYONE (iPhone & Android).
+  // Why? Because we apply the filter directly to the pixels in Step 4.
+  // This prevents the "Double Filter" look on iPhone and the glitches on Android.
   if(c) {
       c.style.filter = 'none';
       c.style.webkitFilter = 'none';
@@ -1235,37 +1242,48 @@ function d(){
       const mathM = drawM + 15; 
       const reqW = (mathM*2*cos + mathM*2*sin), reqH = (mathM*2*sin + mathM*2*cos);
       const minS = Math.max(reqW/i.width, reqH/i.height);
-      if(cfg.s < minS) { cfg.s = minS; if(window.zSl) zSl.value = minS; if(window.zVal) zVal.innerText = Math.round((minS/zSl.min)*100)+"%"; }
+      
+      if(cfg.s < minS) { 
+          cfg.s = minS; 
+          if(window.zSl) zSl.value = minS; 
+          if(window.zVal) zVal.innerText = Math.round((minS/zSl.min)*100)+"%"; 
+      }
+      
       const w = i.width * cfg.s, h = i.height * cfg.s;
       const rangeX = Math.max(0, (w - reqW)/2), rangeY = Math.max(0, (h - reqH)/2);
       cfg.x = Math.max(400 - rangeX, Math.min(400 + rangeX, cfg.x));
       cfg.y = Math.max(400 - rangeY, Math.min(400 + rangeY, cfg.y));
   }
 
-  // 4. IMAGE DRAWING (FILTERS ACTIVE FOR ANDROID)
+  // 4. IMAGE DRAWING (HARD BAKE FOR EVERYONE)
   if(i.src){
       x.save(); 
       x.beginPath(); x.arc(400, 400, drawM + 2, 0, Math.PI * 2); x.clip(); 
-      
+
       let w = i.width * cfg.s, h = i.height * cfg.s;
       x.translate(cfg.x, cfg.y); 
       x.rotate(cfg.r * Math.PI / 180);
-      
-      // ✅ APPLY FILTER (Standard for Android)
+
+      // 🔥 THE UNIVERSAL FIX 🔥
+      // We apply the filter to the CANVAS PIXELS for both iPhone and Android.
+      // - iPhone: Needs this for the download to work (Hard Bake).
+      // - Android: Needs this to see the filter at all (since we turned off CSS).
       x.filter = (cssFilter !== '') ? cssFilter : 'none';
-      
+
       x.drawImage(i, -w/2, -h/2, w, h);
       x.restore(); 
   }
-  
-  // 5. RESET FILTER (CRITICAL: Protects the Frame from being colored)
+
+  // 5. RESET FILTER (CRITICAL: Protects the Frame)
+  // We turn the filter OFF before drawing the frame, 
+  // so the frame doesn't get tinted/colored.
   x.filter = 'none'; 
 
   // 6. FRAME DRAWING
   if (cfg.pColor) {
       x.save(); x.beginPath(); x.arc(400, 400, drawM, 0, Math.PI * 2); 
       x.lineWidth = 6; x.strokeStyle = cfg.pColor; x.stroke(); x.restore();
-      
+
       x.save(); 
       if ((cfg.pColor === '#000000' || cfg.pColor === '#808080') && cfg.pType === 'neon') {
           const sC = cfg.pColor; 
