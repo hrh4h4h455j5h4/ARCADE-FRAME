@@ -558,7 +558,29 @@ function toggleThemeMenu(e) { e.stopPropagation(); thMenu.style.display = thMenu
 // --- 🎵 AUDIO ---
 const playlist = ["jfKfPfyJRdk", "BrnDlRmW5hs", "tLYL_3NcJck", "FKtzkolncnk", "_Ojv9Zu1IZY", "OBoMLZTtqb8", "lT8JepVwxBQ", "MedT9ECothA", "eAdtqDV06Ho", "2kzQ272Le8Q", "0qCL3Sz1--M", "2UN1ZVbBelU", "iDVKMdnvgl8", "9JMjZbIpmS8", "TNGsftqag6M", "GedLli_YXEI"];
 function initAudio(){ if(!audioStarted){ audioCtx.resume().then(()=>{ audioStarted=true; if(player&&musicOn){ player.unMute(); player.playVideo(); }});}}
-function onYouTubeIframeAPIReady(){ const rId = playlist[Math.floor(Math.random() * playlist.length)]; const sel = document.querySelector('.station-select'); if(sel) sel.value = rId; player=new YT.Player('yt-player',{height:'0',width:'0',videoId:rId,playerVars:{'autoplay':1,'loop':1,'playlist':rId,'mute':0},events:{'onReady':e=>{e.target.setVolume(25);}}});}
+function onYouTubeIframeAPIReady(){ 
+    const rId = playlist[Math.floor(Math.random() * playlist.length)]; 
+    const sel = document.querySelector('.station-select'); 
+    if(sel) sel.value = rId; 
+    
+    player = new YT.Player('yt-player', {
+        height: '0',
+        width: '0',
+        videoId: rId,
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: {
+            'autoplay': 1,
+            'loop': 1,
+            'playlist': rId,
+            'mute': 0,
+            'origin': window.location.origin
+        },
+        events: {
+            'onReady': e => { e.target.setVolume(25); }
+        }
+    });
+}
+
 function changeMusic(id){ if(player)player.loadVideoById(id); playShutter(); }
 function toggleMusic(){ initAudio(); playClick(); musicOn=!musicOn; if(musicOn){ player.playVideo(); mStat.innerText="ON"; mStat.style.color="#ff0000"; }else{ player.pauseVideo(); mStat.innerText="OFF"; mStat.style.color="#888"; }}
 function playClick(){ if(audioCtx.state!=='running')audioCtx.resume(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.frequency.setValueAtTime(800, audioCtx.currentTime); g.gain.setValueAtTime(0.03, audioCtx.currentTime); o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+0.1); }
