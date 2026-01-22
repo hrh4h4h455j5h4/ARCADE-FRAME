@@ -1159,22 +1159,23 @@ function toggleBoundaryLock() {
     d();
     if(typeof playClick === 'function') playClick();
 }
-// --- 🛠️ CORE DRAWING ENGINE (LOGIC: EVERYONE IS "OLD CODE" EXCEPT ANDROID) ---
+
+    // --- 🛠️ CORE DRAWING ENGINE (REVERTED DETECTION: SIMPLE & ROBUST) ---
 function d(){ 
   if(!x) return;
   x.clearRect(0,0,800,800); 
 
   // ----------------------------------------------------
-  // 1. DEFINE FILTERS (Need both formats)
+  // 1. SETUP FILTER STRINGS
   // ----------------------------------------------------
   
-  // A. Canvas Filter (For iPhone/Mac/PC - The "Old Code" Way)
+  // A. For iPhone/Mac (Old Code Style)
   let finalF = (cfg.filter && cfg.filter !== 'none') ? cfg.filter : '';
   if(cfg.adj.b !== 100) finalF += ` brightness(${cfg.adj.b}%)`;
   if(cfg.adj.c !== 100) finalF += ` contrast(${cfg.adj.c}%)`;
   if(cfg.adj.s !== 100) finalF += ` saturate(${cfg.adj.s}%)`;
 
-  // B. CSS Filter (For Android Screens - The "New Way")
+  // B. For Android (CSS Style)
   let cssFilter = '';
   if(cfg.filter && cfg.filter !== 'none') cssFilter += cfg.filter;
   if(cfg.adj.b !== 100) cssFilter += ` brightness(${cfg.adj.b}%)`;
@@ -1182,29 +1183,29 @@ function d(){
   if(cfg.adj.s !== 100) cssFilter += ` saturate(${cfg.adj.s}%)`;
 
   // ----------------------------------------------------
-  // 2. SIMPLE DETECTION: IS THIS ANDROID?
+  // 2. SIMPLE DETECTION (NO FRIEND CODE)
   // ----------------------------------------------------
-  const isAndroid = /Android/.test(navigator.userAgent);
-  
+  // We simply check: Is this Android?
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
   // ----------------------------------------------------
   // 3. SCREEN PREVIEW LOGIC
   // ----------------------------------------------------
   if (isAndroid) {
       // 🤖 ANDROID: Use CSS Visuals (Protected Mode)
-      // This keeps your Android version working exactly as it is now.
+      // This keeps Android working exactly like your "Current Code".
       if(c) { 
           c.style.filter = (cssFilter !== '') ? cssFilter : 'none'; 
           c.style.webkitFilter = (cssFilter !== '') ? cssFilter : 'none';
       }
   } else {
-      // 🍎 iPHONE / MAC / PC: Disable CSS (Hard Bake Mode)
-      // We turn off CSS so we can use the "Old Code" canvas filter 
-      // without causing double-filter glitches.
+      // 🍎 iPHONE / MAC: Disable CSS (Hard Bake Mode)
+      // We turn off CSS to prevent glitches, relying 100% on the Canvas (Step 5).
       if(c) { c.style.filter = 'none'; c.style.webkitFilter = 'none'; }
   }
 
   // ----------------------------------------------------
-  // 4. ZOOM & BOUNDARY LOGIC (Your Slider Fix)
+  // 4. ZOOM & BOUNDARY LOGIC (Standard Fix)
   // ----------------------------------------------------
   let drawM = cfg.m;
   if (cfg.pColor && cfg.m > 360) { drawM = 360; }
@@ -1229,7 +1230,7 @@ function d(){
   }
 
   // ----------------------------------------------------
-  // 5. IMAGE DRAWING (THE FIX)
+  // 5. DRAW IMAGE (LOGIC SWITCH)
   // ----------------------------------------------------
   if(i.src){
       x.save(); 
@@ -1239,13 +1240,13 @@ function d(){
       x.translate(cfg.x, cfg.y); 
       x.rotate(cfg.r * Math.PI / 180);
       
-      // ✅ LOGIC SWITCH
       if (isAndroid) {
           // 🤖 ANDROID: Protected (No Canvas Filter)
+          // We strictly block the filter here to prevent the "Double Filter" glitch.
           x.filter = 'none';
       } else {
           // 🍎 iPHONE / MAC: Hard Bake (Old Code Logic)
-          // This forces the filter into the download, just like before.
+          // Since it is NOT Android, we force the filter into the pixels.
           if(finalF !== '') x.filter = finalF; else x.filter = 'none';
       }
       
