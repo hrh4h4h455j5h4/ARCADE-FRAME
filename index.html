@@ -1765,21 +1765,6 @@ setInterval(() => {
         menu.insertBefore(btn, menu.firstChild);
     }
 }, 1000);
-
-// --- 📱 IPHONE HIDER SCRIPT ---
-// This automatically hides the "Magic Filters" button on iPhones only.
-(function() {
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    if (isIOS) {
-        const buttons = document.querySelectorAll('button');
-        buttons.forEach(btn => {
-            if (btn.innerText.includes('MAGIC FILTERS')) {
-                btn.style.display = 'none';
-            }
-        });
-    }
-})();
-
 </script>
 </body>
 </html>
