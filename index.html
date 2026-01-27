@@ -1905,14 +1905,13 @@ setInterval(() => {
     }
 })();
 
-// --- 🛡️ FORTRESS PROTECTION + COPY FIX ---
+// --- 🛡️ FORTRESS PROTECTION + SELECTION FIX ---
 (function() {
-    // 1. Block Inspect Element & Right-Click
-    // This stops your friend from using the standard menu to see your code
+    // 1. Block Inspect Element & Right-Click (Security)
     document.addEventListener('contextmenu', e => e.preventDefault());
     
     document.addEventListener('keydown', e => {
-        // Blocks F12 (123), Ctrl+Shift+I (73), Ctrl+Shift+J (74), Ctrl+Shift+C (67), and Ctrl+U (85)
+        // Blocks F12, Ctrl+Shift+I/J/C, and Ctrl+U
         if (e.keyCode === 123 || 
            (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || 
            (e.ctrlKey && e.keyCode === 85)) {
@@ -1921,48 +1920,51 @@ setInterval(() => {
         }
     });
 
-    // 2. Allow Text Selection (Fixes the "Can't Copy" issue)
-    // We add this CSS dynamically to make sure the font cards are selectable
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .font-card { 
+    // 2. 🔥 THE FIX: RE-ENABLE SELECTION
+    // We inject CSS to force the font cards and input to be selectable
+    const selectionStyle = document.createElement('style');
+    selectionStyle.innerHTML = `
+        /* Allows you to highlight the text with your mouse */
+        .font-card, #input-text, .copyable { 
             user-select: text !important; 
             -webkit-user-select: text !important; 
             -moz-user-select: text !important;
             -ms-user-select: text !important;
             cursor: pointer; 
         }
-        #input-text { user-select: text !important; }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(selectionStyle);
 })();
 
 // --- 📋 THE "SUPER COPY" FUNCTION ---
-// This works even when Right-Click is disabled
+// This works even when the right-click menu is disabled
 async function copyToClipboard(text) {
     try {
-        // Modern approach
+        // Primary method (Modern)
         await navigator.clipboard.writeText(text);
         showToast("Copied to clipboard! ✅");
     } catch (err) {
-        // Fallback for older browsers or non-HTTPS connections
+        // Secondary method (Fallback for mobile/older browsers)
         const textArea = document.createElement("textarea");
         textArea.value = text;
-        textArea.style.position = "fixed"; // Avoid scrolling to bottom
+        // Make it invisible
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "0";
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
         try {
             document.execCommand('copy');
             showToast("Copied! ✅");
-        } catch (err) {
-            console.error('Fallback copy failed', err);
+        } catch (copyErr) {
+            console.error('Copy failed', copyErr);
         }
         document.body.removeChild(textArea);
     }
 }
 
-// --- 🖋️ GENERATION & TRANSFORMATION ---
+// --- 🖋️ GENERATION LOGIC ---
 function generateFonts() {
     const text = inputField.value || "Type something...";
     if (!outputContainer) return;
@@ -1970,16 +1972,15 @@ function generateFonts() {
     outputContainer.innerHTML = "";
     
     alphas.forEach(font => {
-        // Only show fonts for the active category
         if (activeCategory !== "ALL" && font.c !== activeCategory) return;
         
         const card = document.createElement("div");
-        card.className = "font-card";
+        card.className = "font-card"; // This now allows selection because of the CSS above
         
         const transformed = transformText(text, font.m);
         card.innerText = transformed;
         
-        // Clicking the card triggers the copy function automatically
+        // ⚡ CLICK TO COPY: You don't need to right-click. Just left-click the card!
         card.onclick = () => copyToClipboard(transformed);
         
         outputContainer.appendChild(card);
@@ -1996,15 +1997,13 @@ function transformText(t, m) {
 }
 
 function showToast(msg) {
-    // If you have a toast element, use it; otherwise, use a simple alert
-    console.log("Toast:", msg);
-    // alert(msg); // Remove the comment here if you want a pop-up alert
+    // If you don't have a visual toast, this alert will confirm it worked
+    alert(msg); 
 }
 
-// --- 🚀 FINAL INITIALIZATION ---
-// This starts the generator as soon as the page loads
+// Start the app
 generateFonts();
-    
+
 </script>
 </body>
 </html>
