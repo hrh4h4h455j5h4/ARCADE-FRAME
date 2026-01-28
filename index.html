@@ -1193,27 +1193,43 @@ function applyFilter(filterVal, btn) {
     }
 }
 
-// --- 🔒 2. BOUNDARY LOCK LOGIC ---
+/// --- 🔒 BOUNDARY LOCK LOGIC (FIXED) ---
 let isBoundaryLocked = true;
 function toggleBoundaryLock() {
     isBoundaryLocked = !isBoundaryLocked;
     const btn = document.getElementById('lock-btn');
+    const zSlider = document.getElementById('z'); 
+
     if (isBoundaryLocked) {
+        // 🔒 LOCK ON
         if(btn) {
             btn.innerHTML = "BOUNDARY LOCK: ON 🔒";
             btn.style.borderColor = "#00ff00";
             btn.style.color = "#00ff00";
         }
+        d(); // Snap back to limits
     } else {
+        // 🔓 LOCK OFF
         if(btn) {
             btn.innerHTML = "BOUNDARY LOCK: OFF 🔓";
             btn.style.borderColor = "#ff0000";
             btn.style.color = "#ff0000";
         }
+        
+        // 🔥 FORCE UNLOCK (The Missing Piece)
+        if(zSlider) {
+            zSlider.min = "0.01";                // JS Property
+            zSlider.setAttribute('min', '0.01'); // HTML Attribute (Crucial for Mobile)
+            zSlider.step = "0.01";               // Ensures smooth dragging
+            
+            // Force the visual red/blue line to update instantly
+            if(typeof updS === 'function') updS(zSlider);
+        }
     }
-    d();
+    
     if(typeof playClick === 'function') playClick();
 }
+
 // --- 🛠️ CORE DRAWING ENGINE (CSS DISABLED = NO TINTED FRAMES) ---
 function d(){ 
   if(!x) return;
