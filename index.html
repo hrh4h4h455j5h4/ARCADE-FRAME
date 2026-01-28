@@ -1193,27 +1193,32 @@ function applyFilter(filterVal, btn) {
     }
 }
 
-// --- 🔒 2. BOUNDARY LOCK LOGIC ---
-let isBoundaryLocked = true;
+// --- 🔒 BOUNDARY LOCK (FIXED FOR 360°) ---
+function applyBoundaryLock() {
+    if (!isBoundaryLocked || !zSlider || !rSlider) return;
+
+    // Trig logic to ensure image always fills the frame during rotation
+    let rad = (currentRotation * Math.PI) / 180;
+    let minScale = Math.abs(Math.cos(rad)) + Math.abs(Math.sin(rad));
+
+    zSlider.min = minScale.toFixed(2);
+    
+    if (parseFloat(zSlider.value) < minScale) {
+        zSlider.value = minScale.toFixed(2);
+        if(typeof updS === 'function') updS(zSlider); 
+    }
+}
+
 function toggleBoundaryLock() {
     isBoundaryLocked = !isBoundaryLocked;
-    const btn = document.getElementById('lock-btn');
-    if (isBoundaryLocked) {
-        if(btn) {
-            btn.innerHTML = "BOUNDARY LOCK: ON 🔒";
-            btn.style.borderColor = "#00ff00";
-            btn.style.color = "#00ff00";
-        }
-    } else {
-        if(btn) {
-            btn.innerHTML = "BOUNDARY LOCK: OFF 🔓";
-            btn.style.borderColor = "#ff0000";
-            btn.style.color = "#ff0000";
-        }
+    if (lockBtn) {
+        lockBtn.innerHTML = isBoundaryLocked ? "BOUNDARY LOCK: ON 🔒" : "BOUNDARY LOCK: OFF 🔓";
+        lockBtn.style.color = isBoundaryLocked ? "#00ff00" : "#ff0000";
     }
-    d();
-    if(typeof playClick === 'function') playClick();
+    if (isBoundaryLocked) applyBoundaryLock();
+    else zSlider.min = "0.01";
 }
+
 // --- 🛠️ CORE DRAWING ENGINE (CSS DISABLED = NO TINTED FRAMES) ---
 function d(){ 
   if(!x) return;
